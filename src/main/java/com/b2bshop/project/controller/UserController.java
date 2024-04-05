@@ -1,20 +1,12 @@
 package com.b2bshop.project.controller;
 
-import com.b2bshop.project.dto.AuthRequest;
 import com.b2bshop.project.dto.CreateUserRequest;
 import com.b2bshop.project.model.User;
 import com.b2bshop.project.repository.UserRepository;
-import com.b2bshop.project.service.JwtService;
 import com.b2bshop.project.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/user")

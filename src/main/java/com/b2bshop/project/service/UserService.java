@@ -50,7 +50,6 @@ public class UserService implements UserDetailsService {
         return userRepository.save(newUser);
     }
 
-
     private boolean accountNonExpired;
     private boolean isEnabled;
     private boolean accountNonLocked;
@@ -62,8 +61,9 @@ public class UserService implements UserDetailsService {
             User oldUser = user.get();
             oldUser.setName(newUser.getName());
             oldUser.setUsername(newUser.getUsername());
-            oldUser.setPassword(newUser.getPassword());
+            oldUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
             oldUser.setAuthorities(newUser.getAuthorities());
+            userRepository.save(oldUser);
             return oldUser;
         } else return null;
     }

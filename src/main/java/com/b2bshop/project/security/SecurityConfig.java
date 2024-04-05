@@ -41,15 +41,17 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(x -> x
                         .requestMatchers("/auth/generateToken/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/user").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/user/{userId}").permitAll()
+                                .requestMatchers("/api/**").permitAll()
+//                        .requestMatchers(HttpMethod.POST, "/api/user").permitAll()
+//                        .requestMatchers(HttpMethod.PUT, "/api/user/{userId}").permitAll()
+//                        .requestMatchers(HttpMethod.DELETE, "/api/user/{userId}").permitAll()
                 )
-                .authorizeHttpRequests(x -> x
-                        .requestMatchers(HttpMethod.GET, "/api/user/{userId}").hasRole("USER")
-                        .requestMatchers(HttpMethod.GET, "/api/user").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/user/{userId}").hasRole("ADMIN")
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                )
+//                .authorizeHttpRequests(x -> x
+////                        .requestMatchers(HttpMethod.GET, "/api/user/{userId}").hasRole("USER")
+////                        .requestMatchers(HttpMethod.GET, "/api/user").hasRole("ADMIN")
+////                        .requestMatchers(HttpMethod.DELETE, "/api/user/{userId}").hasRole("ADMIN")
+//                        .requestMatchers("/admin/**").hasRole("ADMIN")
+//                )
                 .sessionManagement(x -> x
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
