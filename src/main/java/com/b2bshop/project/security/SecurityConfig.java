@@ -3,6 +3,7 @@ package com.b2bshop.project.security;
 import com.b2bshop.project.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -38,14 +39,19 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(x ->
-                        x.requestMatchers("/auth/welcome/**", "/auth/addNewUser/**", "/auth/generateToken/**").permitAll()
+                .authorizeHttpRequests(x -> x
+                        .requestMatchers("/auth/generateToken/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/user").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/user/{userId}").permitAll()
                 )
-                .authorizeHttpRequests(x ->
-                        x.requestMatchers("/auth/user").authenticated()
-                                .requestMatchers("/auth/admin").hasRole("ADMIN")
+                .authorizeHttpRequests(x -> x
+                        .requestMatchers(HttpMethod.GET, "/api/user/{userId}").hasRole("USER")
+                        .requestMatchers(HttpMethod.GET, "/api/user").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/user/{userId}").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                 )
-                .sessionManagement(x -> x.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(x -> x
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

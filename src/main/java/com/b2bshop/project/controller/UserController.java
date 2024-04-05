@@ -3,6 +3,7 @@ package com.b2bshop.project.controller;
 import com.b2bshop.project.dto.AuthRequest;
 import com.b2bshop.project.dto.CreateUserRequest;
 import com.b2bshop.project.model.User;
+import com.b2bshop.project.repository.UserRepository;
 import com.b2bshop.project.service.JwtService;
 import com.b2bshop.project.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -12,51 +13,47 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Optional;
+
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/user")
 @Slf4j
 public class UserController {
 
-    private final UserService service;
-
-    private final JwtService jwtService;
-
-    private final AuthenticationManager authenticationManager;
+    private final UserService userService;
+    private final UserRepository userRepository;
 
 
-    public UserController(UserService service, JwtService jwtService, AuthenticationManager authenticationManager) {
-        this.service = service;
-        this.jwtService = jwtService;
-        this.authenticationManager = authenticationManager;
+    public UserController(UserService userService, UserRepository userRepository) {
+        this.userService = userService;
+        this.userRepository = userRepository;
     }
 
-    @GetMapping("/welcome")
-    public String welcome() {
-        return "Hello World! this is FOLSDEV";
+    @GetMapping()
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
-    @PostMapping("/addNewUser")
+    @PostMapping()
     public User addUser(@RequestBody CreateUserRequest request) {
-        return service.createUser(request);
+        return userService.createUser(request);
     }
 
-    @PostMapping("/generateToken")
-    public String generateToken(@RequestBody AuthRequest request) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.username(), request.password()));
-        if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(request.username());
-        }
-        log.info("invalid username " + request.username());
-        throw new UsernameNotFoundException("invalid username {} " + request.username());
+    @GetMapping("/{userId}")
+    public User getUserById(@PathVariable Long userId) {
+        // TODO custom exception
+        return userRepository.findById(userId).orElse(null);
     }
 
-    @GetMapping("/user")
-    public String getUserString() {
-        return "This is USER!";
+    @PutMapping("/{userId}")
+    public User updateUserById(@PathVariable Long userId, @RequestBody User newUser) {
+        return userService.updateUserById(userId, newUser);
     }
 
-    @GetMapping("/admin")
-    public String getAdminString() {
-        return "This is ADMIN!";
+    @DeleteMapping("/{userId}")
+    public void deleteUserById(@PathVariable Long userId) {
+        userRepository.deleteById(userId);
     }
+
 }
