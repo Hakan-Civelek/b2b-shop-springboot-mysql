@@ -11,22 +11,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/login")
 @Slf4j
-public class AuthController {
+public class LoginController {
     private final JwtService jwtService;
 
     private final AuthenticationManager authenticationManager;
 
-    public AuthController(JwtService jwtService, AuthenticationManager authenticationManager) {
+    public LoginController(JwtService jwtService, AuthenticationManager authenticationManager) {
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
     }
 
     @PostMapping()
-    public String generateToken(@RequestBody AuthRequest request) {
+    public Map generateToken(@RequestBody AuthRequest request) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.username(), request.password()));
         if (authentication.isAuthenticated()) {
             return jwtService.generateToken(request.username());
