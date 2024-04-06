@@ -35,7 +35,7 @@ public class UserService implements UserDetailsService {
     }
 
     public User createUser(CreateUserRequest request) {
-
+        // TODO sadece ADMIN
         User newUser = User.builder()
                 .name(request.name())
                 .username(request.username())
@@ -56,6 +56,8 @@ public class UserService implements UserDetailsService {
     private boolean credentialsNonExpired;
 
     public User updateUserById(Long userId, User newUser) {
+        // TODO User sadece kendisini görebilmeli
+        // TODO Admin herkesi görebilmeli
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
             User oldUser = user.get();

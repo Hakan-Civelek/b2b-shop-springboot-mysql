@@ -24,6 +24,7 @@ public class UserController {
 
     @GetMapping()
     public List<User> getAllUsers() {
+        // TODO sadece ADMIN
         return userRepository.findAll();
     }
 
@@ -40,11 +41,13 @@ public class UserController {
 
     @PutMapping("/{userId}")
     public User updateUserById(@PathVariable Long userId, @RequestBody User newUser) {
+        // TODO USER kendini yapabilecek ADMIN herkesi yapabilecek
         return userService.updateUserById(userId, newUser);
     }
 
     @DeleteMapping("/{userId}")
     public void deleteUserById(@PathVariable Long userId) {
+        // TODO USER kendini yapabilecek ADMIN herkesi yapabilecek
         userRepository.deleteById(userId);
     }
 
