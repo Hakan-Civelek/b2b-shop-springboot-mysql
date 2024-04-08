@@ -26,6 +26,14 @@ public class CompanyController {
     }
 
     @PostMapping()
+    public List<Company> addCompany(@RequestBody List<CreateCompanyRequest> requests) {
+        List<Company> createdCompanies = new ArrayList<>();
+        for (CreateCompanyRequest request : requests) {
+            companyService.createCompany(request);
+        }
+        return createdCompanies;
+    }
+
     public Company addCompany(@RequestBody CreateCompanyRequest request) {
         return companyService.createCompany(request);
     }

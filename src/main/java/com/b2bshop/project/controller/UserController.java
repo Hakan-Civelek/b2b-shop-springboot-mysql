@@ -29,9 +29,17 @@ public class UserController {
     }
 
     @PostMapping()
-    public User addUser(@RequestBody CreateUserRequest request) {
-        return userService.createUser(request);
+    public List<User> addUser(@RequestBody List<CreateUserRequest> requests) {
+        List<User> createdUsers = new ArrayList<>();
+        for (CreateUserRequest request : requests) {
+            createdUsers.add(userService.createUser(request));
+        }
+        return createdUsers;
     }
+
+//    public User addUser(@RequestBody CreateUserRequest request) {
+//        return userService.createUser(request);
+//    }
 
     @GetMapping("/{userId}")
     public User getUserById(@PathVariable Long userId) {

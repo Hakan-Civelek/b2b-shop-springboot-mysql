@@ -33,6 +33,7 @@ public class ShopService {
             oldShop.setName(newShop.getName());
             oldShop.setEmail(newShop.getEmail());
             oldShop.setUsers(newShop.getUsers());
+            oldShop.setCompanies(newShop.getCompanies());
             shopRepository.save(oldShop);
             return oldShop;
         } else return null;
