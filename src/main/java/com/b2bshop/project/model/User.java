@@ -5,10 +5,9 @@ import lombok.*;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Set;
 
-
-@Data
 @Entity
-@Table(name = "users")
+@Table(name = "user")
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,7 +19,7 @@ public class User implements UserDetails {
     private String name;
     private String username;
     private String password;
-
+    private String email;
     private boolean accountNonExpired;
     private boolean isEnabled;
     private boolean accountNonLocked;

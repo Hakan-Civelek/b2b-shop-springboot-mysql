@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
 
 @Service
@@ -39,6 +38,7 @@ public class UserService implements UserDetailsService {
         User newUser = User.builder()
                 .name(request.name())
                 .username(request.username())
+                .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
                 .authorities(request.authorities())
                 .accountNonExpired(true)
@@ -50,11 +50,6 @@ public class UserService implements UserDetailsService {
         return userRepository.save(newUser);
     }
 
-    private boolean accountNonExpired;
-    private boolean isEnabled;
-    private boolean accountNonLocked;
-    private boolean credentialsNonExpired;
-
     public User updateUserById(Long userId, User newUser) {
         // TODO User sadece kendisini görebilmeli
         // TODO Admin herkesi görebilmeli
@@ -63,6 +58,7 @@ public class UserService implements UserDetailsService {
             User oldUser = user.get();
             oldUser.setName(newUser.getName());
             oldUser.setUsername(newUser.getUsername());
+            oldUser.setEmail(newUser.getEmail());
             oldUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
             oldUser.setAuthorities(newUser.getAuthorities());
             userRepository.save(oldUser);
