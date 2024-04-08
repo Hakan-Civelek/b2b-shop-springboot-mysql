@@ -21,7 +21,7 @@ public class ShopController {
     }
 
     @GetMapping()
-    public List<Shop> getAllCompanies() {
+    public List<Shop> getAllShops() {
         return shopRepository.findAll();
     }
 

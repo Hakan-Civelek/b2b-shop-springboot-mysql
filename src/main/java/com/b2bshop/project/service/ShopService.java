@@ -4,7 +4,6 @@ import com.b2bshop.project.dto.CreateShopRequest;
 import com.b2bshop.project.model.Shop;
 import com.b2bshop.project.repository.ShopRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 import java.util.Optional;
 
 @Service
@@ -16,7 +15,6 @@ public class ShopService {
         this.shopRepository = shopRepository;
     }
 
-    @PostMapping
     public Shop createShop(CreateShopRequest request) {
         Shop newShop = Shop.builder()
                 .name(request.name())
