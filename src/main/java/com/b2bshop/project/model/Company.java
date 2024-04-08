@@ -22,17 +22,9 @@ public class Company {
     private String name;
     String email;
 
-//    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JoinTable(name = "users", joinColumns = @JoinColumn(name = "id"))
-//    @Column(name = "user", nullable = false)
-//    @JsonIgnore
-
     @OneToMany
-    @JoinTable(
-            name = "company_user",
+    @JoinTable(name = "company_user",
             joinColumns = @JoinColumn(name = "tenant_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-//    @OnDelete(action = OnDeleteAction.CASCADE)
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> users;
 }
