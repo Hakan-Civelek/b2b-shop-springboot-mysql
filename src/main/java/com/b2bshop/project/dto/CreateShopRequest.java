@@ -1,14 +1,16 @@
 package com.b2bshop.project.dto;
 
-import com.b2bshop.project.model.Shop;
+import com.b2bshop.project.model.Company;
 import com.b2bshop.project.model.User;
 import lombok.Builder;
+
 import java.util.Set;
 
 @Builder
-public record CreateCompanyRequest(
+public record CreateShopRequest(
         String name,
         String email,
-        Set<User> users
+        Set<Company> companies,
+        Set<User>users
 ) {
 }
