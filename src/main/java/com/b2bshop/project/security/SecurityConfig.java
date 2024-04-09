@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(x -> x
                                 .requestMatchers("/api/**").permitAll()
-//                        .requestMatchers(HttpMethod.POST, "/api/user").permitAll() // TODO admin
+//                        .requestMatchers(HttpMethod.POST, "/api/user").permitAll()
 //                        .requestMatchers(HttpMethod.PUT, "/api/user/{userId}").permitAll()
 //                        .requestMatchers(HttpMethod.DELETE, "/api/user/{userId}").permitAll()
                 )

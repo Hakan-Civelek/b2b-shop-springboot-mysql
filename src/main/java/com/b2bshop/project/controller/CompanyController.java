@@ -4,14 +4,12 @@ import com.b2bshop.project.dto.CreateCompanyRequest;
 import com.b2bshop.project.model.Company;
 import com.b2bshop.project.repository.CompanyRepository;
 import com.b2bshop.project.service.CompanyService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/company")
-@Slf4j
 public class CompanyController {
     private final CompanyService companyService;
     private final CompanyRepository companyRepository;

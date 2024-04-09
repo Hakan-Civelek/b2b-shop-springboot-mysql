@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.Optional;
 
 @Service
@@ -24,17 +25,11 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
         Optional<User> user = userRepository.findByUsername(username);
         return user.orElseThrow(EntityNotFoundException::new);
     }
 
-    public Optional<User> getByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
-
     public User createUser(CreateUserRequest request) {
-        // TODO sadece ADMIN
         User newUser = User.builder()
                 .name(request.name())
                 .username(request.username())
@@ -51,8 +46,6 @@ public class UserService implements UserDetailsService {
     }
 
     public User updateUserById(Long userId, User newUser) {
-        // TODO User sadece kendisini görebilmeli
-        // TODO Admin herkesi görebilmeli
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
             User oldUser = user.get();

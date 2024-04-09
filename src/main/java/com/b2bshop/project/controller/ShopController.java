@@ -4,14 +4,12 @@ import com.b2bshop.project.dto.CreateShopRequest;
 import com.b2bshop.project.model.Shop;
 import com.b2bshop.project.repository.ShopRepository;
 import com.b2bshop.project.service.ShopService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/shop")
-@Slf4j
 public class ShopController {
     private final ShopService shopService;
     private final ShopRepository shopRepository;

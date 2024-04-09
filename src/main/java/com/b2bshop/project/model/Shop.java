@@ -33,4 +33,10 @@ public class Shop {
             joinColumns = @JoinColumn(name = "tenant_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> users;
+
+    @OneToMany
+    @JoinTable(name = "shop_product",
+            joinColumns = @JoinColumn(name = "tenantId"),
+            inverseJoinColumns = @JoinColumn(name = "productId"))
+    private Set<Product> products;
 }

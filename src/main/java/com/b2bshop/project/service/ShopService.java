@@ -21,6 +21,7 @@ public class ShopService {
                 .email(request.email())
                 .users(request.users())
                 .companies(request.companies())
+                .products(request.products())
                 .build();
 
         return shopRepository.save(newShop);
@@ -34,6 +35,7 @@ public class ShopService {
             oldShop.setEmail(newShop.getEmail());
             oldShop.setUsers(newShop.getUsers());
             oldShop.setCompanies(newShop.getCompanies());
+            oldShop.setProducts(newShop.getProducts());
             shopRepository.save(oldShop);
             return oldShop;
         } else return null;
