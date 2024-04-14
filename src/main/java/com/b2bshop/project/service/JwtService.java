@@ -8,6 +8,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -50,16 +51,14 @@ public class JwtService {
     }
 
     private Map createToken(Map<String, Object> claims, String userName) {
-        Map<String, String> response = new HashMap<>();
-        String strToken =Jwts.builder()
+        String strToken = Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userName)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + (1000 * 60 * 60)))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
-        response.put("token", strToken);
-        return response;
+        return Map.of("token", strToken);
     }
 
     private Key getSignKey() {
