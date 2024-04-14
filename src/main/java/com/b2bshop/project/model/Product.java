@@ -18,10 +18,15 @@ public class Product {
     private Long id;
     private String name;
     private String description;
-    private Double salesPrice;
-    private Double grossPrice;
-    private String sku;
-    private String asin;
+    private Double salesPrice; //vergisiz fiyat
+    private Double grossPrice; //vergi dahil fiyat
+    private String code;
+    //category
+    //brand
+    //boolean isActive
+    //vergiOranı -> primitive
+    //images
+
     private String gtin;
     private int stock;
 }

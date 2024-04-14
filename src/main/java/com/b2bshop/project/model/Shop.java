@@ -27,7 +27,14 @@ public class Shop {
 
     private String name;
     private String email;
-
+    //address
+    //String vatNumber
+    //String aboutUs
+    //String privacyPolicy
+    //phoneNumber
+    //boolean isActive
+    //favIcon (image)
+    //logo (image)
     @OneToMany
     @JoinTable(name = "shop_user",
             joinColumns = @JoinColumn(name = "tenant_id"),

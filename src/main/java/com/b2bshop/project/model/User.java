@@ -20,6 +20,8 @@ public class User implements UserDetails {
     private String username;
     private String password;
     private String email;
+    //phoneNumber
+    //boolean isActive
     private boolean accountNonExpired;
     private boolean isEnabled;
     private boolean accountNonLocked;
