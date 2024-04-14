@@ -22,8 +22,6 @@ public class ProductService {
                 .description(request.description())
                 .salesPrice(request.salesPrice())
                 .grossPrice(request.grossPrice())
-                .sku(request.sku())
-                .asin(request.asin())
                 .gtin(request.gtin())
                 .stock(request.stock())
                 .build();
@@ -39,8 +37,6 @@ public class ProductService {
             oldProduct.setDescription(newProduct.getDescription());
             oldProduct.setSalesPrice(newProduct.getSalesPrice());
             oldProduct.setGrossPrice(newProduct.getGrossPrice());
-            oldProduct.setSku(newProduct.getSku());
-            oldProduct.setAsin(newProduct.getAsin());
             oldProduct.setGtin(newProduct.getGtin());
             oldProduct.setStock(newProduct.getStock());
             productRepository.saveAndFlush(oldProduct);
