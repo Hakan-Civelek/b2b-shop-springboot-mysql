@@ -1,9 +1,11 @@
 package com.b2bshop.project.dto;
 
+import com.b2bshop.project.model.Customer;
 import com.b2bshop.project.model.Role;
+import com.b2bshop.project.model.Shop;
 import lombok.Builder;
-import java.util.Set;
 
+import java.util.Set;
 
 @Builder
 public record CreateUserRequest(
@@ -11,6 +13,8 @@ public record CreateUserRequest(
         String username,
         String password,
         String email,
-        Set<Role> authorities
-){
+        Set<Role> authorities,
+        Shop shop,
+        Customer customer
+) {
 }

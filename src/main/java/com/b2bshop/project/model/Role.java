@@ -3,7 +3,9 @@ package com.b2bshop.project.model;
 import org.springframework.security.core.GrantedAuthority;
 
 public enum Role implements GrantedAuthority {
-    ROLE_USER("USER"),
+    ROLE_SYSTEM_OWNER("SYSTEM_OWNER"),
+    ROLE_SHOP_OWNER("SHOP_OWNER"),
+    ROLE_CUSTOMER_USER("CUSTOMER_USER"),
     ROLE_ADMIN("ADMIN");
 
     private String value;

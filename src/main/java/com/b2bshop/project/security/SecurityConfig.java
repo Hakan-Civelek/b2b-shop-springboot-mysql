@@ -3,6 +3,7 @@ package com.b2bshop.project.security;
 import com.b2bshop.project.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -39,17 +40,14 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(x -> x
-                                .requestMatchers("/api/**").permitAll()
-//                        .requestMatchers(HttpMethod.POST, "/api/user").permitAll()
-//                        .requestMatchers(HttpMethod.PUT, "/api/user/{userId}").permitAll()
-//                        .requestMatchers(HttpMethod.DELETE, "/api/user/{userId}").permitAll()
+                        .requestMatchers("/api/user/createSystemOwners").permitAll()
+                        .requestMatchers("/api/login").permitAll()
+                        .requestMatchers("/api/**").hasRole("SYSTEM_OWNER")
+                        .requestMatchers("/api/product/**").hasRole("SHOP_OWNER")
+                        .requestMatchers("/api/customer/**").hasRole("SHOP_OWNER")
+                        .requestMatchers(HttpMethod.PUT, "/api/shop/**").hasRole("SHOP_OWNER")
+                        .anyRequest().authenticated()
                 )
-//                .authorizeHttpRequests(x -> x
-////                        .requestMatchers(HttpMethod.GET, "/api/user/{userId}").hasRole("USER")
-////                        .requestMatchers(HttpMethod.GET, "/api/user").hasRole("ADMIN")
-////                        .requestMatchers(HttpMethod.DELETE, "/api/user/{userId}").hasRole("ADMIN")
-//                        .requestMatchers("/admin/**").hasRole("ADMIN")
-//                )
                 .sessionManagement(x -> x
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())

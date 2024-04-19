@@ -33,13 +33,15 @@ public class UserService implements UserDetailsService {
         User newUser = User.builder()
                 .name(request.name())
                 .username(request.username())
-                .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
+                .email(request.email())
                 .authorities(request.authorities())
-                .accountNonExpired(true)
-                .credentialsNonExpired(true)
+                .shop(request.shop())
+                .customer(request.customer())
                 .isEnabled(true)
                 .accountNonLocked(true)
+                .accountNonExpired(true)
+                .credentialsNonExpired(true)
                 .build();
 
         return userRepository.save(newUser);
@@ -51,9 +53,11 @@ public class UserService implements UserDetailsService {
             User oldUser = user.get();
             oldUser.setName(newUser.getName());
             oldUser.setUsername(newUser.getUsername());
-            oldUser.setEmail(newUser.getEmail());
             oldUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+            oldUser.setEmail(newUser.getEmail());
             oldUser.setAuthorities(newUser.getAuthorities());
+            oldUser.setShop(newUser.getShop());
+            oldUser.setCustomer(newUser.getCustomer());
             userRepository.save(oldUser);
             return oldUser;
         } else return null;

@@ -5,15 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.Set;
 
 @Data
 @Entity
-@Table(name = "company")
+@Table(name = "customer")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Company {
+public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tenant_id", nullable = false)
@@ -26,9 +25,9 @@ public class Company {
     private String name;
     private String email;
 
-    @OneToMany
-    @JoinTable(name = "company_user",
+    @ManyToOne
+    @JoinTable(name = "customer_shop",
             joinColumns = @JoinColumn(name = "tenant_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private Set<User> users;
+            inverseJoinColumns = @JoinColumn(name = "shop_id"))
+    private Shop shop;
 }

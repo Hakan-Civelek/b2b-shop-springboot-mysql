@@ -5,6 +5,7 @@ import com.b2bshop.project.model.User;
 import com.b2bshop.project.repository.UserRepository;
 import com.b2bshop.project.service.UserService;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,15 @@ public class UserController {
 
     @PostMapping()
     public List<User> addUser(@RequestBody List<CreateUserRequest> requests) {
+        List<User> createdUsers = new ArrayList<>();
+        for (CreateUserRequest request : requests) {
+            createdUsers.add(userService.createUser(request));
+        }
+        return createdUsers;
+    }
+
+    @PostMapping("/createSystemOwners")
+    public List<User> createOwners(@RequestBody List<CreateUserRequest> requests) {
         List<User> createdUsers = new ArrayList<>();
         for (CreateUserRequest request : requests) {
             createdUsers.add(userService.createUser(request));

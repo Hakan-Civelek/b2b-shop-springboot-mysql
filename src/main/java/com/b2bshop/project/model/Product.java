@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Data
 @Entity
@@ -21,6 +23,14 @@ public class Product {
     private Double salesPrice; //vergisiz fiyat
     private Double grossPrice; //vergi dahil fiyat
     private String code;
+
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinTable(name = "product_shop",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "tenant_id"))
+    private Shop shop;
+
     //category
     //brand
     //boolean isActive

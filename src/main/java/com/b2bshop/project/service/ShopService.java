@@ -4,6 +4,7 @@ import com.b2bshop.project.dto.CreateShopRequest;
 import com.b2bshop.project.model.Shop;
 import com.b2bshop.project.repository.ShopRepository;
 import org.springframework.stereotype.Service;
+
 import java.util.Optional;
 
 @Service
@@ -19,9 +20,6 @@ public class ShopService {
         Shop newShop = Shop.builder()
                 .name(request.name())
                 .email(request.email())
-                .users(request.users())
-                .companies(request.companies())
-                .products(request.products())
                 .build();
 
         return shopRepository.save(newShop);
@@ -33,9 +31,6 @@ public class ShopService {
             Shop oldShop = shop.get();
             oldShop.setName(newShop.getName());
             oldShop.setEmail(newShop.getEmail());
-            oldShop.setUsers(newShop.getUsers());
-            oldShop.setCompanies(newShop.getCompanies());
-            oldShop.setProducts(newShop.getProducts());
             shopRepository.save(oldShop);
             return oldShop;
         } else return null;
