@@ -23,6 +23,12 @@ public class User implements UserDetails {
     private String username;
     private String password;
     private String email;
+//    private String phoneNumber;
+//    @OneToMany(cascade = CascadeType.ALL)
+//    @JoinTable(name = "user_address",
+//            joinColumns = @JoinColumn(name = "user_id"),
+//            inverseJoinColumns = @JoinColumn(name = "address_id"))
+//    private Set<Address> addresses;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @JoinTable(name = "user_authorities", joinColumns = @JoinColumn(name = "user_id"))
@@ -44,7 +50,6 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "tenant_id"))
     private Customer customer;
 
-    //phoneNumber
     //boolean isActive
     private boolean isEnabled;
     private boolean accountNonLocked;

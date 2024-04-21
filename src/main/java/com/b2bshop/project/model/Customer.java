@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Data
 @Entity
 @Table(name = "customer")
@@ -17,11 +19,6 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tenant_id", nullable = false)
     private Long tenantId;
-    //address
-    //String vatNumber
-    //phoneNumber
-    //boolean isActive
-
     private String name;
     private String email;
 
@@ -30,4 +27,14 @@ public class Customer {
             joinColumns = @JoinColumn(name = "tenant_id"),
             inverseJoinColumns = @JoinColumn(name = "shop_id"))
     private Shop shop;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "customer_address",
+            joinColumns = @JoinColumn(name = "tenant_id"),
+            inverseJoinColumns = @JoinColumn(name = "address_id"))
+    private Set<Address> addresses;
+
+    private String vatNumber;
+    private String phoneNumber;
+    //boolean isActive
 }
