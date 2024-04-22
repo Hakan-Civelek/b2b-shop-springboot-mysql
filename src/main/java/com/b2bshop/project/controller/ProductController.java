@@ -2,9 +2,7 @@ package com.b2bshop.project.controller;
 
 import com.b2bshop.project.dto.CreateProductRequest;
 import com.b2bshop.project.model.Product;
-import com.b2bshop.project.model.Shop;
 import com.b2bshop.project.repository.ProductRepository;
-import com.b2bshop.project.repository.ShopRepository;
 import com.b2bshop.project.service.ProductService;
 import com.b2bshop.project.service.SecurityService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,19 +18,16 @@ public class ProductController {
     final ProductService productService;
     final ProductRepository productRepository;
     final SecurityService securityService;
-    final ShopRepository shopRepository;
 
-    public ProductController(ProductService productService, ProductRepository productRepository, SecurityService securityService,
-                             ShopRepository shopRepository) {
+    public ProductController(ProductService productService, ProductRepository productRepository, SecurityService securityService) {
         this.productService = productService;
         this.productRepository = productRepository;
         this.securityService = securityService;
-        this.shopRepository = shopRepository;
     }
 
     @GetMapping()
     public List<Map<String, Object>> getAllProducts(HttpServletRequest request) {
-        return productService.getAllProducts( request);
+        return productService.getAllProducts(request);
     }
 
     @PostMapping()
