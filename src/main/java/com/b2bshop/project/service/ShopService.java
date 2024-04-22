@@ -20,6 +20,10 @@ public class ShopService {
         Shop newShop = Shop.builder()
                 .name(request.name())
                 .email(request.email())
+                .phoneNumber(request.phoneNumber())
+                .vatNumber(request.vatNumber())
+                .aboutUs(request.aboutUs())
+                .privacyPolicy(request.privacyPolicy())
                 .build();
 
         return shopRepository.save(newShop);
@@ -31,6 +35,10 @@ public class ShopService {
             Shop oldShop = shop.get();
             oldShop.setName(newShop.getName());
             oldShop.setEmail(newShop.getEmail());
+            oldShop.setPhoneNumber(newShop.getPhoneNumber());
+            oldShop.setVatNumber(newShop.getVatNumber());
+            oldShop.setAboutUs(newShop.getAboutUs());
+            oldShop.setPrivacyPolicy(newShop.getPrivacyPolicy());
             shopRepository.save(oldShop);
             return oldShop;
         } else return null;

@@ -7,6 +7,8 @@ import lombok.Builder;
 public record CreateCustomerRequest(
         String name,
         String email,
-        Shop shop
+        Shop shop,
+        String vatNumber,
+        String phoneNumber
 ) {
 }

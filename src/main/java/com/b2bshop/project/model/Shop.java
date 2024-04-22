@@ -19,12 +19,12 @@ public class Shop {
     private Long tenantId;
     private String name;
     private String email;
+    String phoneNumber;
+    String vatNumber;
+    String aboutUs;
+    String privacyPolicy;
 
     //address
-    //String vatNumber
-    //String aboutUs
-    //String privacyPolicy
-    //phoneNumber
     //boolean isActive
     //favIcon (image)
     //logo (image)

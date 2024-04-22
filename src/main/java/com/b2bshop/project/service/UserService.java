@@ -37,6 +37,7 @@ public class UserService implements UserDetailsService {
                 .username(request.username())
                 .password(passwordEncoder.encode(request.password()))
                 .email(request.email())
+                .phoneNumber(request.phoneNumber())
                 .authorities(request.authorities())
                 .shop(request.shop())
                 .customer(request.customer())
@@ -57,6 +58,7 @@ public class UserService implements UserDetailsService {
             oldUser.setUsername(newUser.getUsername());
             oldUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
             oldUser.setEmail(newUser.getEmail());
+            oldUser.setPhoneNumber(newUser.getPhoneNumber());
             oldUser.setAuthorities(newUser.getAuthorities());
             oldUser.setShop(newUser.getShop());
             oldUser.setCustomer(newUser.getCustomer());

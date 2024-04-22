@@ -13,6 +13,7 @@ public record CreateUserRequest(
         String username,
         String password,
         String email,
+        String phoneNumber,
         Set<Role> authorities,
         Shop shop,
         Customer customer

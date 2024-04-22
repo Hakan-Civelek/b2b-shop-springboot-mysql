@@ -17,11 +17,6 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tenant_id", nullable = false)
     private Long tenantId;
-    //address
-    //String vatNumber
-    //phoneNumber
-    //boolean isActive
-
     private String name;
     private String email;
 
@@ -30,4 +25,9 @@ public class Customer {
             joinColumns = @JoinColumn(name = "tenant_id"),
             inverseJoinColumns = @JoinColumn(name = "shop_id"))
     private Shop shop;
+    private String vatNumber;
+    private String phoneNumber;
+
+//    address;
+//    boolean isActive
 }
