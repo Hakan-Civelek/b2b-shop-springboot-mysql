@@ -9,6 +9,7 @@ public record CreateProductRequest(
         String description,
         Double salesPrice,
         Double grossPrice,
+        Double vatRate,
         String code,
         Shop shop,
         String gtin,
