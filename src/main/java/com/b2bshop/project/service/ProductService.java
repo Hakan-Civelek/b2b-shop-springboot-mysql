@@ -31,7 +31,7 @@ public class ProductService {
 
         Session session = entityManager.unwrap(Session.class);
         String hqlQuery = "SELECT p.id ,p.name as name, p.description as description," +
-                " p.salesPrice as salesPrice, p.grossPrice as grossPrice, p.vatRate as vatRate " +
+                " p.salesPrice as salesPrice, p.grossPrice as grossPrice, p.vatRate as vatRate, " +
                 " p.code as code, p.shop as shop, p.gtin as gtin, p.stock as stock " +
                 " FROM Product p " +
                 " JOIN p.shop s " +
