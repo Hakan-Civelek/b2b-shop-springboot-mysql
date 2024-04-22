@@ -22,6 +22,7 @@ public class Product {
     private String description;
     private Double salesPrice; //vergisiz fiyat
     private Double grossPrice; //vergi dahil fiyat
+    private Double vatRate;
     private String code;
 
     @ManyToOne
@@ -34,7 +35,6 @@ public class Product {
     //category
     //brand
     //boolean isActive
-    //vergiOranı -> primitive
     //images
 
     private String gtin;

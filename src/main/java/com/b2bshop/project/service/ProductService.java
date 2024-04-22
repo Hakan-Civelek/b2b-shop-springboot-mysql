@@ -31,7 +31,7 @@ public class ProductService {
 
         Session session = entityManager.unwrap(Session.class);
         String hqlQuery = "SELECT p.id ,p.name as name, p.description as description," +
-                " p.salesPrice as salesPrice, p.grossPrice as grossPrice, " +
+                " p.salesPrice as salesPrice, p.grossPrice as grossPrice, p.vatRate as vatRate " +
                 " p.code as code, p.shop as shop, p.gtin as gtin, p.stock as stock " +
                 " FROM Product p " +
                 " JOIN p.shop s " +
@@ -57,10 +57,11 @@ public class ProductService {
             resultMap.put("description", row[2]);
             resultMap.put("salesPrice", row[3]);
             resultMap.put("grossPrice", row[4]);
-            resultMap.put("code", row[5]);
-            resultMap.put("shop", row[6]);
-            resultMap.put("gtin", row[7]);
-            resultMap.put("stock", row[8]);
+            resultMap.put("vatRate", row[5]);
+            resultMap.put("code", row[6]);
+            resultMap.put("shop", row[7]);
+            resultMap.put("gtin", row[8]);
+            resultMap.put("stock", row[9]);
             resultList.add(resultMap);
         }
         return resultList;
@@ -72,6 +73,7 @@ public class ProductService {
                 .description(request.description())
                 .salesPrice(request.salesPrice())
                 .grossPrice(request.grossPrice())
+                .vatRate(request.vatRate())
                 .code(request.code())
                 .shop(request.shop())
                 .gtin(request.gtin())
@@ -80,6 +82,7 @@ public class ProductService {
 
         return productRepository.save(newProduct);
     }
+
     public Product updateProductById(Long productId, Product newProduct) {
         Optional<Product> product = productRepository.findById(productId);
         if (product.isPresent()) {
@@ -88,6 +91,7 @@ public class ProductService {
             oldProduct.setDescription(newProduct.getDescription());
             oldProduct.setSalesPrice(newProduct.getSalesPrice());
             oldProduct.setGrossPrice(newProduct.getGrossPrice());
+            oldProduct.setVatRate(newProduct.getVatRate());
             oldProduct.setCode(newProduct.getCode());
             oldProduct.setShop(newProduct.getShop());
             oldProduct.setGtin(newProduct.getGtin());
