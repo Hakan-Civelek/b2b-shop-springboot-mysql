@@ -2,9 +2,7 @@ package com.b2bshop.project.controller;
 
 import com.b2bshop.project.dto.CreateProductRequest;
 import com.b2bshop.project.model.Product;
-import com.b2bshop.project.model.Shop;
 import com.b2bshop.project.repository.ProductRepository;
-import com.b2bshop.project.repository.ShopRepository;
 import com.b2bshop.project.service.ProductService;
 import com.b2bshop.project.service.SecurityService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/product")
@@ -19,25 +18,16 @@ public class ProductController {
     final ProductService productService;
     final ProductRepository productRepository;
     final SecurityService securityService;
-    final ShopRepository shopRepository;
 
-    public ProductController(ProductService productService, ProductRepository productRepository, SecurityService securityService,
-                             ShopRepository shopRepository) {
+    public ProductController(ProductService productService, ProductRepository productRepository, SecurityService securityService) {
         this.productService = productService;
         this.productRepository = productRepository;
         this.securityService = securityService;
-        this.shopRepository = shopRepository;
     }
 
     @GetMapping()
-    public List<Product> getAllProducts(HttpServletRequest request) {
-        String token = request.getHeader("Authorization").split("Bearer ")[1];
-        Long tenantId = securityService.returnTenantIdByUsernameOrToken("token", token);
-        if (tenantId != null) {
-            Shop shop = shopRepository.findById(tenantId).orElse(null);
-            return productRepository.findByShop(shop);
-
-        } else return productRepository.findAll();
+    public List<Map<String, Object>> getAllProducts(HttpServletRequest request) {
+        return productService.getAllProducts(request);
     }
 
     @PostMapping()

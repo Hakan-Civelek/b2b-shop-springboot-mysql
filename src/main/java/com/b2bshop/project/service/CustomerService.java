@@ -23,7 +23,6 @@ public class CustomerService {
                 .name(request.name())
                 .email(request.email())
                 .shop(request.shop())
-                .addresses(request.addresses())
                 .vatNumber(request.vatNumber())
                 .phoneNumber(request.phoneNumber())
                 .build();
@@ -38,7 +37,6 @@ public class CustomerService {
             oldCustomer.setName(newCustomer.getName());
             oldCustomer.setEmail(newCustomer.getEmail());
             oldCustomer.setShop(newCustomer.getShop());
-            oldCustomer.setAddresses(newCustomer.getAddresses());
             oldCustomer.setVatNumber(newCustomer.getVatNumber());
             oldCustomer.setPhoneNumber(newCustomer.getPhoneNumber());
             customerRepository.save(oldCustomer);

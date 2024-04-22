@@ -20,7 +20,6 @@ public class ShopService {
         Shop newShop = Shop.builder()
                 .name(request.name())
                 .email(request.email())
-                .addresses(request.addresses())
                 .phoneNumber(request.phoneNumber())
                 .vatNumber(request.vatNumber())
                 .aboutUs(request.aboutUs())
@@ -36,7 +35,6 @@ public class ShopService {
             Shop oldShop = shop.get();
             oldShop.setName(newShop.getName());
             oldShop.setEmail(newShop.getEmail());
-            oldShop.setAddresses(newShop.getAddresses());
             oldShop.setPhoneNumber(newShop.getPhoneNumber());
             oldShop.setVatNumber(newShop.getVatNumber());
             oldShop.setAboutUs(newShop.getAboutUs());

@@ -1,6 +1,5 @@
 package com.b2bshop.project.dto;
 
-import com.b2bshop.project.model.Address;
 import com.b2bshop.project.model.Customer;
 import com.b2bshop.project.model.Role;
 import com.b2bshop.project.model.Shop;
@@ -14,8 +13,7 @@ public record CreateUserRequest(
         String username,
         String password,
         String email,
-//        String phoneNumber,
-//        Set<Address> addresses,
+        String phoneNumber,
         Set<Role> authorities,
         Shop shop,
         Customer customer
