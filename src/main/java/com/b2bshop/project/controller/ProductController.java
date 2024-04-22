@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/product")
@@ -30,14 +31,8 @@ public class ProductController {
     }
 
     @GetMapping()
-    public List<Product> getAllProducts(HttpServletRequest request) {
-        String token = request.getHeader("Authorization").split("Bearer ")[1];
-        Long tenantId = securityService.returnTenantIdByUsernameOrToken("token", token);
-        if (tenantId != null) {
-            Shop shop = shopRepository.findById(tenantId).orElse(null);
-            return productRepository.findByShop(shop);
-
-        } else return productRepository.findAll();
+    public List<Map<String, Object>> getAllProducts(HttpServletRequest request) {
+        return productService.getAllProducts( request);
     }
 
     @PostMapping()
