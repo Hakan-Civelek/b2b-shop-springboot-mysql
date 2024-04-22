@@ -18,7 +18,7 @@ public class ProductService {
     @Autowired
     private EntityManager entityManager;
     private final ProductRepository productRepository;
-    final SecurityService securityService;
+    private final SecurityService securityService;
 
     public ProductService(ProductRepository productRepository, SecurityService securityService) {
         this.productRepository = productRepository;
