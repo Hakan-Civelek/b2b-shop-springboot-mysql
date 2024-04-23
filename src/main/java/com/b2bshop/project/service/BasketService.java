@@ -1,6 +1,6 @@
 package com.b2bshop.project.service;
 
-import com.b2bshop.project.dto.CreateBasketRecord;
+import com.b2bshop.project.dto.CreateBasketRequest;
 import com.b2bshop.project.model.Basket;
 import com.b2bshop.project.model.User;
 import com.b2bshop.project.repository.BasketRepository;
@@ -41,8 +41,9 @@ public class BasketService {
         String hqlQuery = "SELECT " +
                 " basket.id basketId, " +
                 " product.id as productId, product.name as name, basket.quantity as quantity, " +
-                " product.grossPrice as grossPrice," +
-                " (product.grossPrice * basket.quantity) as totalProductPrice " +
+                " product.grossPrice as grossPrice, product.salesPrice as salesPrice, " +
+                " (product.grossPrice * basket.quantity) as totalGrossPrice, " +
+                " (product.salesPrice * basket.quantity) as totalSalesPrice " +
                 " FROM Basket basket " +
                 " JOIN basket.product as product " +
                 " JOIN basket.user as user " +
@@ -63,14 +64,16 @@ public class BasketService {
 
         for (Object[] row : rows) {
             Map<String, Object> resultMap = new HashMap<>();
-            resultMap.put("basketId", row[0]);
-            resultMap.put("totalProductPrice", row[5]);
+            resultMap.put("id", row[0]);
+            resultMap.put("totalGrossPrice", row[6]);
+            resultMap.put("totalSalesPrice", row[7]);
 
             Map<String, Object> productObject = new HashMap<>();
             productObject.put("id", row[1]);
             productObject.put("name", row[2]);
             productObject.put("quantity", row[3]);
             productObject.put("grossPrice", row[4]);
+            productObject.put("salesPrice", row[5]);
 
             resultMap.put("product", productObject);
 
@@ -79,7 +82,7 @@ public class BasketService {
         return resultList;
     }
 
-    public Basket createBasket(CreateBasketRecord request) {
+    public Basket createBasket(CreateBasketRequest request) {
         Basket newBasket = Basket.builder()
                 .user(request.user())
                 .product(request.product())

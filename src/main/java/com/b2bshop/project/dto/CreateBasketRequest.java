@@ -5,9 +5,9 @@ import com.b2bshop.project.model.User;
 import lombok.Builder;
 
 @Builder
-public record CreateBasketRecord(
+public record CreateBasketRequest(
         User user,
         Product product,
-        int quantity
+        Long quantity
 ) {
 }

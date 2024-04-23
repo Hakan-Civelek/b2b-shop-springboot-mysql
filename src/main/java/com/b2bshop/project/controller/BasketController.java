@@ -1,6 +1,6 @@
 package com.b2bshop.project.controller;
 
-import com.b2bshop.project.dto.CreateBasketRecord;
+import com.b2bshop.project.dto.CreateBasketRequest;
 import com.b2bshop.project.model.Basket;
 import com.b2bshop.project.repository.BasketRepository;
 import com.b2bshop.project.service.BasketService;
@@ -29,9 +29,9 @@ public class BasketController {
     }
 
     @PostMapping()
-    public List<Basket> addBasket(@RequestBody List<CreateBasketRecord> requests) {
+    public List<Basket> addBasket(@RequestBody List<CreateBasketRequest> requests) {
         List<Basket> createdBaskets = new ArrayList<>();
-        for (CreateBasketRecord basket : requests) {
+        for (CreateBasketRequest basket : requests) {
             createdBaskets.add(basketService.createBasket(basket));
         }
         return createdBaskets;
