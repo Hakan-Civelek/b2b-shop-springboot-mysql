@@ -63,8 +63,7 @@ public class OrderService {
 
         query.setParameter("tenantId", tenantId);
 
-        List<Map<String, Object>> orderList = new ArrayList<>();
-        List<Map<String, Object>> orderItemList = new ArrayList<>();
+        List<Map<String, Object>> orderResultList = new ArrayList<>();
         Map<Long, Map<String, Object>> orderMap = new HashMap<>();
         List<Object[]> orderRows = query.list();
 
@@ -72,6 +71,7 @@ public class OrderService {
             Long orderId = (Long) orderRow[0];
             Map<String, Object> orderItemMap = orderMap.getOrDefault(orderId, new HashMap<>());
             orderItemMap.put("orderId", orderId);
+            List<Map<String, Object>> orderItems = (List<Map<String, Object>>) orderItemMap.getOrDefault("orderItems", new ArrayList<>());
 
             Map<String, Object> resultMap = new HashMap<>();
             resultMap.put("orderId", orderRow[0]);
@@ -90,13 +90,13 @@ public class OrderService {
             orderItemMap.put("grossPrice", orderRow[12]);
             orderItemMap.put("quantity", orderRow[13]);
 
-            orderItemList.add(orderItemMap);
+            orderItems.add(resultMap);
+            orderItemMap.put("orderItems", orderItems);
             orderMap.put(orderId, orderItemMap);
         }
-        orderList.addAll(orderItemList);
-        orderList.addAll(orderMap.values());
+        orderResultList.addAll(orderMap.values());
 
-        return orderList;
+        return orderResultList;
     }
 
     @Transactional
