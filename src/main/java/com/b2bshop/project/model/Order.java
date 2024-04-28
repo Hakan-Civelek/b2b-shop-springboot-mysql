@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Data
 @Entity
@@ -27,9 +28,9 @@ public class Order {
     String orderNumber;
     private String orderNote;
     @OneToMany(cascade = CascadeType.ALL)
-    private List<SalesItem> salesItems;
+    private List<OrderItem> orderItems;
     private Date orderDate;
-    //    orderStatus ? sipariş verildi, onaylandı, tamamlandı
+//    orderStatus ? sipariş verildi, onaylandı, tamamlandı
     @OneToOne
     @JoinColumn(name = "created_by_id")
     private User createdBy;
