@@ -14,6 +14,8 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -49,7 +51,7 @@ public class OrderService {
         String orderQuery = "SELECT order.id as orderId, order.orderNote as orderNote," +
                 " order.totalPrice as totalPrice, order.withoutTaxPrice as withoutTaxPrice," +
                 " order.totalTax as totalTax, " +
-                " createdBy.id as createdById, createdBy.name as createdByName "+
+                " createdBy.id as createdById, createdBy.name as createdByName " +
                 " FROM Order as order " +
                 " JOIN order.customer as customer ON customer.tenantId = :tenantId" +
                 " JOIN order.createdBy as createdBy" +
@@ -65,7 +67,7 @@ public class OrderService {
         String materialQuery = "SELECT order.id as orderId, order.orderNote as orderNote," +
                 " order.totalPrice as totalPrice, order.withoutTaxPrice as withoutTaxPrice," +
                 " order.totalTax as totalTax, " +
-                " createdBy.id as createdById, createdBy.name as createdByName "+
+                " createdBy.id as createdById, createdBy.name as createdByName " +
                 " FROM Order as order " +
                 " JOIN order.customer as customer ON customer.tenantId = :tenantId" +
                 " JOIN order.createdBy as createdBy" +
@@ -134,7 +136,7 @@ public class OrderService {
         order.setCustomer(customerRepository.findById(tenantId).orElseThrow(()
                 -> new RuntimeException("Customer not found")));
         order.setOrderNote(orderNote);
-        order.setProducts(products);
+//        order.setProducts(products);
         order.setOrderDate(new Date());
         order.setCreatedBy(user.orElseThrow(()
                 -> new RuntimeException("User not found")));
@@ -143,5 +145,16 @@ public class OrderService {
         order.setTotalTax(totalTax);
         orderRepository.save(order);
         return order;
+    }
+
+    public static String generateOrderNumber(Long tenantId) {
+        LocalDateTime now = LocalDateTime.now();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMddHHmmss");
+        String timestamp = now.format(formatter);
+
+        String orderNumber = tenantId.toString() + timestamp.substring(0, 8);
+
+        return orderNumber;
     }
 }

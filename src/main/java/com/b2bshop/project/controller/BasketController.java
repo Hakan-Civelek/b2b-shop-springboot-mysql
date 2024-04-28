@@ -4,6 +4,7 @@ import com.b2bshop.project.dto.CreateBasketRequest;
 import com.b2bshop.project.model.Basket;
 import com.b2bshop.project.repository.BasketRepository;
 import com.b2bshop.project.service.BasketService;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,12 +30,13 @@ public class BasketController {
     }
 
     @PostMapping()
-    public List<Basket> addBasket(@RequestBody List<CreateBasketRequest> requests) {
-        List<Basket> createdBaskets = new ArrayList<>();
-        for (CreateBasketRequest basket : requests) {
-            createdBaskets.add(basketService.createBasket(basket));
-        }
-        return createdBaskets;
+    public List<Basket> addBasket(HttpServletRequest request, @RequestBody JsonNode json) {
+//        List<Basket> createdBaskets = new ArrayList<>();
+//        for (CreateBasketRequest basket : json) {
+//            createdBaskets.add(basketService.createBasket(request, json));
+            basketService.createBasket(request, json);
+//        }
+        return null;
     }
 
     @GetMapping("/{basketId}")

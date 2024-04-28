@@ -24,17 +24,16 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
-    //    orderNumber //(Müşteriye özelleştirirsen güzel olur)
+    String orderNumber;
     private String orderNote;
-    //    address
-    @OneToMany
-    private List<Product> products;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<SalesItem> salesItems;
     private Date orderDate;
     //    orderStatus ? sipariş verildi, onaylandı, tamamlandı
     @OneToOne
     @JoinColumn(name = "created_by_id")
     private User createdBy;
-    //    invoiceAddress
+//    invoiceAddress
 //    receiverAddress
     private Double totalPrice;
     private Double withoutTaxPrice;
