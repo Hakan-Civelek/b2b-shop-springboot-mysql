@@ -31,7 +31,7 @@ public class Order {
     private List<OrderItem> orderItems;
     private Date orderDate;
 //    orderStatus ? sipariş verildi, onaylandı, tamamlandı
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "created_by_id")
     private User createdBy;
 //    invoiceAddress

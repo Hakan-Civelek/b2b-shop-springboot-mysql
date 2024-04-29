@@ -67,23 +67,24 @@ public class BasketService {
 
         for (Object[] row : rows) {
             Long basketId = (Long) row[0];
-            Map<String, Object> basketItemMap = basketMap.getOrDefault(basketId, new HashMap<>());
-            basketItemMap.put("basketId", basketId);
-            List<Map<String, Object>> basketItems = (List<Map<String, Object>>) basketItemMap.getOrDefault("basketItems", new ArrayList<>());
+            Map<String, Object> basketItemsMap = basketMap.getOrDefault(basketId, new HashMap<>());
+            basketItemsMap.put("basketId", basketId);
+            List<Map<String, Object>> basketItems = (List<Map<String, Object>>) basketItemsMap.getOrDefault("basketItems", new ArrayList<>());
 
-            Map<String, Object> basketItemsMap = new HashMap<>();
-            basketItemsMap.put("basketItemId", row[1]);
-            basketItemsMap.put("productId", row[2]);
-            basketItemsMap.put("productName", row[3]);
-            basketItemsMap.put("quantity", row[4]);
-            basketItemsMap.put("grossPrice", row[5]);
-            basketItemsMap.put("salesPrice", row[6]);
+            Map<String, Object> basketItem = new HashMap<>();
+            basketItem.put("basketItemId", row[1]);
+            basketItem.put("productId", row[2]);
+            basketItem.put("productName", row[3]);
+            basketItem.put("quantity", row[4]);
+            basketItem.put("grossPrice", row[5]);
+            basketItem.put("salesPrice", row[6]);
 
-            basketItems.add(basketItemsMap);
-            basketItemMap.put("basketItems", basketItems);
-            basketMap.put(basketId, basketItemMap);
+            basketItems.add(basketItem);
+            basketItemsMap.put("basketItems", basketItems);
+            basketMap.put(basketId, basketItemsMap);
         }
 
+        System.out.println("basketMap: " + basketMap.toString());
         resultList.addAll(basketMap.values());
 
         return resultList;

@@ -52,7 +52,7 @@ public class OrderService {
                 " order.orderNumber as orderNumber,  order.orderDate as orderDate," +
                 " orderItem.refProductId as orderItemRefProductId, orderItem.name as orderItemName, " +
                 " orderItem.salesPrice as orderItemSalesPrice, orderItem.grossPrice as orderItemGrossPrice," +
-                " orderItem.quantity as orderItemQuantity" +
+                " orderItem.quantity as orderItemQuantity, orderItem.id as orderItemId " +
                 " FROM Order as order " +
                 " JOIN order.customer as customer ON customer.tenantId = :tenantId" +
                 " JOIN order.createdBy as createdBy " +
@@ -64,38 +64,39 @@ public class OrderService {
         query.setParameter("tenantId", tenantId);
 
         List<Map<String, Object>> orderResultList = new ArrayList<>();
-        Map<Long, Map<String, Object>> orderMap = new HashMap<>();
+        Map<Long, Map<String, Object>> orderResultMap = new HashMap<>();
         List<Object[]> orderRows = query.list();
 
         for (Object[] orderRow : orderRows) {
             Long orderId = (Long) orderRow[0];
-            Map<String, Object> orderItemMap = orderMap.getOrDefault(orderId, new HashMap<>());
-            orderItemMap.put("orderId", orderId);
-            List<Map<String, Object>> orderItems = (List<Map<String, Object>>) orderItemMap.getOrDefault("orderItems", new ArrayList<>());
+            Map<String, Object> orderMap = orderResultMap.getOrDefault(orderId, new HashMap<>());
+            orderMap.put("orderId", orderId);
+            orderMap.put("orderNumber", orderRow[7]);
+            orderMap.put("orderNote", orderRow[1]);
+            orderMap.put("orderDate", orderRow[8]);
+            orderMap.put("createdById", orderRow[5]);
+            orderMap.put("createdByName", orderRow[6]);
+            orderMap.put("totalPrice", orderRow[2]);
+            orderMap.put("withoutTaxPrice", orderRow[3]);
+            orderMap.put("totalTax", orderRow[4]);
 
-            Map<String, Object> resultMap = new HashMap<>();
-            resultMap.put("orderId", orderRow[0]);
-            resultMap.put("orderNote", orderRow[1]);
-            resultMap.put("totalPrice", orderRow[2]);
-            resultMap.put("withoutTaxPrice", orderRow[3]);
-            resultMap.put("totalTax", orderRow[4]);
-            resultMap.put("createdById", orderRow[5]);
-            resultMap.put("createdByName", orderRow[6]);
-            resultMap.put("orderNumber", orderRow[7]);
-            resultMap.put("orderDate", orderRow[8]);
+            List<Map<String, Object>> orderItems = (List<Map<String, Object>>) orderMap.getOrDefault("orderItems", new ArrayList<>());
 
-            orderItemMap.put("refProductId", orderRow[9]);
-            orderItemMap.put("name", orderRow[10]);
-            orderItemMap.put("salesPrice", orderRow[11]);
-            orderItemMap.put("grossPrice", orderRow[12]);
-            orderItemMap.put("quantity", orderRow[13]);
+            Map<String, Object> orderItem = new HashMap<>();
+            orderItem.put("name", orderRow[10]);
+            orderItem.put("grossPrice", orderRow[12]);
+            orderItem.put("salesPrice", orderRow[11]);
+            orderItem.put("quantity", orderRow[13]);
+            orderItem.put("refProductId", orderRow[9]);
+            orderItem.put("id", orderRow[14]);
 
-            orderItems.add(resultMap);
-            orderItemMap.put("orderItems", orderItems);
-            orderMap.put(orderId, orderItemMap);
+            orderItems.add(orderItem);
+            orderMap.put("orderItems", orderItems);
+
+            orderResultMap.put(orderId, orderMap);
         }
-        orderResultList.addAll(orderMap.values());
 
+        orderResultList.addAll(orderResultMap.values());
         return orderResultList;
     }
 
@@ -123,14 +124,14 @@ public class OrderService {
         Double withoutTaxPrice = 0.0;
         Double totalTax = 0.0;
         for (JsonNode orderItemNode : orderItems) {
-            totalPrice += orderItemNode.get("grossPrice").asInt();
-            withoutTaxPrice += orderItemNode.get("salesPrice").asInt();
+            totalPrice += orderItemNode.get("grossPrice").asInt() * (orderItemNode.get("quantity").asDouble());
+            withoutTaxPrice += orderItemNode.get("salesPrice").asInt() * (orderItemNode.get("quantity").asDouble());
             totalTax = totalPrice - withoutTaxPrice;
 
             OrderItem orderItem = OrderItem.builder()
                     .refProductId(orderItemNode.get("productId").asLong())
                     .name(orderItemNode.get("productName").toString())
-                    .salesPrice((orderItemNode.get("salesPrice")).asDouble())
+                    .salesPrice(((orderItemNode.get("salesPrice")).asDouble()))
                     .grossPrice((orderItemNode.get("grossPrice")).asDouble())
                     .quantity((orderItemNode.get("quantity")).asInt())
                     .build();
