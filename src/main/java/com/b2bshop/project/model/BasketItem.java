@@ -6,19 +6,18 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "Address")
 @Data
+@Entity
+@Table(name = "basket_items")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Address {
+public class BasketItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-    private String title;
-//    private String country;
-//    private String city;
-    private String openAddress;
+    @OneToOne
+    private Product product;
+    private int quantity;
 }

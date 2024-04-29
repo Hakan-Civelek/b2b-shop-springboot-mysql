@@ -1,12 +1,15 @@
 package com.b2bshop.project.service;
 
-import com.b2bshop.project.dto.CreateBasketRecord;
 import com.b2bshop.project.model.Basket;
+import com.b2bshop.project.model.BasketItem;
 import com.b2bshop.project.model.User;
 import com.b2bshop.project.repository.BasketRepository;
+import com.b2bshop.project.repository.ProductRepository;
 import com.b2bshop.project.repository.UserRepository;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +25,16 @@ public class BasketService {
     private final SecurityService securityService;
     private final JwtService jwtService;
     private final UserRepository userRepository;
+    private final ProductRepository productRepository;
 
     public BasketService(BasketRepository basketRepository, SecurityService securityService, JwtService jwtService,
-                         UserRepository userRepository) {
+                         UserRepository userRepository,
+                         ProductRepository productRepository) {
         this.basketRepository = basketRepository;
         this.securityService = securityService;
         this.jwtService = jwtService;
         this.userRepository = userRepository;
+        this.productRepository = productRepository;
     }
 
     public List<Map<String, Object>> getAllBaskets(HttpServletRequest request) {
@@ -39,18 +45,14 @@ public class BasketService {
 
         Session session = entityManager.unwrap(Session.class);
         String hqlQuery = "SELECT " +
-                " basket.id basketId, " +
-                " product.id as productId, product.name as name, basket.quantity as quantity, " +
-                " product.grossPrice as grossPrice," +
-                " (product.grossPrice * basket.quantity) as totalProductPrice " +
-                " FROM Basket basket " +
-                " JOIN basket.product as product " +
-                " JOIN basket.user as user " +
-                " WHERE  1 = 1 ";
-
-        if (userId != null) {
-            hqlQuery += " AND user.id = :userId ";
-        }
+                " basket.id AS basketId, basketItem.id AS basketItemId, " +
+                " product.id AS productId, product.name AS productName, " +
+                " basketItem.quantity AS quantity, " +
+                " product.grossPrice AS grossPrice, product.salesPrice AS salesPrice " +
+                " FROM Basket as basket " +
+                " JOIN basket.basketItems as basketItem " +
+                " JOIN basketItem.product as product " +
+                " WHERE basket.user.id = :userId";
 
         Query query = session.createQuery(hqlQuery);
 
@@ -59,34 +61,63 @@ public class BasketService {
         }
 
         List<Map<String, Object>> resultList = new ArrayList<>();
+        Map<Long, Map<String, Object>> basketMap = new HashMap<>();
+
         List<Object[]> rows = query.list();
 
         for (Object[] row : rows) {
-            Map<String, Object> resultMap = new HashMap<>();
-            resultMap.put("basketId", row[0]);
-            resultMap.put("totalProductPrice", row[5]);
+            Long basketId = (Long) row[0];
+            Map<String, Object> basketItemsMap = basketMap.getOrDefault(basketId, new HashMap<>());
+            basketItemsMap.put("basketId", basketId);
+            List<Map<String, Object>> basketItems = (List<Map<String, Object>>) basketItemsMap.getOrDefault("basketItems", new ArrayList<>());
 
-            Map<String, Object> productObject = new HashMap<>();
-            productObject.put("id", row[1]);
-            productObject.put("name", row[2]);
-            productObject.put("quantity", row[3]);
-            productObject.put("grossPrice", row[4]);
+            Map<String, Object> basketItem = new HashMap<>();
+            basketItem.put("basketItemId", row[1]);
+            basketItem.put("productId", row[2]);
+            basketItem.put("productName", row[3]);
+            basketItem.put("quantity", row[4]);
+            basketItem.put("grossPrice", row[5]);
+            basketItem.put("salesPrice", row[6]);
 
-            resultMap.put("product", productObject);
-
-            resultList.add(resultMap);
+            basketItems.add(basketItem);
+            basketItemsMap.put("basketItems", basketItems);
+            basketMap.put(basketId, basketItemsMap);
         }
+
+        System.out.println("basketMap: " + basketMap.toString());
+        resultList.addAll(basketMap.values());
+
         return resultList;
     }
 
-    public Basket createBasket(CreateBasketRecord request) {
-        Basket newBasket = Basket.builder()
-                .user(request.user())
-                .product(request.product())
-                .quantity(request.quantity())
-                .build();
+    @Transactional
+    public Basket createBasket(HttpServletRequest request, JsonNode json) {
+        System.out.println("json: " + json);
 
-        return basketRepository.save(newBasket);
+        JsonNode userNode = json.get("user");
+        JsonNode basketItemsNode = json.get("basketItems");
+
+        int userId = userNode.get("id").asInt();
+
+        Basket basket = new Basket();
+        basket.setUser(userRepository.findById((long) userId).orElse(null));
+        basket.setBasketItems(new ArrayList<>());
+
+//        List<BasketItem> basketItems = new ArrayList<>();
+        for (JsonNode itemNode : basketItemsNode) {
+            JsonNode productNode = itemNode.get("product");
+            int productId = productNode.get("id").asInt();
+            int quantity = itemNode.get("quantity").asInt();
+
+            BasketItem basketItem = BasketItem.builder()
+                    .product(productRepository.findById((long) productId).orElse(null))
+                    .quantity(quantity)
+                    .build();
+
+            basket.getBasketItems().add(basketItem);
+        }
+
+        return basketRepository.save(basket);
     }
 
     public Basket updateBasketById(Long basketId, Basket newBasket) {
@@ -94,8 +125,7 @@ public class BasketService {
         if (basket.isPresent()) {
             Basket oldProduct = basket.get();
             oldProduct.setUser(newBasket.getUser());
-            oldProduct.setProduct(newBasket.getProduct());
-            oldProduct.setQuantity(newBasket.getQuantity());
+            oldProduct.setBasketItems(newBasket.getBasketItems());
             basketRepository.save(oldProduct);
             return oldProduct;
         }

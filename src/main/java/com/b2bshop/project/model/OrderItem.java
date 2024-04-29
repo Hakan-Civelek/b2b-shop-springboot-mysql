@@ -6,23 +6,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Entity
-@Table(name = "basket")
+@Table(name = "order_item")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Basket {
+public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<BasketItem> basketItems;
+    private Long refProductId;
+    private String name;
+    private Double salesPrice;
+    private Double grossPrice;
+    private int quantity;
 }
