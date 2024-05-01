@@ -18,8 +18,11 @@ public class Shop {
     @Column(name = "tenant_id", nullable = false)
     private Long tenantId;
     private String name;
+    @Column(unique = true)
     private String email;
+    @Column(unique = true)
     String phoneNumber;
+    @Column(unique = true)
     String vatNumber;
     String aboutUs;
     String privacyPolicy;

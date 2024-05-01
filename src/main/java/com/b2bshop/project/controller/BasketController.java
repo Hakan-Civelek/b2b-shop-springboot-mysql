@@ -1,6 +1,5 @@
 package com.b2bshop.project.controller;
 
-import com.b2bshop.project.dto.CreateBasketRequest;
 import com.b2bshop.project.model.Basket;
 import com.b2bshop.project.repository.BasketRepository;
 import com.b2bshop.project.service.BasketService;
@@ -8,7 +7,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 

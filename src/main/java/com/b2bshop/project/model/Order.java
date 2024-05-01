@@ -24,6 +24,7 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
+    @Column(unique = true)
     String orderNumber;
     private String orderNote;
     @OneToMany(cascade = CascadeType.ALL)

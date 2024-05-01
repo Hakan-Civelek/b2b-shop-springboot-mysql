@@ -18,11 +18,13 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String name;
     private String description;
     private Double salesPrice; //vergisiz fiyat
     private Double grossPrice; //vergi dahil fiyat
     private Double vatRate;
+    @Column(unique = true)
     private String code;
 
     @ManyToOne
@@ -36,6 +38,7 @@ public class Product {
     //brand
     //images
 
+    @Column(unique = true)
     private String gtin;
     private int stock;
     private boolean isActive = false;

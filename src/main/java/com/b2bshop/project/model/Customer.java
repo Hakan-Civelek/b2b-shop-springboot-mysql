@@ -25,7 +25,9 @@ public class Customer {
             joinColumns = @JoinColumn(name = "tenant_id"),
             inverseJoinColumns = @JoinColumn(name = "shop_id"))
     private Shop shop;
+    @Column(unique = true)
     private String vatNumber;
+    @Column(unique = true)
     private String phoneNumber;
     private boolean isActive = false;
 }
