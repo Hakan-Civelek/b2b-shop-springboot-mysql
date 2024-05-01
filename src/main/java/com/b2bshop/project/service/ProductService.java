@@ -100,4 +100,22 @@ public class ProductService {
             return oldProduct;
         } else return null;
     }
+
+    public boolean checkStockById(long productId, int quantity) {
+        Session session = entityManager.unwrap(Session.class);
+        String hqlQuery = "SELECT product.stock " +
+                " FROM Product product " +
+                " WHERE product.id = :productId";
+
+        Query query = session.createQuery(hqlQuery);
+        query.setParameter("productId", productId);
+
+        Integer stock = (Integer) query.uniqueResult(); // Assuming stock is of type Integer
+
+        if (stock == null) {
+            stock = 0; // Default value if the stock is null
+        }
+
+        return stock >= quantity;
+    }
 }

@@ -26,11 +26,13 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final BasketRepository basketRepository;
     private final AddressRepository addressRepository;
+    private final ProductService productService;
+    private final ProductRepository productRepository;
 
     public OrderService(SecurityService securityService, JwtService jwtService, UserRepository userRepository,
                         CustomerRepository customerRepository, OrderRepository orderRepository,
                         BasketRepository basketRepository,
-                        AddressRepository addressRepository) {
+                        AddressRepository addressRepository, ProductService productService, ProductRepository productRepository) {
         this.securityService = securityService;
         this.jwtService = jwtService;
         this.userRepository = userRepository;
@@ -38,6 +40,8 @@ public class OrderService {
         this.orderRepository = orderRepository;
         this.basketRepository = basketRepository;
         this.addressRepository = addressRepository;
+        this.productService = productService;
+        this.productRepository = productRepository;
     }
 
     @Transactional
@@ -138,22 +142,30 @@ public class OrderService {
             totalPrice += orderItemNode.get("grossPrice").asDouble() * (orderItemNode.get("quantity").asDouble());
             withoutTaxPrice += orderItemNode.get("salesPrice").asDouble() * (orderItemNode.get("quantity").asDouble());
             totalTax = totalPrice - withoutTaxPrice;
+            Long refProductId = (orderItemNode.get("productId").asLong());
+            Product refProduct = productRepository.findById(orderItemNode.get("productId").asLong()).orElseThrow(()
+                    -> new RuntimeException("refProduct not found: "));
+            boolean isStockAvailable = productService.checkStockById(refProductId, (orderItemNode.get("quantity")).asInt());
 
-            OrderItem orderItem = OrderItem.builder()
-                    .refProductId(orderItemNode.get("productId").asLong())
-                    .name(orderItemNode.get("productName").asText())
-                    .salesPrice(((orderItemNode.get("salesPrice")).asDouble()))
-                    .grossPrice((orderItemNode.get("grossPrice")).asDouble())
-                    .quantity((orderItemNode.get("quantity")).asInt())
-                    .build();
+            if (isStockAvailable) {
+                OrderItem orderItem = OrderItem.builder()
+                        .refProductId(refProductId)
+                        .name(orderItemNode.get("productName").asText())
+                        .salesPrice(((orderItemNode.get("salesPrice")).asDouble()))
+                        .grossPrice((orderItemNode.get("grossPrice")).asDouble())
+                        .quantity((orderItemNode.get("quantity")).asInt())
+                        .build();
 
-            basketRepository.deleteById(json.get("basketId").asLong());
-            order.getOrderItems().add(orderItem);
+                refProduct.setStock(refProduct.getStock() - (orderItemNode.get("quantity")).asInt());
+
+                basketRepository.deleteById(json.get("basketId").asLong());
+                order.getOrderItems().add(orderItem);
+            } else
+                throw new RuntimeException("Stock is not enough for material: " + productRepository.findById(refProductId).get().getName());
         }
         order.setTotalPrice(totalPrice);
         order.setWithoutTaxPrice(withoutTaxPrice);
         order.setTotalTax(totalTax);
-//        return null;
         return orderRepository.save(order);
     }
 
