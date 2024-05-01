@@ -9,6 +9,7 @@ public record CreateCustomerRequest(
         String email,
         Shop shop,
         String vatNumber,
-        String phoneNumber
+        String phoneNumber,
+        Boolean isActive
 ) {
 }

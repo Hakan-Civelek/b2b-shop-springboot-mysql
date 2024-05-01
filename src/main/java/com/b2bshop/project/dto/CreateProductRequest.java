@@ -13,6 +13,7 @@ public record CreateProductRequest(
         String code,
         Shop shop,
         String gtin,
-        int stock
+        int stock,
+        Boolean isActive
 ) {
 }
