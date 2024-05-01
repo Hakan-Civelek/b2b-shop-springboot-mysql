@@ -22,19 +22,19 @@ public class BasketService {
     @Autowired
     private EntityManager entityManager;
     private final BasketRepository basketRepository;
-    private final SecurityService securityService;
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final ProductService productService;
 
-    public BasketService(BasketRepository basketRepository, SecurityService securityService, JwtService jwtService,
+    public BasketService(BasketRepository basketRepository, JwtService jwtService,
                          UserRepository userRepository,
-                         ProductRepository productRepository) {
+                         ProductRepository productRepository, ProductService productService) {
         this.basketRepository = basketRepository;
-        this.securityService = securityService;
         this.jwtService = jwtService;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
+        this.productService = productService;
     }
 
     public List<Map<String, Object>> getAllBaskets(HttpServletRequest request) {
@@ -103,18 +103,20 @@ public class BasketService {
         basket.setUser(userRepository.findById((long) userId).orElse(null));
         basket.setBasketItems(new ArrayList<>());
 
-//        List<BasketItem> basketItems = new ArrayList<>();
         for (JsonNode itemNode : basketItemsNode) {
             JsonNode productNode = itemNode.get("product");
-            int productId = productNode.get("id").asInt();
+            long productId = productNode.get("id").asLong();
             int quantity = itemNode.get("quantity").asInt();
+            boolean isStockAvailable = productService.checkStockById(productId, quantity);
 
-            BasketItem basketItem = BasketItem.builder()
-                    .product(productRepository.findById((long) productId).orElse(null))
-                    .quantity(quantity)
-                    .build();
-
-            basket.getBasketItems().add(basketItem);
+            if (isStockAvailable) {
+                BasketItem basketItem = BasketItem.builder()
+                        .product(productRepository.findById((long) productId).orElse(null))
+                        .quantity(quantity)
+                        .build();
+                basket.getBasketItems().add(basketItem);
+            } else
+                throw new RuntimeException("Stock is not enough for material: " + productRepository.findById(productId).get().getName());
         }
 
         return basketRepository.save(basket);

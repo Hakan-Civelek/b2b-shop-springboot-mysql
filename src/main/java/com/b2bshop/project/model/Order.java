@@ -33,9 +33,9 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "created_by_id")
     private User createdBy;
-    @OneToOne
+    @ManyToOne
     private Address invoiceAddress;
-    @OneToOne
+    @ManyToOne
     private Address receiverAddress;
     private Double totalPrice;
     private Double withoutTaxPrice;
