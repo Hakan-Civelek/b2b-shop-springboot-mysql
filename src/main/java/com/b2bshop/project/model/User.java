@@ -26,8 +26,6 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String email;
     private String phoneNumber;
-//    address;
-//    boolean isActive
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @JoinTable(name = "user_authorities", joinColumns = @JoinColumn(name = "user_id"))
@@ -52,4 +50,5 @@ public class User implements UserDetails {
     private boolean accountNonLocked;
     private boolean accountNonExpired;
     private boolean credentialsNonExpired;
+    private boolean isActive;
 }

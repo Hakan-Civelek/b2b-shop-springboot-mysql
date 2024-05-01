@@ -28,7 +28,6 @@ public class Shop {
     String privacyPolicy;
 
     //address
-    //boolean isActive
     //favIcon (image)
     //logo (image)
 }

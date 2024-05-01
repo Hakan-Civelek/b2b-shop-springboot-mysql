@@ -50,7 +50,8 @@ public class LoginController {
             if (userRoles.contains(Role.ROLE_CUSTOMER_USER) && !customer.isActive()) {
                 throw new RuntimeException("Customer not active!");
             }
-        }
+        } if (!user.isActive())
+            throw new RuntimeException("User not active!");
 
         //TODO check the above one! Maybe you'll fix the problem with the controllers
         if (tenantId == request.tenantId() || request.username().equals("hakan") || request.username().equals("esat")) {

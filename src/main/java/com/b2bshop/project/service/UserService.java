@@ -43,25 +43,25 @@ public class UserService implements UserDetailsService {
                 .accountNonLocked(true)
                 .accountNonExpired(true)
                 .credentialsNonExpired(true)
+                .isActive(true)
                 .build();
 
         return userRepository.save(newUser);
     }
 
     public User updateUserById(Long userId, User newUser) {
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isPresent()) {
-            User oldUser = user.get();
-            oldUser.setName(newUser.getName());
-            oldUser.setUsername(newUser.getUsername());
-            oldUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
-            oldUser.setEmail(newUser.getEmail());
-            oldUser.setPhoneNumber(newUser.getPhoneNumber());
-            oldUser.setAuthorities(newUser.getAuthorities());
-            oldUser.setShop(newUser.getShop());
-            oldUser.setCustomer(newUser.getCustomer());
-            userRepository.save(oldUser);
-            return oldUser;
-        } else return null;
+        User oldUser = (userRepository.findById(userId).orElseThrow(()
+                -> new RuntimeException("User not found")));
+        oldUser.setName(newUser.getName());
+        oldUser.setUsername(newUser.getUsername());
+        oldUser.setPassword(passwordEncoder.encode(newUser.getPassword())); //TODO need an update for password changed!
+        oldUser.setEmail(newUser.getEmail());
+        oldUser.setPhoneNumber(newUser.getPhoneNumber());
+        oldUser.setAuthorities(newUser.getAuthorities());
+        oldUser.setShop(newUser.getShop());
+        oldUser.setCustomer(newUser.getCustomer());
+        oldUser.setActive(newUser.isActive());
+        userRepository.save(oldUser);
+        return oldUser;
     }
 }
