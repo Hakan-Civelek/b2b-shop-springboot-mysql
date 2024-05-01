@@ -42,7 +42,6 @@ public class ProductService {
         User user = (userRepository.findByUsername(userName).orElseThrow(()
                 -> new RuntimeException("User not found")));
         Set userRoles = user.getAuthorities();
-        System.out.println("userRoles : " + userRoles);
         if (userRoles.contains(Role.ROLE_CUSTOMER_USER))
             whereCondition = " AND product.isActive = true ";
 
