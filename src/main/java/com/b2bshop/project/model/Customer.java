@@ -27,7 +27,5 @@ public class Customer {
     private Shop shop;
     private String vatNumber;
     private String phoneNumber;
-
-//    address;
-//    boolean isActive
+    private boolean isActive = false;
 }

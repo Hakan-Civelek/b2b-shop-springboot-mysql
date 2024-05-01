@@ -34,10 +34,10 @@ public class Product {
 
     //category
     //brand
-    //boolean isActive
     //images
 
     private String gtin;
     private int stock;
+    private boolean isActive = false;
 }
 

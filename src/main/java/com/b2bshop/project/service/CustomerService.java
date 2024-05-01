@@ -25,6 +25,7 @@ public class CustomerService {
                 .shop(request.shop())
                 .vatNumber(request.vatNumber())
                 .phoneNumber(request.phoneNumber())
+                .isActive(request.isActive())
                 .build();
 
         return customerRepository.save(newCustomer);
@@ -39,6 +40,7 @@ public class CustomerService {
             oldCustomer.setShop(newCustomer.getShop());
             oldCustomer.setVatNumber(newCustomer.getVatNumber());
             oldCustomer.setPhoneNumber(newCustomer.getPhoneNumber());
+            oldCustomer.setActive(newCustomer.isActive());
             customerRepository.save(oldCustomer);
             return oldCustomer;
         } else return null;

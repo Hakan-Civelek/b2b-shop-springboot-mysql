@@ -2,7 +2,11 @@ package com.b2bshop.project.service;
 
 import com.b2bshop.project.dto.CreateProductRequest;
 import com.b2bshop.project.model.Product;
+import com.b2bshop.project.model.Role;
+import com.b2bshop.project.model.User;
+import com.b2bshop.project.repository.CustomerRepository;
 import com.b2bshop.project.repository.ProductRepository;
+import com.b2bshop.project.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
 import org.hibernate.Session;
@@ -19,27 +23,42 @@ public class ProductService {
     private EntityManager entityManager;
     private final ProductRepository productRepository;
     private final SecurityService securityService;
+    private final JwtService jwtService;
+    private final UserRepository userRepository;
 
-    public ProductService(ProductRepository productRepository, SecurityService securityService) {
+    public ProductService(ProductRepository productRepository, SecurityService securityService, JwtService jwtService, CustomerRepository customerRepository,
+                          UserRepository userRepository) {
         this.productRepository = productRepository;
         this.securityService = securityService;
+        this.jwtService = jwtService;
+        this.userRepository = userRepository;
     }
 
     public List<Map<String, Object>> getAllProducts(HttpServletRequest request) {
         String token = request.getHeader("Authorization").split("Bearer ")[1];
         Long tenantId = securityService.returnTenantIdByUsernameOrToken("token", token);
+        String whereCondition = " ";
+        String userName = jwtService.extractUser(token);
+        User user = (userRepository.findByUsername(userName).orElseThrow(()
+                -> new RuntimeException("User not found")));
+        Set userRoles = user.getAuthorities();
+        System.out.println("userRoles : " + userRoles);
+        if (userRoles.contains(Role.ROLE_CUSTOMER_USER))
+            whereCondition = " AND product.isActive = true ";
 
         Session session = entityManager.unwrap(Session.class);
-        String hqlQuery = "SELECT p.id ,p.name as name, p.description as description," +
-                " p.salesPrice as salesPrice, p.grossPrice as grossPrice, p.vatRate as vatRate, " +
-                " p.code as code, p.shop as shop, p.gtin as gtin, p.stock as stock " +
-                " FROM Product p " +
-                " JOIN p.shop s " +
+        String hqlQuery = "SELECT product.id ,product.name as name, product.description as description," +
+                " product.salesPrice as salesPrice, product.grossPrice as grossPrice, product.vatRate as vatRate, " +
+                " product.code as code, product.shop as shop, product.gtin as gtin, product.stock as stock, " +
+                " product.isActive as isActive " +
+                " FROM Product as product " +
+                " JOIN product.shop s " +
                 " WHERE 1 = 1 ";
 
         if (tenantId != null) {
             hqlQuery += " AND s.id = :tenantId";
         }
+        hqlQuery += whereCondition;
 
         Query query = session.createQuery(hqlQuery);
 
@@ -62,6 +81,7 @@ public class ProductService {
             resultMap.put("shop", row[7]);
             resultMap.put("gtin", row[8]);
             resultMap.put("stock", row[9]);
+            resultMap.put("isActive", row[10]);
             resultList.add(resultMap);
         }
         return resultList;
@@ -78,6 +98,7 @@ public class ProductService {
                 .shop(request.shop())
                 .gtin(request.gtin())
                 .stock(request.stock())
+                .isActive(request.isActive())
                 .build();
 
         return productRepository.save(newProduct);
@@ -96,6 +117,7 @@ public class ProductService {
             oldProduct.setShop(newProduct.getShop());
             oldProduct.setGtin(newProduct.getGtin());
             oldProduct.setStock(newProduct.getStock());
+            oldProduct.setActive(newProduct.isActive());
             productRepository.saveAndFlush(oldProduct);
             return oldProduct;
         } else return null;
