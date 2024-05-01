@@ -16,6 +16,7 @@ public record CreateUserRequest(
         String phoneNumber,
         Set<Role> authorities,
         Shop shop,
-        Customer customer
+        Customer customer,
+        Boolean isActive
 ) {
 }
