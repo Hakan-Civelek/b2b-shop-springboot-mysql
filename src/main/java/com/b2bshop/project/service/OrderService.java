@@ -17,7 +17,6 @@ import java.util.*;
 
 @Service
 public class OrderService {
-    private final ProductRepository productRepository;
     private final SecurityService securityService;
     private final JwtService jwtService;
     private final UserRepository userRepository;
@@ -26,17 +25,19 @@ public class OrderService {
     private final CustomerRepository customerRepository;
     private final OrderRepository orderRepository;
     private final BasketRepository basketRepository;
+    private final AddressRepository addressRepository;
 
-    public OrderService(ProductRepository productRepository, SecurityService securityService, JwtService jwtService, UserRepository userRepository,
-                        CustomerRepository customerRepository,
-                        OrderRepository orderRepository, BasketRepository basketRepository) {
-        this.productRepository = productRepository;
+    public OrderService(SecurityService securityService, JwtService jwtService, UserRepository userRepository,
+                        CustomerRepository customerRepository, OrderRepository orderRepository,
+                        BasketRepository basketRepository,
+                        AddressRepository addressRepository) {
         this.securityService = securityService;
         this.jwtService = jwtService;
         this.userRepository = userRepository;
         this.customerRepository = customerRepository;
         this.orderRepository = orderRepository;
         this.basketRepository = basketRepository;
+        this.addressRepository = addressRepository;
     }
 
     @Transactional
@@ -52,11 +53,14 @@ public class OrderService {
                 " order.orderNumber as orderNumber,  order.orderDate as orderDate," +
                 " orderItem.refProductId as orderItemRefProductId, orderItem.name as orderItemName, " +
                 " orderItem.salesPrice as orderItemSalesPrice, orderItem.grossPrice as orderItemGrossPrice," +
-                " orderItem.quantity as orderItemQuantity, orderItem.id as orderItemId " +
+                " orderItem.quantity as orderItemQuantity, orderItem.id as orderItemId," +
+                " invoiceAddress as invoiceAddressMap, receiverAddress as receiverAddressMap " +
                 " FROM Order as order " +
                 " JOIN order.customer as customer ON customer.tenantId = :tenantId" +
                 " JOIN order.createdBy as createdBy " +
                 " JOIN order.orderItems as orderItem " +
+                " JOIN order.invoiceAddress as invoiceAddress " +
+                " JOIN order.receiverAddress as receiverAddress " +
                 " WHERE  1 = 1 ";
 
         Query query = session.createQuery(orderQuery);
@@ -92,6 +96,8 @@ public class OrderService {
 
             orderItems.add(orderItem);
             orderMap.put("orderItems", orderItems);
+            orderMap.put("invoiceAddress", orderRow[15]);
+            orderMap.put("receiverAddress", orderRow[16]);
 
             orderResultMap.put(orderId, orderMap);
         }
@@ -104,11 +110,12 @@ public class OrderService {
     public Order createOrder(HttpServletRequest request, JsonNode json) {
         String token = request.getHeader("Authorization").split("Bearer ")[1];
         Long tenantId = securityService.returnTenantIdByUsernameOrToken("token", token);
+        Long invoiceAddressId = json.get("invoiceAddressId").asLong();
+        Long receiverAddressId = json.get("receiverAddressId").asLong();
 
         Order order = new Order();
         String orderNumber = generateOrderNumber(tenantId);
         String orderNote = json.get("orderNote").asText();
-
         String userName = jwtService.extractUser(token);
         order.setCustomer(customerRepository.findById(tenantId).orElseThrow(()
                 -> new RuntimeException("Customer not found")));
@@ -118,19 +125,23 @@ public class OrderService {
         order.setOrderDate(new Date());
         order.setCreatedBy(userRepository.findByUsername(userName).orElseThrow(()
                 -> new RuntimeException("User not found")));
+        order.setInvoiceAddress(addressRepository.findById(invoiceAddressId).orElseThrow(()
+                -> new RuntimeException("Address not found")));
+        order.setReceiverAddress(addressRepository.findById(receiverAddressId).orElseThrow(()
+                -> new RuntimeException("Address not found")));
 
         JsonNode orderItems = json.get("orderItems");
         Double totalPrice = 0.0;
         Double withoutTaxPrice = 0.0;
         Double totalTax = 0.0;
         for (JsonNode orderItemNode : orderItems) {
-            totalPrice += orderItemNode.get("grossPrice").asInt() * (orderItemNode.get("quantity").asDouble());
-            withoutTaxPrice += orderItemNode.get("salesPrice").asInt() * (orderItemNode.get("quantity").asDouble());
+            totalPrice += orderItemNode.get("grossPrice").asDouble() * (orderItemNode.get("quantity").asDouble());
+            withoutTaxPrice += orderItemNode.get("salesPrice").asDouble() * (orderItemNode.get("quantity").asDouble());
             totalTax = totalPrice - withoutTaxPrice;
 
             OrderItem orderItem = OrderItem.builder()
                     .refProductId(orderItemNode.get("productId").asLong())
-                    .name(orderItemNode.get("productName").toString())
+                    .name(orderItemNode.get("productName").asText())
                     .salesPrice(((orderItemNode.get("salesPrice")).asDouble()))
                     .grossPrice((orderItemNode.get("grossPrice")).asDouble())
                     .quantity((orderItemNode.get("quantity")).asInt())
@@ -142,6 +153,7 @@ public class OrderService {
         order.setTotalPrice(totalPrice);
         order.setWithoutTaxPrice(withoutTaxPrice);
         order.setTotalTax(totalTax);
+//        return null;
         return orderRepository.save(order);
     }
 

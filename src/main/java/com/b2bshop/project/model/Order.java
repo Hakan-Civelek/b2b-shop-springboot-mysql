@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Data
 @Entity
@@ -34,8 +33,10 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "created_by_id")
     private User createdBy;
-//    invoiceAddress
-//    receiverAddress
+    @OneToOne
+    private Address invoiceAddress;
+    @OneToOne
+    private Address receiverAddress;
     private Double totalPrice;
     private Double withoutTaxPrice;
     private Double totalTax;
