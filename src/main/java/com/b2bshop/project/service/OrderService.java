@@ -58,7 +58,8 @@ public class OrderService {
                 " orderItem.refProductId as orderItemRefProductId, orderItem.name as orderItemName, " +
                 " orderItem.salesPrice as orderItemSalesPrice, orderItem.grossPrice as orderItemGrossPrice," +
                 " orderItem.quantity as orderItemQuantity, orderItem.id as orderItemId," +
-                " invoiceAddress as invoiceAddressMap, receiverAddress as receiverAddressMap " +
+                " invoiceAddress as invoiceAddressMap, receiverAddress as receiverAddressMap, " +
+                " order.orderStatus as orderStatus " +
                 " FROM Order as order " +
                 " JOIN order.customer as customer ON customer.tenantId = :tenantId" +
                 " JOIN order.createdBy as createdBy " +
@@ -87,6 +88,7 @@ public class OrderService {
             orderMap.put("totalPrice", orderRow[2]);
             orderMap.put("withoutTaxPrice", orderRow[3]);
             orderMap.put("totalTax", orderRow[4]);
+            orderMap.put("orderStatus", orderRow[17]);
 
             List<Map<String, Object>> orderItems = (List<Map<String, Object>>) orderMap.getOrDefault("orderItems", new ArrayList<>());
 
@@ -133,6 +135,7 @@ public class OrderService {
                 -> new RuntimeException("Address not found")));
         order.setReceiverAddress(addressRepository.findById(receiverAddressId).orElseThrow(()
                 -> new RuntimeException("Address not found")));
+        order.setOrderStatus(OrderStatus.ORDER_PLACED);
 
         JsonNode orderItems = json.get("orderItems");
         Double totalPrice = 0.0;

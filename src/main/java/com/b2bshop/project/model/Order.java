@@ -30,7 +30,6 @@ public class Order {
     @OneToMany(cascade = CascadeType.ALL)
     private List<OrderItem> orderItems;
     private Date orderDate;
-//    orderStatus ? sipariş verildi, onaylandı, tamamlandı
     @ManyToOne
     @JoinColumn(name = "created_by_id")
     private User createdBy;
@@ -41,4 +40,6 @@ public class Order {
     private Double totalPrice;
     private Double withoutTaxPrice;
     private Double totalTax;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
 }
