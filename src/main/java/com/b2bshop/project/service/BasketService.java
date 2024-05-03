@@ -1,5 +1,6 @@
 package com.b2bshop.project.service;
 
+import com.b2bshop.project.exception.BasketNotFoundException;
 import com.b2bshop.project.model.Basket;
 import com.b2bshop.project.model.BasketItem;
 import com.b2bshop.project.model.User;
@@ -12,15 +13,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
 public class BasketService {
-    @Autowired
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
     private final BasketRepository basketRepository;
     private final JwtService jwtService;
     private final UserRepository userRepository;
@@ -28,13 +27,14 @@ public class BasketService {
     private final ProductService productService;
 
     public BasketService(BasketRepository basketRepository, JwtService jwtService,
-                         UserRepository userRepository,
+                         UserRepository userRepository, EntityManager entityManager,
                          ProductRepository productRepository, ProductService productService) {
         this.basketRepository = basketRepository;
         this.jwtService = jwtService;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
         this.productService = productService;
+        this.entityManager = entityManager;
     }
 
     public List<Map<String, Object>> getAllBaskets(HttpServletRequest request) {
@@ -111,26 +111,29 @@ public class BasketService {
 
             if (isStockAvailable) {
                 BasketItem basketItem = BasketItem.builder()
-                        .product(productRepository.findById((long) productId).orElse(null))
+                        .product(productService.findProductById((productId)))
                         .quantity(quantity)
                         .build();
                 basket.getBasketItems().add(basketItem);
             } else
-                throw new RuntimeException("Stock is not enough for material: " + productRepository.findById(productId).get().getName());
+                throw new RuntimeException("Stock is not enough for material: " + productService.findProductById(productId).getName());
         }
 
         return basketRepository.save(basket);
     }
 
     public Basket updateBasketById(Long basketId, Basket newBasket) {
-        Optional<Basket> basket = basketRepository.findById(basketId);
-        if (basket.isPresent()) {
-            Basket oldProduct = basket.get();
-            oldProduct.setUser(newBasket.getUser());
-            oldProduct.setBasketItems(newBasket.getBasketItems());
-            basketRepository.save(oldProduct);
-            return oldProduct;
-        }
-        return null;
+        Basket basket = findBasketById(basketId);
+
+        basket.setUser(newBasket.getUser());
+        basket.setBasketItems(newBasket.getBasketItems());
+
+        basketRepository.save(basket);
+        return basket;
+    }
+
+    public Basket findBasketById(Long id) {
+        return basketRepository.findById(id).orElseThrow(()
+                -> new BasketNotFoundException("Basket could not find by id: " + id));
     }
 }

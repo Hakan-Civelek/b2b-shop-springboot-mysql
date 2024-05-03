@@ -4,8 +4,8 @@ import com.b2bshop.project.dto.AuthRequest;
 import com.b2bshop.project.model.Customer;
 import com.b2bshop.project.model.Role;
 import com.b2bshop.project.model.User;
-import com.b2bshop.project.repository.CustomerRepository;
 import com.b2bshop.project.repository.UserRepository;
+import com.b2bshop.project.service.CustomerService;
 import com.b2bshop.project.service.JwtService;
 import com.b2bshop.project.service.SecurityService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,20 +22,20 @@ import java.util.Set;
 @RequestMapping("/api/login")
 @Slf4j
 public class LoginController {
-    private final CustomerRepository customerRepository;
     private final UserRepository userRepository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final SecurityService securityService;
 
+    private final CustomerService customerService;
+
     public LoginController(JwtService jwtService, AuthenticationManager authenticationManager, SecurityService securityService,
-                           UserRepository userRepository,
-                           CustomerRepository customerRepository) {
+                           UserRepository userRepository, CustomerService customerService) {
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
         this.securityService = securityService;
         this.userRepository = userRepository;
-        this.customerRepository = customerRepository;
+        this.customerService = customerService;
     }
 
     @PostMapping()
@@ -45,8 +45,7 @@ public class LoginController {
                 -> new RuntimeException("User not found")));
         Set userRoles = user.getAuthorities();
         if (!(request.username().equals("hakan") || request.username().equals("esat"))) {
-            Customer customer = (customerRepository.findById(tenantId).orElseThrow(()
-                    -> new RuntimeException("Customer not found")));
+            Customer customer = customerService.findCustomerById(tenantId);
             if (userRoles.contains(Role.ROLE_CUSTOMER_USER) && !customer.isActive()) {
                 throw new RuntimeException("Customer not active!");
             }

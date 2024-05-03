@@ -14,11 +14,9 @@ import java.util.Map;
 @RequestMapping("/api/order")
 public class OrderController {
     private final OrderService orderService;
-    private final OrderRepository orderRepository;
 
-    public OrderController(OrderService orderService, OrderRepository orderRepository) {
+    public OrderController(OrderService orderService) {
         this.orderService = orderService;
-        this.orderRepository = orderRepository;
     }
 
     @GetMapping()
@@ -28,6 +26,6 @@ public class OrderController {
 
     @PostMapping()
     public Order addOrder(HttpServletRequest request, @RequestBody JsonNode json) {
-        return orderService.createOrder(request,json);
+        return orderService.createOrder(request, json);
     }
 }

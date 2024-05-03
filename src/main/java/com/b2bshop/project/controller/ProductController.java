@@ -45,7 +45,7 @@ public class ProductController {
 
     @GetMapping("/{productId}")
     public Product getProductById(@PathVariable Long productId) {
-        return productRepository.findById(productId).orElse(null);
+        return productService.findProductById(productId);
     }
 
     @PutMapping("/{productId}")

@@ -3,7 +3,6 @@ package com.b2bshop.project.service;
 import jakarta.persistence.EntityManager;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,8 +13,11 @@ import java.util.Map;
 @Service
 public class CountryService {
 
-    @Autowired
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
+
+    public CountryService(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
     public List<Map<String, Object>> getAllCountries() {
         Session session = entityManager.unwrap(Session.class);

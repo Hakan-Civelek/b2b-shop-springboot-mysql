@@ -1,14 +1,15 @@
 package com.b2bshop.project.service;
 
+import com.b2bshop.project.exception.OrderNotFoundException;
 import com.b2bshop.project.model.*;
 import com.b2bshop.project.repository.*;
+import com.b2bshop.project.repository.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -20,28 +21,28 @@ public class OrderService {
     private final SecurityService securityService;
     private final JwtService jwtService;
     private final UserRepository userRepository;
-    @Autowired
-    private EntityManager entityManager;
-    private final CustomerRepository customerRepository;
+    private final EntityManager entityManager;
+    private final CustomerService customerService;
     private final OrderRepository orderRepository;
     private final BasketRepository basketRepository;
-    private final AddressRepository addressRepository;
     private final ProductService productService;
     private final ProductRepository productRepository;
+    private final AddressService addressService;
 
     public OrderService(SecurityService securityService, JwtService jwtService, UserRepository userRepository,
-                        CustomerRepository customerRepository, OrderRepository orderRepository,
-                        BasketRepository basketRepository,
-                        AddressRepository addressRepository, ProductService productService, ProductRepository productRepository) {
+                        OrderRepository orderRepository, BasketRepository basketRepository, EntityManager entityManager,
+                        CustomerService customerService, ProductService productService,
+                        ProductRepository productRepository, AddressService addressService) {
         this.securityService = securityService;
         this.jwtService = jwtService;
         this.userRepository = userRepository;
-        this.customerRepository = customerRepository;
         this.orderRepository = orderRepository;
         this.basketRepository = basketRepository;
-        this.addressRepository = addressRepository;
+        this.customerService = customerService;
         this.productService = productService;
         this.productRepository = productRepository;
+        this.entityManager = entityManager;
+        this.addressService = addressService;
     }
 
     @Transactional
@@ -121,18 +122,15 @@ public class OrderService {
         String orderNumber = generateOrderNumber(tenantId);
         String orderNote = json.get("orderNote").asText();
         String userName = jwtService.extractUser(token);
-        order.setCustomer(customerRepository.findById(tenantId).orElseThrow(()
-                -> new RuntimeException("Customer not found")));
+        order.setCustomer(customerService.findCustomerById(tenantId));
         order.setOrderNumber(orderNumber);
         order.setOrderNote(orderNote);
         order.setOrderItems(new ArrayList<>());
         order.setOrderDate(new Date());
         order.setCreatedBy(userRepository.findByUsername(userName).orElseThrow(()
                 -> new RuntimeException("User not found")));
-        order.setInvoiceAddress(addressRepository.findById(invoiceAddressId).orElseThrow(()
-                -> new RuntimeException("Address not found")));
-        order.setReceiverAddress(addressRepository.findById(receiverAddressId).orElseThrow(()
-                -> new RuntimeException("Address not found")));
+        order.setInvoiceAddress(addressService.findAddressById(invoiceAddressId));
+        order.setReceiverAddress(addressService.findAddressById(receiverAddressId));
 
         JsonNode orderItems = json.get("orderItems");
         Double totalPrice = 0.0;
@@ -143,8 +141,7 @@ public class OrderService {
             withoutTaxPrice += orderItemNode.get("salesPrice").asDouble() * (orderItemNode.get("quantity").asDouble());
             totalTax = totalPrice - withoutTaxPrice;
             Long refProductId = (orderItemNode.get("productId").asLong());
-            Product refProduct = productRepository.findById(orderItemNode.get("productId").asLong()).orElseThrow(()
-                    -> new RuntimeException("refProduct not found: "));
+            Product refProduct = productService.findProductById(orderItemNode.get("productId").asLong());
             boolean isStockAvailable = productService.checkStockById(refProductId, (orderItemNode.get("quantity")).asInt());
 
             if (isStockAvailable) {
@@ -161,7 +158,7 @@ public class OrderService {
                 basketRepository.deleteById(json.get("basketId").asLong());
                 order.getOrderItems().add(orderItem);
             } else
-                throw new RuntimeException("Stock is not enough for material: " + productRepository.findById(refProductId).get().getName());
+                throw new RuntimeException("Stock is not enough for material: " + productService.findProductById(refProductId).getName());
         }
         order.setTotalPrice(totalPrice);
         order.setWithoutTaxPrice(withoutTaxPrice);
@@ -178,5 +175,10 @@ public class OrderService {
         String orderNumber = tenantId.toString() + timestamp.substring(0, 8);
 
         return orderNumber;
+    }
+
+    public Order findOrderById(Long id){
+        return orderRepository.findById(id).orElseThrow(()
+                -> new OrderNotFoundException("Order could not find by id: " + id));
     }
 }

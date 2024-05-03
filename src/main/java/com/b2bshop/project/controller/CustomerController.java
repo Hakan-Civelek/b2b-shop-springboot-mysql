@@ -40,7 +40,7 @@ public class CustomerController {
 
     @GetMapping("/{customerId}")
     public Customer getCustomerById(@PathVariable Long customerId) {
-        return customerRepository.findById(customerId).orElse(null);
+        return customerService.findCustomerById(customerId);
     }
 
     @PutMapping("/{customerId}")
