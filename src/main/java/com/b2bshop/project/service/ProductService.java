@@ -1,6 +1,7 @@
 package com.b2bshop.project.service;
 
 import com.b2bshop.project.dto.CreateProductRequest;
+import com.b2bshop.project.exception.ProductNotFoundException;
 import com.b2bshop.project.model.Product;
 import com.b2bshop.project.model.Role;
 import com.b2bshop.project.model.User;
@@ -11,7 +12,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -19,19 +19,19 @@ import java.util.*;
 @Service
 public class ProductService {
 
-    @Autowired
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
     private final ProductRepository productRepository;
     private final SecurityService securityService;
     private final JwtService jwtService;
     private final UserRepository userRepository;
 
     public ProductService(ProductRepository productRepository, SecurityService securityService, JwtService jwtService, CustomerRepository customerRepository,
-                          UserRepository userRepository) {
+                          UserRepository userRepository, EntityManager entityManager) {
         this.productRepository = productRepository;
         this.securityService = securityService;
         this.jwtService = jwtService;
         this.userRepository = userRepository;
+        this.entityManager = entityManager;
     }
 
     public List<Map<String, Object>> getAllProducts(HttpServletRequest request) {
@@ -104,22 +104,21 @@ public class ProductService {
     }
 
     public Product updateProductById(Long productId, Product newProduct) {
-        Optional<Product> product = productRepository.findById(productId);
-        if (product.isPresent()) {
-            Product oldProduct = product.get();
-            oldProduct.setName(newProduct.getName());
-            oldProduct.setDescription(newProduct.getDescription());
-            oldProduct.setSalesPrice(newProduct.getSalesPrice());
-            oldProduct.setGrossPrice(newProduct.getGrossPrice());
-            oldProduct.setVatRate(newProduct.getVatRate());
-            oldProduct.setCode(newProduct.getCode());
-            oldProduct.setShop(newProduct.getShop());
-            oldProduct.setGtin(newProduct.getGtin());
-            oldProduct.setStock(newProduct.getStock());
-            oldProduct.setActive(newProduct.isActive());
-            productRepository.saveAndFlush(oldProduct);
-            return oldProduct;
-        } else return null;
+        Product product = findProductById(productId);
+
+        product.setName(newProduct.getName());
+        product.setDescription(newProduct.getDescription());
+        product.setSalesPrice(newProduct.getSalesPrice());
+        product.setGrossPrice(newProduct.getGrossPrice());
+        product.setVatRate(newProduct.getVatRate());
+        product.setCode(newProduct.getCode());
+        product.setShop(newProduct.getShop());
+        product.setGtin(newProduct.getGtin());
+        product.setStock(newProduct.getStock());
+        product.setActive(newProduct.isActive());
+
+        productRepository.saveAndFlush(product);
+        return product;
     }
 
     public boolean checkStockById(long productId, int quantity) {
@@ -138,5 +137,10 @@ public class ProductService {
         }
 
         return stock >= quantity;
+    }
+
+    public Product findProductById(Long id) {
+        return productRepository.findById(id).orElseThrow(()
+                -> new ProductNotFoundException("Product could not find by id: " + id));
     }
 }

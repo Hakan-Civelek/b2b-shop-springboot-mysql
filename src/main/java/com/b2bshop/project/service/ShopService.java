@@ -1,11 +1,10 @@
 package com.b2bshop.project.service;
 
 import com.b2bshop.project.dto.CreateShopRequest;
+import com.b2bshop.project.exception.ShopNotFoundException;
 import com.b2bshop.project.model.Shop;
 import com.b2bshop.project.repository.ShopRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class ShopService {
@@ -30,17 +29,19 @@ public class ShopService {
     }
 
     public Shop updateShopById(Long shopId, Shop newShop) {
-        Optional<Shop> shop = shopRepository.findById(shopId);
-        if (shop.isPresent()) {
-            Shop oldShop = shop.get();
-            oldShop.setName(newShop.getName());
-            oldShop.setEmail(newShop.getEmail());
-            oldShop.setPhoneNumber(newShop.getPhoneNumber());
-            oldShop.setVatNumber(newShop.getVatNumber());
-            oldShop.setAboutUs(newShop.getAboutUs());
-            oldShop.setPrivacyPolicy(newShop.getPrivacyPolicy());
-            shopRepository.save(oldShop);
-            return oldShop;
-        } else return null;
+        Shop shop = findShopById(shopId);
+        shop.setName(newShop.getName());
+        shop.setEmail(newShop.getEmail());
+        shop.setPhoneNumber(newShop.getPhoneNumber());
+        shop.setVatNumber(newShop.getVatNumber());
+        shop.setAboutUs(newShop.getAboutUs());
+        shop.setPrivacyPolicy(newShop.getPrivacyPolicy());
+        shopRepository.save(shop);
+        return shop;
+    }
+
+    public Shop findShopById(Long id) {
+        return shopRepository.findById(id).orElseThrow(()
+                -> new ShopNotFoundException("Shop could not find by id: " + id));
     }
 }

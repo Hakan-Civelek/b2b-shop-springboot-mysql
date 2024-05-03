@@ -40,7 +40,7 @@ public class ShopController {
 
     @GetMapping("/{shopId}")
     public Shop getShopById(@PathVariable Long shopId) {
-        return shopRepository.findById(shopId).orElse(null);
+        return shopService.findShopById(shopId);
     }
 
     @PutMapping("/{shopId}")

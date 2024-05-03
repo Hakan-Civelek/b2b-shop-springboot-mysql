@@ -1,18 +1,17 @@
 package com.b2bshop.project.service;
 
+import com.b2bshop.project.exception.CustomerNotFoundException;
 import com.b2bshop.project.model.Address;
 import com.b2bshop.project.model.Country;
 import com.b2bshop.project.model.Customer;
 import com.b2bshop.project.repository.AddressRepository;
 import com.b2bshop.project.repository.CountryRepository;
-import com.b2bshop.project.repository.CustomerRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -21,16 +20,16 @@ import java.util.*;
 public class AddressService {
     private final CountryRepository countryRepository;
     private final SecurityService securityService;
-    private final CustomerRepository customerRepository;
-    @Autowired
-    private EntityManager entityManager;
+    private final CustomerService customerService;
+    private final EntityManager entityManager;
     private final AddressRepository addressRepository;
 
-    public AddressService(CountryRepository countryRepository, SecurityService securityService, CustomerRepository customerRepository,
-                          AddressRepository addressRepository) {
+    public AddressService(CountryRepository countryRepository, SecurityService securityService,
+                          CustomerService customerService, EntityManager entityManager, AddressRepository addressRepository) {
         this.countryRepository = countryRepository;
         this.securityService = securityService;
-        this.customerRepository = customerRepository;
+        this.customerService = customerService;
+        this.entityManager = entityManager;
         this.addressRepository = addressRepository;
     }
 
@@ -74,7 +73,7 @@ public class AddressService {
         Address address = new Address();
 
         Customer customer;
-        customer = customerRepository.findById(tenantId).orElse(null);
+        customer = customerService.findCustomerById(tenantId);
         address.setCustomer(customer);
 
         Country country;
@@ -90,5 +89,8 @@ public class AddressService {
         return addressRepository.save(address);
     }
 
-
+    protected Address findAddressById(Long id) {
+        return addressRepository.findById(id).orElseThrow(
+                () -> new CustomerNotFoundException("Address could not find by id: " + id));
+    }
 }

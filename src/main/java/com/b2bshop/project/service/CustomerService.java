@@ -1,12 +1,12 @@
 package com.b2bshop.project.service;
 
 import com.b2bshop.project.dto.CreateCustomerRequest;
+import com.b2bshop.project.exception.CustomerNotFoundException;
 import com.b2bshop.project.model.Customer;
 import com.b2bshop.project.repository.CustomerRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.Optional;
 
 @Service
 public class CustomerService {
@@ -32,17 +32,19 @@ public class CustomerService {
     }
 
     public Customer updateCustomerById(Long customerId, Customer newCustomer) {
-        Optional<Customer> customer = customerRepository.findById(customerId);
-        if (customer.isPresent()) {
-            Customer oldCustomer = customer.get();
-            oldCustomer.setName(newCustomer.getName());
-            oldCustomer.setEmail(newCustomer.getEmail());
-            oldCustomer.setShop(newCustomer.getShop());
-            oldCustomer.setVatNumber(newCustomer.getVatNumber());
-            oldCustomer.setPhoneNumber(newCustomer.getPhoneNumber());
-            oldCustomer.setActive(newCustomer.isActive());
-            customerRepository.save(oldCustomer);
-            return oldCustomer;
-        } else return null;
+        Customer customer = findCustomerById(customerId);
+        customer.setName(newCustomer.getName());
+        customer.setEmail(newCustomer.getEmail());
+        customer.setShop(newCustomer.getShop());
+        customer.setVatNumber(newCustomer.getVatNumber());
+        customer.setPhoneNumber(newCustomer.getPhoneNumber());
+        customer.setActive(newCustomer.isActive());
+        customerRepository.save(customer);
+        return customer;
+    }
+
+    public Customer findCustomerById(Long id) {
+        return customerRepository.findById(id).orElseThrow(()
+                -> new CustomerNotFoundException("Customer could not find by id: " + id));
     }
 }
