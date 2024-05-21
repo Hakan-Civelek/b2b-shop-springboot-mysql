@@ -80,8 +80,6 @@ public class AddressService {
         country = countryRepository.findById(countryId).orElse(null);
         address.setCountry(country);
 
-        System.out.println("json: " + json);
-
         address.setTitle(json.get("title").asText());
         address.setCity(json.get("city").asText());
         address.setAddressLine(json.get("addressLine").asText());
