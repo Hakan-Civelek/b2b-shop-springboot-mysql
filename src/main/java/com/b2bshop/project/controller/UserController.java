@@ -4,6 +4,7 @@ import com.b2bshop.project.dto.CreateUserRequest;
 import com.b2bshop.project.model.User;
 import com.b2bshop.project.repository.UserRepository;
 import com.b2bshop.project.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -25,6 +26,11 @@ public class UserController {
     @GetMapping()
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    @GetMapping("/me")
+    public User getMe(HttpServletRequest request) {
+        return userService.getMe(request);
     }
 
     @PostMapping()
