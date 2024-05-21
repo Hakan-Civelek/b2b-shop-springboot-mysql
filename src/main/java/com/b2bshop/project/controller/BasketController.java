@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -26,14 +25,14 @@ public class BasketController {
         return basketService.getBasket(request);
     }
 
-    @PostMapping()
-    public List<Basket> addBasket(HttpServletRequest request, @RequestBody JsonNode json) {
-//        List<Basket> createdBaskets = new ArrayList<>();
-//        for (CreateBasketRequest basket : json) {
-//            createdBaskets.add(basketService.createBasket(request, json));
-            basketService.createBasket(request, json);
-//        }
-        return null;
+    @PostMapping("/addItem")
+    public Basket addItemOnBasket(HttpServletRequest request, @RequestBody JsonNode json) {
+        return basketService.addItemOnBasket(request, json);
+    }
+
+    @PostMapping("/removeItem")
+    public Basket removeItemOnBasket(HttpServletRequest request, @RequestBody JsonNode json) {
+        return basketService.removeItem(request, json);
     }
 
     @GetMapping("/{basketId}")
@@ -41,9 +40,9 @@ public class BasketController {
         return basketService.findBasketById(basketId);
     }
 
-    @PutMapping()
-    public Basket updateBasket(HttpServletRequest request, @RequestBody JsonNode json) {
-        return basketService.updateBasket(request, json);
+    @PostMapping("/cleanBasket")
+    public Map<String, String> cleanBasket(HttpServletRequest request) {
+        return basketService.cleanBasket(request);
     }
 
     @DeleteMapping("/{basketId}")
