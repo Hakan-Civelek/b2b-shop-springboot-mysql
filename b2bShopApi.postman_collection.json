@@ -1,55 +1,1774 @@
 {
 	"info": {
-		"_postman_id": "5c78ebbb-dfad-4e0d-aca3-bffffce5b515",
+		"_postman_id": "6afdc7d2-b511-4608-86ff-d48b7feb9da6",
 		"name": "b2bShopApi",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "22598789"
+		"_exporter_id": "34110969"
 	},
 	"item": [
 		{
-			"name": "getAllUsers",
-			"request": {
-				"auth": {
-					"type": "noauth"
+			"name": "Shop",
+			"item": [
+				{
+					"name": "get Shop",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/shop",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"shop"
+							]
+						}
+					},
+					"response": []
 				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/api/user",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"user"
-					]
+				{
+					"name": "get ShopById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/shop/1",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"shop",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create singleShop",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"first shop\",\r\n    \"email\": \"firstshop@mail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/shop",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"shop"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create multipleShops",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"name\": \"first shop\",\r\n        \"email\": \"firstshop@mail.com\",\r\n        \"phoneNumber\": \"05678478961\",\r\n        \"vatNumber\": \"1 vatNumber\",\r\n        \"aboutUs\": \"1 aboutUs\",\r\n        \"privacyPolicy\": \"1 privacyPolicy\"\r\n    },\r\n    {\r\n        \"name\": \"second shop\",\r\n        \"email\": \"secondshop@mail.com\",\r\n        \"phoneNumber\": \"05678478962\",\r\n        \"vatNumber\": \"2 vatNumber\",\r\n        \"aboutUs\": \"2 aboutUs\",\r\n        \"privacyPolicy\": \"privacyPolicy\"\r\n    },\r\n    {\r\n        \"name\": \"third shop\",\r\n        \"email\": \"thirdshop@mail.com\",\r\n        \"phoneNumber\": \"05678478963\",\r\n        \"vatNumber\": \"3 vatNumber\",\r\n        \"aboutUs\": \"3 aboutUs\",\r\n        \"privacyPolicy\": \"3 privacyPolicy\"\r\n    },\r\n    {\r\n        \"name\": \"fourth shop\",\r\n        \"email\": \"fourthshop@mail.com\",\r\n        \"phoneNumber\": \"05678478964\",\r\n        \"vatNumber\": \"4 vatNumber\",\r\n        \"aboutUs\": \"4 aboutUs\",\r\n        \"privacyPolicy\": \"4 privacyPolicy\"\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/shop",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"shop"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update ShopById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"first shop update test\",\r\n    \"email\": \"firstshopupdate test@mail.com\",\r\n    \"phoneNumber\": \"05678478961\",\r\n    \"vatNumber\": \"1 vatNumber update test\",\r\n    \"aboutUs\": \"1 aboutUs update test\",\r\n    \"privacyPolicy\": \"1 privacyPolicy update test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/shop/1",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"shop",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete Shop",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/shop/1",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"shop",
+								"1"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "getUserById",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/api/user/1",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"user",
-						"1"
-					]
+			"name": "Customer",
+			"item": [
+				{
+					"name": "get AllCustomers",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/customer",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"customer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get CustomerById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/customer/1",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"customer",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create singleCustomer",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"first customer\",\r\n    \"email\": \"firstcustomer@mail.com\",\r\n    \"shop\": {\r\n        \"tenantId\": 1\r\n    },\r\n    \"vatNumber\": \"first vatNumber\",\r\n    \"phoneNumber\": \"05678478911\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/customer",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"customer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create multipleCustomers",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"name\": \"first customer\",\r\n        \"email\": \"firstcustomer@mail.com\",\r\n        \"shop\": {\r\n            \"tenantId\": 1\r\n        },\r\n        \"vatNumber\": \"first vatNumber\",\r\n        \"phoneNumber\": \"05678478961\",\r\n        \"isActive\": true\r\n    },\r\n    {\r\n        \"name\": \"second customer\",\r\n        \"email\": \"secondcustomer@mail.com\",\r\n        \"shop\": {\r\n            \"tenantId\": 2\r\n        },\r\n        \"vatNumber\": \"second vatNumber\",\r\n        \"phoneNumber\": \"05678478962\",\r\n        \"isActive\": true\r\n    },\r\n    {\r\n        \"name\": \"third customer\",\r\n        \"email\": \"thirdcustomer@mail.com\",\r\n        \"shop\": {\r\n            \"tenantId\": 3\r\n        },\r\n        \"vatNumber\": \"thirt vatNumber\",\r\n        \"phoneNumber\": \"05678478963\",\r\n        \"isActive\": true\r\n    },\r\n    {\r\n        \"name\": \"fourth customer\",\r\n        \"email\": \"fourthcustomer@mail.com\",\r\n        \"shop\": {\r\n            \"tenantId\": 4\r\n        },\r\n        \"vatNumber\": \"fourth vatNumber\",\r\n        \"phoneNumber\": \"05678478964\",\r\n        \"isActive\": false\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/customer",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"customer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update CustomerById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tenantId\": 1,\r\n    \"name\": \"test for update customer\",\r\n    \"email\": \"firstcustomer@mail.com\",\r\n    \"shop\": {\r\n        \"tenantId\": 2\r\n    },\r\n    \"vatNumber\": \"first vatNumber\",\r\n    \"phoneNumber\": \"05678478961\",\r\n    \"active\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/customer/1",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"customer",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete Customer",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/customer/1",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"customer",
+								"1"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "createUser",
+			"name": "User",
+			"item": [
+				{
+					"name": "get AllUsers",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/user",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getMe",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/user/me",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"user",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create singleUser",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Hakan\",\r\n    \"username\": \"hakan\",\r\n    \"password\": \"pass\",\r\n    \"email\": \"hakan@email.com\",\r\n    \"authorities\": [\"ROLE_ADMIN\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/user",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create multipleUsers",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"name\": \"Ali\",\r\n        \"username\": \"ali\",\r\n        \"password\": \"pass\",\r\n        \"email\": \"ali@email.com\",\r\n        \"phoneNumber\": \"05369874501\",\r\n        \"authorities\": [\r\n            \"ROLE_SHOP_OWNER\"\r\n        ],\r\n        \"shop\": {\r\n            \"tenantId\": 1\r\n        }\r\n    },\r\n    {\r\n        \"name\": \"Aysu\",\r\n        \"username\": \"aysu\",\r\n        \"password\": \"pass\",\r\n        \"email\": \"aysu@email.com\",\r\n        \"phoneNumber\": \"05369874502\",\r\n        \"authorities\": [\r\n            \"ROLE_SHOP_OWNER\"\r\n        ],\r\n        \"shop\": {\r\n            \"tenantId\": 2\r\n        }\r\n    },\r\n    {\r\n        \"name\": \"Ayşe\",\r\n        \"username\": \"ayse\",\r\n        \"password\": \"pass\",\r\n        \"email\": \"ayse@email.com\",\r\n        \"phoneNumber\": \"05369874503\",\r\n        \"authorities\": [\r\n            \"ROLE_SHOP_OWNER\"\r\n        ],\r\n        \"shop\": {\r\n            \"tenantId\": 3\r\n        }\r\n    },\r\n    {\r\n        \"name\": \"Fatma\",\r\n        \"username\": \"fatma\",\r\n        \"password\": \"pass\",\r\n        \"email\": \"fatma@email.com\",\r\n        \"phoneNumber\": \"05369874504\",\r\n        \"authorities\": [\r\n            \"ROLE_SHOP_OWNER\"\r\n        ],\r\n        \"shop\": {\r\n            \"tenantId\": 4\r\n        }\r\n    },\r\n    {\r\n        \"name\": \"Hatice\",\r\n        \"username\": \"hatice\",\r\n        \"password\": \"pass\",\r\n        \"email\": \"hatice@email.com\",\r\n        \"phoneNumber\": \"05369874505\",\r\n        \"authorities\": [\r\n            \"ROLE_CUSTOMER_USER\"\r\n        ],\r\n        \"customer\": {\r\n            \"tenantId\": 1\r\n        }\r\n    },\r\n    {\r\n        \"name\": \"Ahmet\",\r\n        \"username\": \"ahmet\",\r\n        \"password\": \"pass\",\r\n        \"email\": \"ahmet@email.com\",\r\n        \"phoneNumber\": \"05369874506\",\r\n        \"authorities\": [\r\n            \"ROLE_CUSTOMER_USER\"\r\n        ],\r\n        \"customer\": {\r\n            \"tenantId\": 2\r\n        }\r\n    },\r\n    {\r\n        \"name\": \"Merve\",\r\n        \"username\": \"merve\",\r\n        \"password\": \"pass\",\r\n        \"email\": \"merve@email.com\",\r\n        \"phoneNumber\": \"05369874507\",\r\n        \"authorities\": [\r\n            \"ROLE_CUSTOMER_USER\"\r\n        ],\r\n        \"customer\": {\r\n            \"tenantId\": 3\r\n        }\r\n    },\r\n    {\r\n        \"name\": \"Seda\",\r\n        \"username\": \"seda\",\r\n        \"password\": \"pass\",\r\n        \"email\": \"seda@email.com\",\r\n        \"phoneNumber\": \"05369874508\",\r\n        \"authorities\": [\r\n            \"ROLE_CUSTOMER_USER\"\r\n        ],\r\n        \"customer\": {\r\n            \"tenantId\": 1\r\n        }\r\n    },\r\n    {\r\n        \"name\": \"Basak\",\r\n        \"username\": \"basak\",\r\n        \"password\": \"pass\",\r\n        \"email\": \"basak@email.com\",\r\n        \"phoneNumber\": \"05369874509\",\r\n        \"authorities\": [\r\n            \"ROLE_CUSTOMER_USER\"\r\n        ],\r\n        \"customer\": {\r\n            \"tenantId\": 2\r\n        }\r\n    },\r\n    {\r\n        \"name\": \"Pelin\",\r\n        \"username\": \"pelin\",\r\n        \"password\": \"pass\",\r\n        \"email\": \"pelin@email.com\",\r\n        \"phoneNumber\": \"05369874510\",\r\n        \"authorities\": [\r\n            \"ROLE_CUSTOMER_USER\"\r\n        ],\r\n        \"customer\": {\r\n            \"tenantId\": 3\r\n        }\r\n    },\r\n    {\r\n        \"name\": \"Arda\",\r\n        \"username\": \"arda\",\r\n        \"password\": \"pass\",\r\n        \"email\": \"arda@email.com\",\r\n        \"phoneNumber\": \"05369874511\",\r\n        \"authorities\": [\r\n            \"ROLE_CUSTOMER_USER\"\r\n        ],\r\n        \"customer\": {\r\n            \"tenantId\": 4\r\n        }\r\n    },\r\n    {\r\n        \"name\": \"Akın\",\r\n        \"username\": \"akın\",\r\n        \"password\": \"pass\",\r\n        \"email\": \"akın@email.com\",\r\n        \"phoneNumber\": \"05369874512\",\r\n        \"authorities\": [\r\n            \"ROLE_CUSTOMER_USER\"\r\n        ],\r\n        \"customer\": {\r\n            \"tenantId\": 1\r\n        }\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/user",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update UserById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"name\": \"Hakan update test\",\r\n    \"username\": \"hakan\",\r\n    \"newPassword\": true,\r\n    \"password\": \"test\",\r\n    \"email\": \"hakan@email.com\",\r\n    \"phoneNumber\": null,\r\n    \"authorities\": [\r\n        \"ROLE_SYSTEM_OWNER\"\r\n    ],\r\n    \"shop\": null,\r\n    \"customer\": null,\r\n    \"accountNonLocked\": true,\r\n    \"accountNonExpired\": true,\r\n    \"credentialsNonExpired\": true,\r\n    \"enabled\": true,\r\n    \"active\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/user/1",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"user",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/user/1",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"user",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "get AllProducts",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/product",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get AllProducts Copy",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/product",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get ProductById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/product/1",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"product",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create singleProduct",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"name of product1\",\r\n    \"description\": \"description of product1\",\r\n    \"salesPrice\": 54.0,\r\n    \"grossPrice\": 47.0,\r\n    \"gtin\": \"12323123123123\",\r\n    \"stock\": 8\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/product",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create multipleProducts",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"name\": \"name of product1\",\r\n        \"description\": \"description of product1\",\r\n        \"salesPrice\": 47.0,\r\n        \"grossPrice\": 54.0,\r\n        \"vatRate\": 7,\r\n        \"code\": \"123asdwq\",\r\n        \"shop\": {\r\n            \"tenantId\": 1\r\n        },\r\n        \"gtin\": \"5445678901061\",\r\n        \"stock\": 8,\r\n        \"isActive\": true\r\n    },\r\n    {\r\n        \"name\": \"name of product2\",\r\n        \"description\": \"description of product2\",\r\n        \"salesPrice\": 37.0,\r\n        \"grossPrice\": 123.0,\r\n        \"vatRate\": 3,\r\n        \"code\": \"5123wq\",\r\n        \"shop\": {\r\n            \"tenantId\": 2\r\n        },\r\n        \"gtin\": \"1845123901001\",\r\n        \"stock\": 76,\r\n        \"isActive\": true\r\n    },\r\n    {\r\n        \"name\": \"name of product3\",\r\n        \"description\": \"description of product3\",\r\n        \"salesPrice\": 49.0,\r\n        \"grossPrice\": 56.0,\r\n        \"vatRate\": 12,\r\n        \"code\": \"asd123asd\",\r\n        \"shop\": {\r\n            \"tenantId\": 3\r\n        },\r\n        \"gtin\": \"5325678901001\",\r\n        \"stock\": 89,\r\n        \"isActive\": true\r\n    },\r\n    {\r\n        \"name\": \"name of product4\",\r\n        \"description\": \"description of product4\",\r\n        \"salesPrice\": 97.79,\r\n        \"grossPrice\": 123.56,\r\n        \"vatRate\": 31,\r\n        \"code\": \"gcdff213asd\",\r\n        \"shop\": {\r\n            \"tenantId\": 1\r\n        },\r\n        \"gtin\": \"1845523401001\",\r\n        \"stock\": 74,\r\n        \"isActive\": true\r\n    },\r\n    {\r\n        \"name\": \"name of product5\",\r\n        \"description\": \"description of product5\",\r\n        \"salesPrice\": 7.97,\r\n        \"grossPrice\": 17.46,\r\n        \"vatRate\": 24,\r\n        \"code\": \"ghjfgwr\",\r\n        \"shop\": {\r\n            \"tenantId\": 2\r\n        },\r\n        \"gtin\": \"18456784353054\",\r\n        \"stock\": 35,\r\n        \"isActive\": true\r\n    },\r\n    {\r\n        \"name\": \"name of product6\",\r\n        \"description\": \"description of product6\",\r\n        \"salesPrice\": 55.45,\r\n        \"grossPrice\": 61.78,\r\n        \"vatRate\": 14,\r\n        \"code\": \"asdasdwq\",\r\n        \"shop\": {\r\n            \"tenantId\": 4\r\n        },\r\n        \"gtin\": \"1235678901007\",\r\n        \"stock\": 75,\r\n        \"isActive\": true\r\n    },\r\n    {\r\n        \"name\": \"name of product7\",\r\n        \"description\": \"description of product7\",\r\n        \"salesPrice\": 117.09,\r\n        \"grossPrice\": 137.79,\r\n        \"vatRate\": 10,\r\n        \"code\": \"lkşçjkl\",\r\n        \"shop\": {\r\n            \"tenantId\": 3\r\n        },\r\n        \"gtin\": \"7645678901562\",\r\n        \"stock\": 63,\r\n        \"isActive\": true\r\n    },\r\n    {\r\n        \"name\": \"name of product8\",\r\n        \"description\": \"description of product8\",\r\n        \"salesPrice\": 67.3,\r\n        \"grossPrice\": 74.7,\r\n        \"vatRate\": 11,\r\n        \"code\": \"gdfgdfwq\",\r\n        \"shop\": {\r\n            \"tenantId\": 4\r\n        },\r\n        \"gtin\": \"9655678901046\",\r\n        \"stock\": 45,\r\n        \"isActive\": true\r\n    },\r\n    {\r\n        \"name\": \"name of product9\",\r\n        \"description\": \"description of product9\",\r\n        \"salesPrice\": 63.06,\r\n        \"grossPrice\": 68.07,\r\n        \"vatRate\": 13,\r\n        \"code\": \"jgfhwe213\",\r\n        \"shop\": {\r\n            \"tenantId\": 2\r\n        },\r\n        \"gtin\": \"1845678901001\",\r\n        \"stock\": 7,\r\n        \"isActive\": true\r\n    }\r\n]\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/product",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update ProductById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"name\": \"test for update name of product1\",\r\n    \"description\": \"test for update description of product1\",\r\n    \"salesPrice\": 47.0,\r\n    \"grossPrice\": 54.0,\r\n    \"vatRate\": 7.0,\r\n    \"code\": \"123asdwq\",\r\n    \"shop\": {\r\n        \"tenantId\": 1\r\n    },\r\n    \"gtin\": \"test for update 5445678901061\",\r\n    \"stock\": 7,\r\n    \"active\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/product/1",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"product",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/product/1",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"product",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Image",
+			"item": [
+				{
+					"name": "addImages to Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoYXRpY2UiLCJpYXQiOjE3MTYyOTIwMDMsImV4cCI6MTcxNjI5NTYwM30.yWqJ48Q9jF74Di18PCaJz3YWcpNai-V1fD6kBqrHuTA"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": [
+										"postman-cloud:///1ef175c5-d9b8-4cc0-a396-108a9443630d",
+										"postman-cloud:///1ef17715-6733-49b0-8b64-52771cd70db1"
+									]
+								},
+								{
+									"key": "productId",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseurl}}/image",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"image"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Basket",
+			"item": [
+				{
+					"name": "get Basket",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/basket",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"basket"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get BasketById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/basket/7",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"basket",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addItemToBasket",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"productId\": 1,\r\n    \"quantity\": 6\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/basket/addItem",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"basket",
+								"addItem"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "removeItemFromTheBasket",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"productId\": 4\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/basket/removeItem",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"basket",
+								"removeItem"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cleanBasket",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/basket/cleanBasket",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"basket",
+								"cleanBasket"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete Basket",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/basket/1",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"basket",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "get AllOrders",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/order",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get OrderById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/order/1",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"order",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create singleOrder",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"orderNote\": \"order note2\",\r\n    \"basketId\": 1,\r\n    \"invoiceAddressId\": 1,\r\n    \"receiverAddressId\": 1,\r\n    \"orderItems\": [ \r\n        {\r\n            \"quantity\": 1,\r\n            \"productId\": 1,\r\n            \"salesPrice\": 47.0,\r\n            \"basketItemId\": 1,\r\n            \"grossPrice\": 54.0,\r\n            \"productName\": \"name of product1\"\r\n        },\r\n        {\r\n            \"quantity\": 12,\r\n            \"productId\": 4,\r\n            \"salesPrice\": 97.79,\r\n            \"basketItemId\": 2,\r\n            \"grossPrice\": 123.56,\r\n            \"productName\": \"name of product4\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/order",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create multipleOrders",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"user\": {\r\n            \"id\": 8\r\n        },\r\n        \"product\": {\r\n            \"id\": 2\r\n        },\r\n        \"quantity\": 2\r\n    },\r\n    {\r\n        \"user\": {\r\n            \"id\": 8\r\n        },\r\n        \"product\": {\r\n            \"id\": 5\r\n        },\r\n        \"quantity\": 4\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/order",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update OrderById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 7,\r\n    \"user\": {\r\n        \"id\": 7        \r\n    },\r\n    \"product\": {\r\n        \"id\": 1        \r\n    },\r\n    \"quantity\": 13\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/order/7",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"order",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete Basket",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/order/1",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"order",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Address",
+			"item": [
+				{
+					"name": "get AllAddresses",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/address",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"address"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get AddressById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/address/1",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"address",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create singleAddress",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"countryId\": 216,\r\n    \"title\": \"Bizim ev\",\r\n    \"city\": \"İstanbul\",\r\n    \"addressLine\": \"Fatih Mahallesi İnönü Caddesi No:45 Daire: 3, Beyoğlu, İstanbul\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/address",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"address"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create multipleAddresses",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"user\": {\r\n            \"id\": 8\r\n        },\r\n        \"product\": {\r\n            \"id\": 2\r\n        },\r\n        \"quantity\": 2\r\n    },\r\n    {\r\n        \"user\": {\r\n            \"id\": 8\r\n        },\r\n        \"product\": {\r\n            \"id\": 5\r\n        },\r\n        \"quantity\": 4\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/order",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update OrderById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 7,\r\n    \"user\": {\r\n        \"id\": 7        \r\n    },\r\n    \"product\": {\r\n        \"id\": 1        \r\n    },\r\n    \"quantity\": 13\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/address/1",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"address",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete Basket",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/address/1",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"address",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "loginWithSystemOwner",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Set Token!\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    console.log(jsonData.token)",
+									"    pm.collectionVariables.set(\"bearer_token\", jsonData.token);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"hakan\",\r\n    \"password\": \"pass\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/login",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "loginWithShopOwner",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Set Token!\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    console.log(jsonData.token)",
+									"    pm.collectionVariables.set(\"bearer_token\", jsonData.token);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tenantId\": 1,\r\n    \"username\": \"ali\",\r\n    \"password\": \"pass\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/login",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "loginWithCustomerUser",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Set Token!\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    console.log(jsonData.token)",
+									"    pm.collectionVariables.set(\"bearer_token\", jsonData.token);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tenantId\": 1,\r\n    \"username\": \"hatice\",\r\n    \"password\": \"pass\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/login",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Country",
+			"item": [
+				{
+					"name": "get AllCountries",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/country",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"country"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "create systemOwners!!",
 			"request": {
 				"auth": {
 					"type": "noauth"
@@ -58,7 +1777,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"Hakan\",\r\n    \"username\": \"hakan\",\r\n    \"password\": \"pass\",\r\n    \"authorities\": [\"ROLE_ADMIN\"]\r\n}",
+					"raw": "[\r\n    {\r\n        \"name\": \"Hakan\",\r\n        \"username\": \"hakan\",\r\n        \"password\": \"pass\",\r\n        \"email\": \"hakan@email.com\",\r\n        \"authorities\": [\r\n            \"ROLE_SYSTEM_OWNER\"\r\n        ]\r\n    },\r\n    {\r\n        \"name\": \"Esat\",\r\n        \"username\": \"esat\",\r\n        \"password\": \"pass\",\r\n        \"email\": \"esat@email.com\",\r\n        \"authorities\": [\r\n            \"ROLE_SYSTEM_OWNER\"\r\n        ]\r\n    }\r\n]",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -66,107 +1785,49 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/api/user",
+					"raw": "{{baseurl}}/user/createSystemOwners",
 					"host": [
-						"localhost"
+						"{{baseurl}}"
 					],
-					"port": "8080",
 					"path": [
-						"api",
-						"user"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "generateToken",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"username\": \"esat\",\r\n    \"password\": \"pass\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8080/api/login",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"login"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "updateUserById",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"test ad\",\r\n    \"username\": \"test username\",\r\n    \"password\": \"testPassword\",\r\n    \"accountNonExpired\": true,\r\n    \"accountNonLocked\": true,\r\n    \"credentialsNonExpired\": true,\r\n    \"authorities\": [\r\n        \"ROLE_USER\"\r\n    ],\r\n    \"enabled\": true\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8080/api/user/1",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
 						"user",
-						"1"
+						"createSystemOwners"
 					]
 				}
 			},
 			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
 		},
 		{
-			"name": "deleteUser",
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "DELETE",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8080/api/user/1",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"user",
-						"1"
-					]
-				}
-			},
-			"response": []
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseurl",
+			"value": "localhost:8080/api"
+		},
+		{
+			"key": "bearer_token",
+			"value": ""
 		}
 	]
 }
