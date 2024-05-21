@@ -22,9 +22,8 @@ public class BasketController {
     }
 
     @GetMapping()
-    public List<Map<String, Object>> getAllBaskets(HttpServletRequest request) {
-//        return basketRepository.findAll();
-        return basketService.getAllBaskets(request);
+    public Map<String, Object> getBasket(HttpServletRequest request) {
+        return basketService.getBasket(request);
     }
 
     @PostMapping()
@@ -42,9 +41,9 @@ public class BasketController {
         return basketService.findBasketById(basketId);
     }
 
-    @PutMapping("/{basketId}")
-    public Basket updateBasketById(@PathVariable Long basketId, @RequestBody Basket newBasket) {
-        return basketService.updateBasketById(basketId, newBasket);
+    @PutMapping()
+    public Basket updateBasket(HttpServletRequest request, @RequestBody JsonNode json) {
+        return basketService.updateBasket(request, json);
     }
 
     @DeleteMapping("/{basketId}")
