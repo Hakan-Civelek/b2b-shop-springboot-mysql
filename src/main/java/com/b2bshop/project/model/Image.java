@@ -25,8 +25,6 @@ public class Image {
     private User createdBy;
 
     @ManyToOne
-    @JoinTable(name = "product_images",
-            joinColumns = @JoinColumn(name = "image_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id"))
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 }
