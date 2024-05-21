@@ -1,9 +1,7 @@
 package com.b2bshop.project.service;
 
 import com.b2bshop.project.dto.CreateUserRequest;
-import com.b2bshop.project.exception.CustomerNotFoundException;
 import com.b2bshop.project.exception.UserNotFoundException;
-import com.b2bshop.project.model.Customer;
 import com.b2bshop.project.model.User;
 import com.b2bshop.project.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -83,5 +81,10 @@ public class UserService implements UserDetailsService {
     public User findUserById(Long id) {
         return userRepository.findById(id).orElseThrow(()
                 -> new UserNotFoundException("Customer could not find by id: " + id));
+    }
+
+    public User findUserByName(String name) {
+        return userRepository.findByUsername(name).orElseThrow(()
+                -> new UserNotFoundException("Customer could not find by name: " + name));
     }
 }

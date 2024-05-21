@@ -5,6 +5,7 @@ import com.b2bshop.project.model.Basket;
 import com.b2bshop.project.model.BasketItem;
 import com.b2bshop.project.model.Product;
 import com.b2bshop.project.model.User;
+import com.b2bshop.project.repository.BasketItemRepository;
 import com.b2bshop.project.repository.BasketRepository;
 import com.b2bshop.project.repository.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -24,15 +25,19 @@ public class BasketService {
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final ProductService productService;
+    private final UserService userService;
 
+    private final BasketItemRepository basketItemRepository;
     public BasketService(BasketRepository basketRepository, JwtService jwtService,
                          UserRepository userRepository, EntityManager entityManager,
-                         ProductService productService) {
+                         ProductService productService, UserService userService, BasketItemRepository basketItemRepository) {
         this.basketRepository = basketRepository;
         this.jwtService = jwtService;
         this.userRepository = userRepository;
         this.productService = productService;
         this.entityManager = entityManager;
+        this.userService = userService;
+        this.basketItemRepository = basketItemRepository;
     }
 
     public Map<String, Object> getBasket(HttpServletRequest request) {
@@ -85,48 +90,31 @@ public class BasketService {
     }
 
     @Transactional
-    public Basket createBasket(HttpServletRequest request, JsonNode json) {
+    public Basket addItemOnBasket(HttpServletRequest request, JsonNode json) {
         String token = request.getHeader("Authorization").split("Bearer ")[1];
         String userName = jwtService.extractUser(token);
-        Optional<User> user = userRepository.findByUsername(userName);
-        Long userId = user.get().getId();
-
-        JsonNode basketItemsNode = json.get("basketItems");
-
-        Basket basket = new Basket();
-        basket.setUser(userRepository.findById(userId).orElse(null));
-        basket.setBasketItems(new ArrayList<>());
-
-        long productId = json.get("productId").asLong();
-        int quantity = json.get("quantity").asInt();
-        boolean isStockAvailable = productService.checkStockById(productId, quantity);
-
-        if (isStockAvailable) {
-            BasketItem basketItem = BasketItem.builder()
-                    .product(productService.findProductById((productId)))
-                    .quantity(quantity)
-                    .build();
-            basket.getBasketItems().add(basketItem);
-        } else
-            throw new RuntimeException("Stock is not enough for material: " + productService.findProductById(productId).getName());
-
-        return basketRepository.save(basket);
-    }
-
-    @Transactional
-    public Basket updateBasket(HttpServletRequest request, JsonNode json) {
-        String token = request.getHeader("Authorization").split("Bearer ")[1];
-        String userName = jwtService.extractUser(token);
-        Optional<User> user = userRepository.findByUsername(userName);
-        Long userId = user.get().getId();
-        Basket basket = basketRepository.findByUserId(userId).orElseThrow(null);
+        User user = userService.findUserByName(userName);
+        Long userId = user.getId();
+        Basket basket;
+        Optional<Basket> optionalBasket = basketRepository.findByUserId(userId);
+        if (optionalBasket.isPresent()) {
+            basket = optionalBasket.get();
+        } else {
+            basket = new Basket();
+            basket.setUser(user);
+        }
         List<BasketItem> basketItems = basket.getBasketItems();
 
         boolean itemExists = false;
         long productId = json.get("productId").asLong();
         int quantity = json.get("quantity").asInt();
 
-        for (BasketItem item : basketItems) {
+        if (basketItems == null) {
+            basketItems = new ArrayList<>();
+            basket.setBasketItems(basketItems);
+        }
+
+        for (BasketItem item : basket.getBasketItems()) {
             if (item.getProduct().getId() == productId) {
                 item.setQuantity(quantity);
                 itemExists = true;
@@ -141,9 +129,9 @@ public class BasketService {
                     .product(product)
                     .quantity(quantity)
                     .build();
-            basketItems.add(newItem);
-
+            basket.getBasketItems().add(newItem);
         }
+
         return basketRepository.save(basket);
     }
 
@@ -151,4 +139,64 @@ public class BasketService {
         return basketRepository.findById(id).orElseThrow(()
                 -> new BasketNotFoundException("Basket could not find by id: " + id));
     }
+
+    public Basket removeItem(HttpServletRequest request, JsonNode json) {
+        String token = request.getHeader("Authorization").split("Bearer ")[1];
+        String userName = jwtService.extractUser(token);
+        User user = userService.findUserByName(userName);
+        Long userId = user.getId();
+        Basket basket;
+        Optional<Basket> optionalBasket = basketRepository.findByUserId(userId);
+        if (optionalBasket.isPresent()) {
+            basket = optionalBasket.get();
+        } else
+            throw new BasketNotFoundException("Basket could not find!: ");
+
+        List<BasketItem> basketItems = basket.getBasketItems();
+
+        long productId = json.get("productId").asLong();
+
+        if (basketItems != null) {
+            Iterator<BasketItem> iterator = basketItems.iterator();
+            while (iterator.hasNext()) {
+                BasketItem item = iterator.next();
+                if (item.getProduct().getId() == productId) {
+                    iterator.remove();
+                    break;
+                }
+            }
+        }
+
+        return basketRepository.save(basket);
+    }
+
+    @Transactional
+    public Map<String, String> cleanBasket(HttpServletRequest request) {
+        String token = request.getHeader("Authorization").split("Bearer ")[1];
+        String userName = jwtService.extractUser(token);
+        User user = userService.findUserByName(userName);
+        Long userId = user.getId();
+        Basket basket;
+        Optional<Basket> optionalBasket = basketRepository.findByUserId(userId);
+        if (optionalBasket.isPresent()) {
+            basket = optionalBasket.get();
+            List<BasketItem> basketItems = basket.getBasketItems();
+
+            for (BasketItem item : basketItems) {
+                basketItemRepository.deleteById(item.getId());
+            }
+
+            basketItems.clear();
+        } else {
+            throw new BasketNotFoundException("Basket could not find!");
+        }
+
+        Map<String, String> response = new HashMap<>();
+        response.put("success", "true");
+
+        basketRepository.save(basket);
+
+        return response;
+    }
+
 }
