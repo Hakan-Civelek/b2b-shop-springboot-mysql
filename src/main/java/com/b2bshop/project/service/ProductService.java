@@ -39,19 +39,18 @@ public class ProductService {
         Long tenantId = securityService.returnTenantIdByUsernameOrToken("token", token);
         String whereCondition = " ";
         String userName = jwtService.extractUser(token);
-        User user = (userRepository.findByUsername(userName).orElseThrow(()
-                -> new RuntimeException("User not found")));
-        Set userRoles = user.getAuthorities();
+        User user = userRepository.findByUsername(userName).orElseThrow(() -> new RuntimeException("User not found"));
+        Set<Role> userRoles = user.getAuthorities();
         if (userRoles.contains(Role.ROLE_CUSTOMER_USER))
             whereCondition = " AND product.isActive = true ";
 
         Session session = entityManager.unwrap(Session.class);
-        String hqlQuery = "SELECT product.id ,product.name as name, product.description as description," +
-                " product.salesPrice as salesPrice, product.grossPrice as grossPrice, product.vatRate as vatRate, " +
-                " product.code as code, product.shop as shop, product.gtin as gtin, product.stock as stock, " +
-                " product.isActive as isActive " +
+        String hqlQuery = "SELECT product.id, product.name, product.description, product.salesPrice, product.grossPrice, " +
+                " product.vatRate, product.code, product.shop, product.gtin, product.stock, product.isActive, " +
+                " image.url, image.id " +
                 " FROM Product as product " +
                 " JOIN product.shop s " +
+                " JOIN Image as image ON image.product.id = product.id " +
                 " WHERE 1 = 1 ";
 
         if (tenantId != null) {
@@ -66,23 +65,34 @@ public class ProductService {
         }
 
         List<Map<String, Object>> resultList = new ArrayList<>();
+        Map<Long, Map<String, Object>> productMap = new HashMap<>();
         List<Object[]> rows = query.list();
 
         for (Object[] row : rows) {
-            Map<String, Object> resultMap = new HashMap<>();
-            resultMap.put("id", row[0]);
-            resultMap.put("name", row[1]);
-            resultMap.put("description", row[2]);
-            resultMap.put("salesPrice", row[3]);
-            resultMap.put("grossPrice", row[4]);
-            resultMap.put("vatRate", row[5]);
-            resultMap.put("code", row[6]);
-            resultMap.put("shop", row[7]);
-            resultMap.put("gtin", row[8]);
-            resultMap.put("stock", row[9]);
-            resultMap.put("isActive", row[10]);
-            resultList.add(resultMap);
+            Long productId = (Long) row[0];
+            if (!productMap.containsKey(productId)) {
+                Map<String, Object> resultMap = new HashMap<>();
+                resultMap.put("id", row[0]);
+                resultMap.put("name", row[1]);
+                resultMap.put("description", row[2]);
+                resultMap.put("salesPrice", row[3]);
+                resultMap.put("grossPrice", row[4]);
+                resultMap.put("vatRate", row[5]);
+                resultMap.put("code", row[6]);
+                resultMap.put("shop", row[7]);
+                resultMap.put("gtin", row[8]);
+                resultMap.put("stock", row[9]);
+                resultMap.put("isActive", row[10]);
+                resultMap.put("images", new ArrayList<Map<String, Object>>());
+                productMap.put(productId, resultMap);
+            }
+            Map<String, Object> imageMap = new HashMap<>();
+            imageMap.put("imageUrl", row[11]);
+            imageMap.put("imageId", row[12]);
+            ((List<Map<String, Object>>) productMap.get(productId).get("images")).add(imageMap);
         }
+
+        resultList.addAll(productMap.values());
         return resultList;
     }
 
