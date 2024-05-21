@@ -911,13 +911,13 @@
 									"key": "file",
 									"type": "file",
 									"src": [
-										"postman-cloud:///1ef175c5-d9b8-4cc0-a396-108a9443630d",
-										"postman-cloud:///1ef17715-6733-49b0-8b64-52771cd70db1"
+										"postman-cloud:///1ef17941-3ec8-4100-9216-ee6d941bd84e",
+										"postman-cloud:///1ef17941-3e79-4f00-8f34-a30438c145cd"
 									]
 								},
 								{
 									"key": "productId",
-									"value": "1",
+									"value": "4",
 									"type": "text"
 								}
 							]
