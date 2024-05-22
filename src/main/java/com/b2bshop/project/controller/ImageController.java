@@ -19,7 +19,7 @@ public class ImageController {
     private final ImageService imageService;
 
     @PostMapping
-    public List<String> upload(HttpServletRequest request, Long productId, @RequestParam("file") List<MultipartFile> multipartFiles) {
-        return imageService.upload(request, productId, multipartFiles);
+    public List<String> upload(HttpServletRequest request, @RequestParam("file") List<MultipartFile> multipartFiles) {
+        return imageService.upload(request, multipartFiles);
     }
 }

@@ -190,7 +190,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "",
+							"raw": "{\r\n    \"ids\":[1,2]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -198,13 +198,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseurl}}/shop/1",
+							"raw": "{{baseurl}}/shop",
 							"host": [
 								"{{baseurl}}"
 							],
 							"path": [
-								"shop",
-								"1"
+								"shop"
 							]
 						}
 					},
@@ -667,45 +666,6 @@
 					"response": []
 				},
 				{
-					"name": "get AllProducts Copy",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{bearer_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseurl}}/product",
-							"host": [
-								"{{baseurl}}"
-							],
-							"path": [
-								"product"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "get ProductById",
 					"request": {
 						"auth": {
@@ -721,13 +681,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseurl}}/product/1",
+							"raw": "{{baseurl}}/product/38",
 							"host": [
 								"{{baseurl}}"
 							],
 							"path": [
 								"product",
-								"1"
+								"38"
 							]
 						}
 					},
@@ -750,7 +710,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"name of product10\",\r\n    \"description\": \"description of product10\",\r\n    \"salesPrice\": 59.0,\r\n    \"grossPrice\": 61.0,\r\n    \"vatRate\": 10,\r\n    \"code\": \"10 code\",\r\n    \"shop\": {\r\n        \"tenantId\": 5\r\n    },\r\n    \"gtin\": \"5445678901010\",\r\n    \"stock\": 10,\r\n    \"isActive\": true\r\n}",
+							"raw": "{\r\n    \"isActive\": true,\r\n    \"code\": \"Hkn-mnst\",\r\n    \"name\": \"Hakan'in Monsteri\",\r\n    \"gtin\": \"1111111111\",\r\n    \"description\": \"KIYMETLIMIZ\",\r\n    \"images\": [\r\n        {\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/9ad184b0-d0ff-4bf9-906b-9bd1b5fbbf9e.jpg?alt=media\",\r\n            \"isThumbnail\": true\r\n        },\r\n        {\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/10747be1-e4e9-454d-81e2-c132dbe3b860.jpg?alt=media\",\r\n            \"isThumbnail\": false\r\n        }\r\n    ],\r\n    \"stock\": 1,\r\n    \"vatRate\": 0,\r\n    \"salesPrice\": 9999,\r\n    \"grossPrice\": 9999\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -822,7 +782,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1,\r\n    \"name\": \"test for update name of product1\",\r\n    \"description\": \"test for update description of product1\",\r\n    \"salesPrice\": 47.0,\r\n    \"grossPrice\": 54.0,\r\n    \"vatRate\": 7.0,\r\n    \"code\": \"123asdwq\",\r\n    \"shop\": {\r\n        \"tenantId\": 1\r\n    },\r\n    \"gtin\": \"test for update 5445678901061\",\r\n    \"stock\": 7,\r\n    \"active\": true\r\n}",
+							"raw": "{\r\n    \"isActive\": true,\r\n    \"code\": \"Hkn-mnst\",\r\n    \"name\": \"Hakan'in Monsteri\",\r\n    \"gtin\": \"1111111111\",\r\n    \"description\": \"YENİ AÇIKLAMA\",\r\n    \"images\": [\r\n        {\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/9ad184b0-d0ff-4bf9-906b-9bd1b5fbbf9e.jpg?alt=media\",\r\n            \"isThumbnail\": true\r\n        },\r\n        {\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/10747be1-e4e9-454d-81e2-c132dbe3b860.jpg?alt=media\",\r\n            \"isThumbnail\": false\r\n        },\r\n        {\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/322a60e3-55f3-4937-9f36-8dd238874981.jpg?alt=media\", // Yeni resim\r\n            \"isThumbnail\": false\r\n        }\r\n    ],\r\n    \"stock\": 1,\r\n    \"vatRate\": 0,\r\n    \"salesPrice\": 9999,\r\n    \"grossPrice\": 9999\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -830,13 +790,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseurl}}/product/1",
+							"raw": "{{baseurl}}/product/38",
 							"host": [
 								"{{baseurl}}"
 							],
 							"path": [
 								"product",
-								"1"
+								"38"
 							]
 						}
 					},
@@ -882,6 +842,224 @@
 			]
 		},
 		{
+			"name": "Category",
+			"item": [
+				{
+					"name": "get AllCategories",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/category",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get CategoryById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/category/1",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"category",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create singleCategory",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"name of product10\",\r\n    \"description\": \"description of product10\",\r\n    \"salesPrice\": 59.0,\r\n    \"grossPrice\": 61.0,\r\n    \"vatRate\": 10,\r\n    \"code\": \"10 code\",\r\n    \"shop\": {\r\n        \"tenantId\": 5\r\n    },\r\n    \"gtin\": \"5445678901010\",\r\n    \"stock\": 10,\r\n    \"isActive\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/product",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create multipleCategories",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"name\": \"name of product1\",\r\n        \"description\": \"description of product1\",\r\n        \"salesPrice\": 47.0,\r\n        \"grossPrice\": 54.0,\r\n        \"vatRate\": 7,\r\n        \"code\": \"123asdwq\",\r\n        \"shop\": {\r\n            \"tenantId\": 1\r\n        },\r\n        \"gtin\": \"5445678901061\",\r\n        \"stock\": 8,\r\n        \"isActive\": true\r\n    },\r\n    {\r\n        \"name\": \"name of product2\",\r\n        \"description\": \"description of product2\",\r\n        \"salesPrice\": 37.0,\r\n        \"grossPrice\": 123.0,\r\n        \"vatRate\": 3,\r\n        \"code\": \"5123wq\",\r\n        \"shop\": {\r\n            \"tenantId\": 2\r\n        },\r\n        \"gtin\": \"1845123901001\",\r\n        \"stock\": 76,\r\n        \"isActive\": true\r\n    },\r\n    {\r\n        \"name\": \"name of product3\",\r\n        \"description\": \"description of product3\",\r\n        \"salesPrice\": 49.0,\r\n        \"grossPrice\": 56.0,\r\n        \"vatRate\": 12,\r\n        \"code\": \"asd123asd\",\r\n        \"shop\": {\r\n            \"tenantId\": 3\r\n        },\r\n        \"gtin\": \"5325678901001\",\r\n        \"stock\": 89,\r\n        \"isActive\": true\r\n    },\r\n    {\r\n        \"name\": \"name of product4\",\r\n        \"description\": \"description of product4\",\r\n        \"salesPrice\": 97.79,\r\n        \"grossPrice\": 123.56,\r\n        \"vatRate\": 31,\r\n        \"code\": \"gcdff213asd\",\r\n        \"shop\": {\r\n            \"tenantId\": 1\r\n        },\r\n        \"gtin\": \"1845523401001\",\r\n        \"stock\": 74,\r\n        \"isActive\": true\r\n    },\r\n    {\r\n        \"name\": \"name of product5\",\r\n        \"description\": \"description of product5\",\r\n        \"salesPrice\": 7.97,\r\n        \"grossPrice\": 17.46,\r\n        \"vatRate\": 24,\r\n        \"code\": \"ghjfgwr\",\r\n        \"shop\": {\r\n            \"tenantId\": 2\r\n        },\r\n        \"gtin\": \"18456784353054\",\r\n        \"stock\": 35,\r\n        \"isActive\": true\r\n    },\r\n    {\r\n        \"name\": \"name of product6\",\r\n        \"description\": \"description of product6\",\r\n        \"salesPrice\": 55.45,\r\n        \"grossPrice\": 61.78,\r\n        \"vatRate\": 14,\r\n        \"code\": \"asdasdwq\",\r\n        \"shop\": {\r\n            \"tenantId\": 4\r\n        },\r\n        \"gtin\": \"1235678901007\",\r\n        \"stock\": 75,\r\n        \"isActive\": true\r\n    },\r\n    {\r\n        \"name\": \"name of product7\",\r\n        \"description\": \"description of product7\",\r\n        \"salesPrice\": 117.09,\r\n        \"grossPrice\": 137.79,\r\n        \"vatRate\": 10,\r\n        \"code\": \"lkşçjkl\",\r\n        \"shop\": {\r\n            \"tenantId\": 3\r\n        },\r\n        \"gtin\": \"7645678901562\",\r\n        \"stock\": 63,\r\n        \"isActive\": true\r\n    },\r\n    {\r\n        \"name\": \"name of product8\",\r\n        \"description\": \"description of product8\",\r\n        \"salesPrice\": 67.3,\r\n        \"grossPrice\": 74.7,\r\n        \"vatRate\": 11,\r\n        \"code\": \"gdfgdfwq\",\r\n        \"shop\": {\r\n            \"tenantId\": 4\r\n        },\r\n        \"gtin\": \"9655678901046\",\r\n        \"stock\": 45,\r\n        \"isActive\": true\r\n    },\r\n    {\r\n        \"name\": \"name of product9\",\r\n        \"description\": \"description of product9\",\r\n        \"salesPrice\": 63.06,\r\n        \"grossPrice\": 68.07,\r\n        \"vatRate\": 13,\r\n        \"code\": \"jgfhwe213\",\r\n        \"shop\": {\r\n            \"tenantId\": 2\r\n        },\r\n        \"gtin\": \"1845678901001\",\r\n        \"stock\": 7,\r\n        \"isActive\": true\r\n    }\r\n]\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/category",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update CategoryById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"name\": \"test for update name of product1\",\r\n    \"description\": \"test for update description of product1\",\r\n    \"salesPrice\": 47.0,\r\n    \"grossPrice\": 54.0,\r\n    \"vatRate\": 7.0,\r\n    \"code\": \"123asdwq\",\r\n    \"shop\": {\r\n        \"tenantId\": 1\r\n    },\r\n    \"gtin\": \"test for update 5445678901061\",\r\n    \"stock\": 7,\r\n    \"active\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/category/1",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"category",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete Category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/category/1",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"category",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Image",
 			"item": [
 				{
@@ -911,14 +1089,9 @@
 									"key": "file",
 									"type": "file",
 									"src": [
-										"postman-cloud:///1ef17941-3ec8-4100-9216-ee6d941bd84e",
-										"postman-cloud:///1ef17941-3e79-4f00-8f34-a30438c145cd"
+										"postman-cloud:///1ef1881e-7251-4670-948c-1b38054e1cb9",
+										"postman-cloud:///1ef1881b-dbf6-46a0-b75b-3c7a95d0eb96"
 									]
-								},
-								{
-									"key": "productId",
-									"value": "4",
-									"type": "text"
 								}
 							]
 						},

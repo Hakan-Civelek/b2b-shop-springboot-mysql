@@ -68,8 +68,7 @@ public class ImageService {
     }
 
     @Transactional
-    public List<String> upload(HttpServletRequest request, Long productId, List<MultipartFile> multipartFiles) {
-        Product product = productService.findProductById(productId);
+    public List<String> upload(HttpServletRequest request, List<MultipartFile> multipartFiles) {
         String token = request.getHeader("Authorization").split("Bearer ")[1];
         String userName = jwtService.extractUser(token);
         User user = userService.findUserByName(userName);
@@ -84,7 +83,6 @@ public class ImageService {
                 String URL = this.uploadFile(file, fileName);
                 Image image = new Image();
                 image.setUrl(URL);
-                image.setProduct(product);
                 image.setCreatedBy(user);
                 imageRepository.save(image);
                 urls.add(URL);

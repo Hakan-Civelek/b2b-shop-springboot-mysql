@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.List;
+
 @Data
 @Entity
 @Table(name = "product")
@@ -36,7 +38,8 @@ public class Product {
 
     //category
     //brand
-    //images
+    @OneToMany
+    private List<Image> images;
 
     @Column(unique = true)
     private String gtin;
