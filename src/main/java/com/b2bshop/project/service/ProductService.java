@@ -50,7 +50,7 @@ public class ProductService {
                 " image.url, image.id " +
                 " FROM Product as product " +
                 " JOIN product.shop s " +
-                " JOIN Image as image ON image.product.id = product.id " +
+                " LEFT JOIN Image as image ON image.product.id = product.id " +
                 " WHERE 1 = 1 ";
 
         if (tenantId != null) {
