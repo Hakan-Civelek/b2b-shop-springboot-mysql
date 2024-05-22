@@ -30,18 +30,19 @@ public class ProductController {
         return productService.getAllProducts(request);
     }
 
-    @PostMapping()
-    public List<Product> addProduct(@RequestBody List<CreateProductRequest> requests) {
-        List<Product> createdProducts = new ArrayList<>();
-        for (CreateProductRequest product : requests) {
-            createdProducts.add(productService.createProduct(product));
-        }
-        return createdProducts;
-    }
-
-//    public Product addProduct(@RequestBody CreateProductRequest request) {
-//        return productService.createProduct(request);
+//    @PostMapping()
+//    public List<Product> addProduct(@RequestBody List<CreateProductRequest> requests) {
+//        List<Product> createdProducts = new ArrayList<>();
+//        for (CreateProductRequest product : requests) {
+//            createdProducts.add(productService.createProduct(product));
+//        }
+//        return createdProducts;
 //    }
+
+    @PostMapping()
+    public Product addProduct(@RequestBody CreateProductRequest request) {
+        return productService.createProduct(request);
+    }
 
     @GetMapping("/{productId}")
     public Product getProductById(@PathVariable Long productId) {

@@ -25,18 +25,19 @@ public class ShopController {
         return shopRepository.findAll();
     }
 
-    @PostMapping()
-    public List<Shop> addShop(@RequestBody List<CreateShopRequest> requests) {
-        List<Shop> createdShops = new ArrayList<>();
-        for (CreateShopRequest shop : requests) {
-            createdShops.add(shopService.createShop(shop));
-        }
-        return createdShops;
-    }
-
-//    public Shop addShop(@RequestBody CreateShopRequest request) {
-//        return shopService.createShop(request);
+//    @PostMapping()
+//    public List<Shop> addShop(@RequestBody List<CreateShopRequest> requests) {
+//        List<Shop> createdShops = new ArrayList<>();
+//        for (CreateShopRequest shop : requests) {
+//            createdShops.add(shopService.createShop(shop));
+//        }
+//        return createdShops;
 //    }
+
+    @PostMapping()
+    public Shop addShop(@RequestBody CreateShopRequest request) {
+        return shopService.createShop(request);
+    }
 
     @GetMapping("/{shopId}")
     public Shop getShopById(@PathVariable Long shopId) {
