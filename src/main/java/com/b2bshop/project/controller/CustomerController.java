@@ -25,15 +25,16 @@ public class CustomerController {
         return customerRepository.findAll();
     }
 
-    @PostMapping()
-    public List<Customer> addCustomer(@RequestBody List<CreateCustomerRequest> requests) {
-        List<Customer> createdCustomers = new ArrayList<>();
-        for (CreateCustomerRequest request : requests) {
-            customerService.createCustomer(request);
-        }
-        return createdCustomers;
-    }
+//    @PostMapping()
+//    public List<Customer> addCustomer(@RequestBody List<CreateCustomerRequest> requests) {
+//        List<Customer> createdCustomers = new ArrayList<>();
+//        for (CreateCustomerRequest request : requests) {
+//            createdCustomers.add(customerService.createCustomer(request));
+//        }
+//        return createdCustomers;
+//    }
 
+    @PostMapping()
     public Customer addCustomer(@RequestBody CreateCustomerRequest request) {
         return customerService.createCustomer(request);
     }

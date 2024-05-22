@@ -81,7 +81,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"first shop\",\r\n    \"email\": \"firstshop@mail.com\"\r\n}",
+							"raw": "{\r\n    \"name\": \"fifth shop\",\r\n    \"email\": \"fifthshop@mail.com\",\r\n    \"phoneNumber\": \"05678478965\",\r\n    \"vatNumber\": \"5 vatNumber\",\r\n    \"aboutUs\": \"5 aboutUs\",\r\n    \"privacyPolicy\": \"5 privacyPolicy\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -287,7 +287,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"first customer\",\r\n    \"email\": \"firstcustomer@mail.com\",\r\n    \"shop\": {\r\n        \"tenantId\": 1\r\n    },\r\n    \"vatNumber\": \"first vatNumber\",\r\n    \"phoneNumber\": \"05678478911\"\r\n}",
+							"raw": "{\r\n    \"name\": \"fifth customer\",\r\n    \"email\": \"fifthcustomer@mail.com\",\r\n    \"shop\": {\r\n        \"tenantId\": 5\r\n    },\r\n    \"vatNumber\": \"fifth vatNumber\",\r\n    \"phoneNumber\": \"05678478965\",\r\n    \"isActive\": true\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -493,7 +493,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Hakan\",\r\n    \"username\": \"hakan\",\r\n    \"password\": \"pass\",\r\n    \"email\": \"hakan@email.com\",\r\n    \"authorities\": [\"ROLE_ADMIN\"]\r\n}",
+							"raw": "{\r\n    \"name\": \"Mahmut\",\r\n    \"username\": \"mahmut\",\r\n    \"password\": \"pass\",\r\n    \"email\": \"mahmut@email.com\",\r\n    \"phoneNumber\": \"05369874513\",\r\n    \"authorities\": [\r\n        \"ROLE_CUSTOMER_USER\"\r\n    ],\r\n    \"customer\": {\r\n        \"tenantId\": 5\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -750,7 +750,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"name of product1\",\r\n    \"description\": \"description of product1\",\r\n    \"salesPrice\": 54.0,\r\n    \"grossPrice\": 47.0,\r\n    \"gtin\": \"12323123123123\",\r\n    \"stock\": 8\r\n}",
+							"raw": "{\r\n    \"name\": \"name of product10\",\r\n    \"description\": \"description of product10\",\r\n    \"salesPrice\": 59.0,\r\n    \"grossPrice\": 61.0,\r\n    \"vatRate\": 10,\r\n    \"code\": \"10 code\",\r\n    \"shop\": {\r\n        \"tenantId\": 5\r\n    },\r\n    \"gtin\": \"5445678901010\",\r\n    \"stock\": 10,\r\n    \"isActive\": true\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
