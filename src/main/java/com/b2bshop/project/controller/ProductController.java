@@ -5,6 +5,7 @@ import com.b2bshop.project.model.Product;
 import com.b2bshop.project.repository.ProductRepository;
 import com.b2bshop.project.service.ProductService;
 import com.b2bshop.project.service.SecurityService;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,8 +41,8 @@ public class ProductController {
 //    }
 
     @PostMapping()
-    public Product addProduct(@RequestBody CreateProductRequest request) {
-        return productService.createProduct(request);
+    public Product addProduct(HttpServletRequest request, @RequestBody JsonNode json) {
+        return productService.createProduct(request, json);
     }
 
     @GetMapping("/{productId}")

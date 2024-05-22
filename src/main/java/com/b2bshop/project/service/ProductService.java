@@ -1,15 +1,15 @@
 package com.b2bshop.project.service;
 
-import com.b2bshop.project.dto.CreateProductRequest;
 import com.b2bshop.project.exception.ProductNotFoundException;
-import com.b2bshop.project.model.Product;
-import com.b2bshop.project.model.Role;
-import com.b2bshop.project.model.User;
+import com.b2bshop.project.model.*;
 import com.b2bshop.project.repository.CustomerRepository;
+import com.b2bshop.project.repository.ImageRepository;
 import com.b2bshop.project.repository.ProductRepository;
 import com.b2bshop.project.repository.UserRepository;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Service;
@@ -24,14 +24,16 @@ public class ProductService {
     private final SecurityService securityService;
     private final JwtService jwtService;
     private final UserRepository userRepository;
+    private final ImageRepository imageRepository;
 
     public ProductService(ProductRepository productRepository, SecurityService securityService, JwtService jwtService, CustomerRepository customerRepository,
-                          UserRepository userRepository, EntityManager entityManager) {
+                          UserRepository userRepository, EntityManager entityManager, ImageRepository imageRepository) {
         this.productRepository = productRepository;
         this.securityService = securityService;
         this.jwtService = jwtService;
         this.userRepository = userRepository;
         this.entityManager = entityManager;
+        this.imageRepository = imageRepository;
     }
 
     public List<Map<String, Object>> getAllProducts(HttpServletRequest request) {
@@ -46,11 +48,9 @@ public class ProductService {
 
         Session session = entityManager.unwrap(Session.class);
         String hqlQuery = "SELECT product.id, product.name, product.description, product.salesPrice, product.grossPrice, " +
-                " product.vatRate, product.code, product.shop, product.gtin, product.stock, product.isActive, " +
-                " image.url, image.id " +
+                " product.vatRate, product.code, product.shop, product.gtin, product.stock, product.isActive " +
                 " FROM Product as product " +
                 " JOIN product.shop s " +
-                " LEFT JOIN Image as image ON image.product.id = product.id " +
                 " WHERE 1 = 1 ";
 
         if (tenantId != null) {
@@ -65,13 +65,11 @@ public class ProductService {
         }
 
         List<Map<String, Object>> resultList = new ArrayList<>();
-        Map<Long, Map<String, Object>> productMap = new HashMap<>();
         List<Object[]> rows = query.list();
 
         for (Object[] row : rows) {
+            Map<String, Object> resultMap = new HashMap<>();
             Long productId = (Long) row[0];
-            if (!productMap.containsKey(productId)) {
-                Map<String, Object> resultMap = new HashMap<>();
                 resultMap.put("id", row[0]);
                 resultMap.put("name", row[1]);
                 resultMap.put("description", row[2]);
@@ -83,36 +81,62 @@ public class ProductService {
                 resultMap.put("gtin", row[8]);
                 resultMap.put("stock", row[9]);
                 resultMap.put("isActive", row[10]);
-                resultMap.put("images", new ArrayList<Map<String, Object>>());
-                productMap.put(productId, resultMap);
-            }
+            List<Map<String, Object>> images = new ArrayList<>();
+            Product product = productRepository.findById(productId).orElse(null);
+            if (product != null) {
+                for (Image image : product.getImages()) {
             Map<String, Object> imageMap = new HashMap<>();
-            imageMap.put("imageUrl", row[11]);
-            imageMap.put("imageId", row[12]);
-            ((List<Map<String, Object>>) productMap.get(productId).get("images")).add(imageMap);
+                    imageMap.put("imageUrl", image.getUrl());
+                    imageMap.put("imageId", image.getId());
+                    images.add(imageMap);
+                }
         }
+            resultMap.put("images", images);
 
-        resultList.addAll(productMap.values());
+            resultList.add(resultMap);
+        }
         return resultList;
     }
 
-    public Product createProduct(CreateProductRequest request) {
-        Product newProduct = Product.builder()
-                .name(request.name())
-                .description(request.description())
-                .salesPrice(request.salesPrice())
-                .grossPrice(request.grossPrice())
-                .vatRate(request.vatRate())
-                .code(request.code())
-                .shop(request.shop())
-                .gtin(request.gtin())
-                .stock(request.stock())
-                .isActive(request.isActive())
-                .build();
+    @Transactional
+    public Product createProduct(HttpServletRequest request, JsonNode json) {
+        String token = request.getHeader("Authorization").split("Bearer ")[1];
+        String userName = jwtService.extractUser(token);
+        User user = userRepository.findByUsername(userName).orElseThrow(() -> new RuntimeException("User not found"));
 
-        return productRepository.save(newProduct);
+        Shop shop = user.getShop();
+
+        Product product = new Product();
+        product.setName(json.get("name").asText());
+        product.setDescription(json.get("description").asText());
+        product.setSalesPrice(json.get("salesPrice").asDouble());
+        product.setGrossPrice(json.get("grossPrice").asDouble());
+        product.setVatRate(json.get("vatRate").asDouble());
+        product.setCode(json.get("code").asText());
+        product.setGtin(json.get("gtin").asText());
+        product.setStock(json.get("stock").asInt());
+        product.setActive(json.get("isActive").asBoolean());
+        product.setShop(shop);
+
+        List<Image> images = new ArrayList<>();
+        if (json.has("images")) {
+            for (JsonNode imageNode : json.get("images")) {
+                Image image = new Image();
+                image.setUrl(imageNode.get("url").asText());
+                image.setCreatedBy(user);
+                image.setIsThumbnail(imageNode.get("isThumbnail").booleanValue());
+                images.add(image);
+            }
+        }
+        product.setImages(images);
+
+        product = productRepository.save(product);
+        imageRepository.saveAll(images);
+
+        return product;
     }
 
+    @Transactional
     public Product updateProductById(Long productId, Product newProduct) {
         Product product = findProductById(productId);
 
@@ -127,7 +151,21 @@ public class ProductService {
         product.setStock(newProduct.getStock());
         product.setActive(newProduct.isActive());
 
+        List<Image> newImages = newProduct.getImages();
+
+        if (newImages != null) {
+            product.getImages().clear();
+
+            for (Image newImage : newImages) {
+                if (newImage.getId() == null) {
+                    newImage = imageRepository.save(newImage);
+                }
+                product.getImages().add(newImage);
+            }
+        }
+
         productRepository.saveAndFlush(product);
+
         return product;
     }
 

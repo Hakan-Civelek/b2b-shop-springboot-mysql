@@ -24,7 +24,5 @@ public class Image {
     @JoinColumn(name = "created_by_id")
     private User createdBy;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    private Boolean isThumbnail;
 }
