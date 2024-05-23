@@ -1,7 +1,6 @@
 package com.b2bshop.project.controller;
 
 import com.b2bshop.project.model.Order;
-import com.b2bshop.project.repository.OrderRepository;
 import com.b2bshop.project.service.OrderService;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,5 +26,20 @@ public class OrderController {
     @PostMapping()
     public Order addOrder(HttpServletRequest request, @RequestBody JsonNode json) {
         return orderService.createOrder(request, json);
+    }
+
+    @GetMapping("/{id}")
+    public Order getOrderById(@PathVariable Long id) {
+        return orderService.findOrderById(id);
+    }
+
+    @PutMapping("/{id}")
+    public Order updateOrder(@PathVariable Long id, @RequestBody JsonNode json) {
+        return orderService.updateOrder(id, json);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteOrder(@PathVariable Long id) {
+        orderService.deleteOrder(id);
     }
 }

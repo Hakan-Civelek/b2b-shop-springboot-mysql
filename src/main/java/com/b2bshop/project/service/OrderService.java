@@ -221,4 +221,22 @@ public class OrderService {
         return orderRepository.findById(id).orElseThrow(()
                 -> new OrderNotFoundException("Order could not find by id: " + id));
     }
+
+    @Transactional
+    public Order updateOrder(Long id, JsonNode json) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new OrderNotFoundException("Order could not find by id: " + id));
+
+        OrderStatus newStatus = OrderStatus.valueOf(json.get("orderStatus").get("status").asText());
+        order.setOrderStatus(newStatus);
+
+        return orderRepository.save(order);
+    }
+
+    @Transactional
+    public void deleteOrder(Long id) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new OrderNotFoundException("Order could not find by id: " + id));
+        orderRepository.delete(order);
+    }
 }
