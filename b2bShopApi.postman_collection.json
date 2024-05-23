@@ -1416,7 +1416,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"orderNote\": \"order note2\",\r\n    \"basketId\": 1,\r\n    \"invoiceAddressId\": 1,\r\n    \"receiverAddressId\": 1,\r\n    \"orderItems\": [ \r\n        {\r\n            \"quantity\": 1,\r\n            \"productId\": 1,\r\n            \"salesPrice\": 47.0,\r\n            \"basketItemId\": 1,\r\n            \"grossPrice\": 54.0,\r\n            \"productName\": \"name of product1\"\r\n        },\r\n        {\r\n            \"quantity\": 12,\r\n            \"productId\": 4,\r\n            \"salesPrice\": 97.79,\r\n            \"basketItemId\": 2,\r\n            \"grossPrice\": 123.56,\r\n            \"productName\": \"name of product4\"\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"orderNote\": \"test for new create order\",\r\n    \"basketId\": 7,\r\n    \"invoiceAddressId\": 1,\r\n    \"receiverAddressId\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

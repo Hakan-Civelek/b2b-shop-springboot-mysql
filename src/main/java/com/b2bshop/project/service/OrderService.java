@@ -29,10 +29,12 @@ public class OrderService {
     private final ProductRepository productRepository;
     private final AddressService addressService;
 
+    private final BasketService basketService;
+
     public OrderService(SecurityService securityService, JwtService jwtService, UserRepository userRepository,
                         OrderRepository orderRepository, BasketRepository basketRepository, EntityManager entityManager,
                         CustomerService customerService, ProductService productService,
-                        ProductRepository productRepository, AddressService addressService) {
+                        ProductRepository productRepository, AddressService addressService, BasketService basketService) {
         this.securityService = securityService;
         this.jwtService = jwtService;
         this.userRepository = userRepository;
@@ -43,6 +45,7 @@ public class OrderService {
         this.productRepository = productRepository;
         this.entityManager = entityManager;
         this.addressService = addressService;
+        this.basketService = basketService;
     }
 
     @Transactional
@@ -59,25 +62,30 @@ public class OrderService {
                 " orderItem.refProductId as orderItemRefProductId, orderItem.name as orderItemName, " +
                 " orderItem.salesPrice as orderItemSalesPrice, orderItem.grossPrice as orderItemGrossPrice," +
                 " orderItem.quantity as orderItemQuantity, orderItem.id as orderItemId," +
-                " invoiceAddress as invoiceAddressMap, receiverAddress as receiverAddressMap " +
+                " invoiceAddress as invoiceAddressMap, receiverAddress as receiverAddressMap, " +
+                " image.id as imageId, image.url as imageUrl " +
                 " FROM Order as order " +
                 " JOIN order.customer as customer ON customer.tenantId = :tenantId" +
                 " JOIN order.createdBy as createdBy " +
                 " JOIN order.orderItems as orderItem " +
+                " JOIN orderItem.images as image " +
                 " JOIN order.invoiceAddress as invoiceAddress " +
                 " JOIN order.receiverAddress as receiverAddress " +
                 " WHERE  1 = 1 ";
 
         Query query = session.createQuery(orderQuery);
-
         query.setParameter("tenantId", tenantId);
 
         List<Map<String, Object>> orderResultList = new ArrayList<>();
         Map<Long, Map<String, Object>> orderResultMap = new HashMap<>();
+        Map<Long, List<Map<String, Object>>> orderItemImagesMap = new HashMap<>();
         List<Object[]> orderRows = query.list();
 
         for (Object[] orderRow : orderRows) {
             Long orderId = (Long) orderRow[0];
+            Long orderItemId = (Long) orderRow[14];
+            Long imageId = (Long) orderRow[17];
+
             Map<String, Object> orderMap = orderResultMap.getOrDefault(orderId, new HashMap<>());
             orderMap.put("orderId", orderId);
             orderMap.put("orderNumber", orderRow[7]);
@@ -91,15 +99,28 @@ public class OrderService {
 
             List<Map<String, Object>> orderItems = (List<Map<String, Object>>) orderMap.getOrDefault("orderItems", new ArrayList<>());
 
-            Map<String, Object> orderItem = new HashMap<>();
-            orderItem.put("name", orderRow[10]);
-            orderItem.put("grossPrice", orderRow[12]);
-            orderItem.put("salesPrice", orderRow[11]);
-            orderItem.put("quantity", orderRow[13]);
-            orderItem.put("refProductId", orderRow[9]);
-            orderItem.put("id", orderRow[14]);
+            Map<String, Object> orderItem = orderItems.stream()
+                    .filter(item -> item.get("id").equals(orderItemId))
+                    .findFirst()
+                    .orElse(new HashMap<>());
 
-            orderItems.add(orderItem);
+            if (!orderItem.containsKey("id")) {
+                orderItem.put("name", orderRow[10]);
+                orderItem.put("grossPrice", orderRow[12]);
+                orderItem.put("salesPrice", orderRow[11]);
+                orderItem.put("quantity", orderRow[13]);
+                orderItem.put("refProductId", orderRow[9]);
+                orderItem.put("id", orderItemId);
+                orderItem.put("images", new ArrayList<Map<String, Object>>());
+                orderItems.add(orderItem);
+            }
+
+            List<Map<String, Object>> images = (List<Map<String, Object>>) orderItem.get("images");
+            Map<String, Object> image = new HashMap<>();
+            image.put("id", imageId);
+            image.put("url", orderRow[18]);
+            images.add(image);
+
             orderMap.put("orderItems", orderItems);
             orderMap.put("invoiceAddress", orderRow[15]);
             orderMap.put("receiverAddress", orderRow[16]);
@@ -117,6 +138,7 @@ public class OrderService {
         Long tenantId = securityService.returnTenantIdByUsernameOrToken("token", token);
         Long invoiceAddressId = json.get("invoiceAddressId").asLong();
         Long receiverAddressId = json.get("receiverAddressId").asLong();
+        Long basketId = json.get("basketId").asLong();
 
         Order order = new Order();
         String orderNumber = generateOrderNumber(tenantId);
@@ -127,42 +149,54 @@ public class OrderService {
         order.setOrderNote(orderNote);
         order.setOrderItems(new ArrayList<>());
         order.setOrderDate(new Date());
-        order.setCreatedBy(userRepository.findByUsername(userName).orElseThrow(()
-                -> new RuntimeException("User not found")));
+        order.setCreatedBy(userRepository.findByUsername(userName).orElseThrow(() -> new RuntimeException("User not found")));
         order.setInvoiceAddress(addressService.findAddressById(invoiceAddressId));
         order.setReceiverAddress(addressService.findAddressById(receiverAddressId));
 
-        JsonNode orderItems = json.get("orderItems");
+        List<BasketItem> basketItems = basketRepository.findById(basketId).orElseThrow(() -> new RuntimeException("Basket not found")).getBasketItems();
         Double totalPrice = 0.0;
         Double withoutTaxPrice = 0.0;
         Double totalTax = 0.0;
-        for (JsonNode orderItemNode : orderItems) {
-            totalPrice += orderItemNode.get("grossPrice").asDouble() * (orderItemNode.get("quantity").asDouble());
-            withoutTaxPrice += orderItemNode.get("salesPrice").asDouble() * (orderItemNode.get("quantity").asDouble());
-            totalTax = totalPrice - withoutTaxPrice;
-            Long refProductId = (orderItemNode.get("productId").asLong());
-            Product refProduct = productService.findProductById(orderItemNode.get("productId").asLong());
-            boolean isStockAvailable = productService.checkStockById(refProductId, (orderItemNode.get("quantity")).asInt());
+
+        for (BasketItem basketItem : basketItems) {
+            Product refProduct = basketItem.getProduct();
+            boolean isStockAvailable = productService.checkStockById(refProduct.getId(), basketItem.getQuantity());
 
             if (isStockAvailable) {
+                List<Image> imagesCopy = new ArrayList<>();
+                for (Image image : refProduct.getImages()) {
+                    Image imageCopy = new Image();
+                    imageCopy.setUrl(image.getUrl());
+                    imagesCopy.add(imageCopy);
+                }
+
                 OrderItem orderItem = OrderItem.builder()
-                        .refProductId(refProductId)
-                        .name(orderItemNode.get("productName").asText())
-                        .salesPrice(((orderItemNode.get("salesPrice")).asDouble()))
-                        .grossPrice((orderItemNode.get("grossPrice")).asDouble())
-                        .quantity((orderItemNode.get("quantity")).asInt())
+                        .refProductId(refProduct.getId())
+                        .name(refProduct.getName())
+                        .salesPrice(refProduct.getSalesPrice())
+                        .grossPrice(refProduct.getGrossPrice())
+                        .quantity(basketItem.getQuantity())
+                        .images(imagesCopy)
                         .build();
 
-                refProduct.setStock(refProduct.getStock() - (orderItemNode.get("quantity")).asInt());
+                totalPrice += refProduct.getGrossPrice() * basketItem.getQuantity();
+                withoutTaxPrice += refProduct.getSalesPrice() * basketItem.getQuantity();
+                totalTax = totalPrice - withoutTaxPrice;
 
-                basketRepository.deleteById(json.get("basketId").asLong());
+                refProduct.setStock(refProduct.getStock() - basketItem.getQuantity());
+
                 order.getOrderItems().add(orderItem);
-            } else
-                throw new RuntimeException("Stock is not enough for material: " + productService.findProductById(refProductId).getName());
+            } else {
+                throw new RuntimeException("Stock is not enough for material: " + refProduct.getName());
+            }
         }
+
         order.setTotalPrice(totalPrice);
         order.setWithoutTaxPrice(withoutTaxPrice);
         order.setTotalTax(totalTax);
+
+        basketRepository.deleteById(basketId);
+
         return orderRepository.save(order);
     }
 
@@ -177,7 +211,7 @@ public class OrderService {
         return orderNumber;
     }
 
-    public Order findOrderById(Long id){
+    public Order findOrderById(Long id) {
         return orderRepository.findById(id).orElseThrow(()
                 -> new OrderNotFoundException("Order could not find by id: " + id));
     }

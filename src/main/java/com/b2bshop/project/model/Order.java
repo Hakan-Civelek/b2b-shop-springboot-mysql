@@ -27,7 +27,7 @@ public class Order {
     @Column(unique = true)
     String orderNumber;
     private String orderNote;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems;
     private Date orderDate;
 //    orderStatus ? sipariş verildi, onaylandı, tamamlandı

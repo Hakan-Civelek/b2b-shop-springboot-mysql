@@ -38,7 +38,7 @@ public class Product {
 
     //category
     //brand
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images;
 
     @Column(unique = true)
