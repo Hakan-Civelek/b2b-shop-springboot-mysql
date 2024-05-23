@@ -63,12 +63,12 @@ public class OrderService {
                 " orderItem.salesPrice as orderItemSalesPrice, orderItem.grossPrice as orderItemGrossPrice," +
                 " orderItem.quantity as orderItemQuantity, orderItem.id as orderItemId," +
                 " invoiceAddress as invoiceAddressMap, receiverAddress as receiverAddressMap, " +
-                " image.id as imageId, image.url as imageUrl " +
+                " image.id as imageId, image.url as imageUrl, order.orderStatus as orderStatusId" +
                 " FROM Order as order " +
                 " JOIN order.customer as customer ON customer.tenantId = :tenantId" +
                 " JOIN order.createdBy as createdBy " +
                 " JOIN order.orderItems as orderItem " +
-                " JOIN orderItem.images as image " +
+                " LEFT JOIN orderItem.images as image " +
                 " JOIN order.invoiceAddress as invoiceAddress " +
                 " JOIN order.receiverAddress as receiverAddress " +
                 " WHERE  1 = 1 ";
@@ -78,7 +78,6 @@ public class OrderService {
 
         List<Map<String, Object>> orderResultList = new ArrayList<>();
         Map<Long, Map<String, Object>> orderResultMap = new HashMap<>();
-        Map<Long, List<Map<String, Object>>> orderItemImagesMap = new HashMap<>();
         List<Object[]> orderRows = query.list();
 
         for (Object[] orderRow : orderRows) {
@@ -96,6 +95,12 @@ public class OrderService {
             orderMap.put("totalPrice", orderRow[2]);
             orderMap.put("withoutTaxPrice", orderRow[3]);
             orderMap.put("totalTax", orderRow[4]);
+
+            OrderStatus orderStatus = (OrderStatus) orderRow[19];
+            Map<String, Object> orderStatusMap = new HashMap<>();
+            orderStatusMap.put("id", orderStatus.getId());
+            orderStatusMap.put("status", orderStatus.getStatus());
+            orderMap.put("orderStatus", orderStatusMap);
 
             List<Map<String, Object>> orderItems = (List<Map<String, Object>>) orderMap.getOrDefault("orderItems", new ArrayList<>());
 
@@ -152,6 +157,7 @@ public class OrderService {
         order.setCreatedBy(userRepository.findByUsername(userName).orElseThrow(() -> new RuntimeException("User not found")));
         order.setInvoiceAddress(addressService.findAddressById(invoiceAddressId));
         order.setReceiverAddress(addressService.findAddressById(receiverAddressId));
+        order.setOrderStatus(OrderStatus.OLUSTURULDU);
 
         List<BasketItem> basketItems = basketRepository.findById(basketId).orElseThrow(() -> new RuntimeException("Basket not found")).getBasketItems();
         Double totalPrice = 0.0;
