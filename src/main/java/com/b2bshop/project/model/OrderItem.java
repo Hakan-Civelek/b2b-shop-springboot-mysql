@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Entity
 @Table(name = "order_item")
@@ -21,4 +23,7 @@ public class OrderItem {
     private Double salesPrice;
     private Double grossPrice;
     private int quantity;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Image> images;
 }

@@ -51,10 +51,12 @@ public class BasketService {
                 " basket.id AS basketId, basketItem.id AS basketItemId, " +
                 " product.id AS productId, product.name AS productName, " +
                 " basketItem.quantity AS quantity, " +
-                " product.grossPrice AS grossPrice, product.salesPrice AS salesPrice " +
+                " product.grossPrice AS grossPrice, product.salesPrice AS salesPrice, " +
+                " image.id AS imageId, image.url AS imageUrl " +
                 " FROM Basket as basket " +
                 " JOIN basket.basketItems as basketItem " +
                 " JOIN basketItem.product as product " +
+                " LEFT JOIN product.images as image " +
                 " WHERE basket.user.id = :userId";
 
         Query query = session.createQuery(hqlQuery);
@@ -71,19 +73,30 @@ public class BasketService {
             Long basketId = (Long) firstRow[0];
             basketMap.put("id", basketId);
 
-            List<Map<String, Object>> basketItems = new ArrayList<>();
+            Map<Long, Map<String, Object>> basketItemsMap = new HashMap<>();
             for (Object[] row : rows) {
-                Map<String, Object> basketItem = new HashMap<>();
-                basketItem.put("basketItemId", row[1]);
-                basketItem.put("productId", row[2]);
-                basketItem.put("productName", row[3]);
-                basketItem.put("quantity", row[4]);
-                basketItem.put("grossPrice", row[5]);
-                basketItem.put("salesPrice", row[6]);
+                Long basketItemId = (Long) row[1];
 
-                basketItems.add(basketItem);
+                Map<String, Object> basketItem = basketItemsMap.getOrDefault(basketItemId, new HashMap<>());
+                if (!basketItem.containsKey("basketItemId")) {
+                    basketItem.put("basketItemId", basketItemId);
+                    basketItem.put("productId", row[2]);
+                    basketItem.put("productName", row[3]);
+                    basketItem.put("quantity", row[4]);
+                    basketItem.put("grossPrice", row[5]);
+                    basketItem.put("salesPrice", row[6]);
+                    basketItem.put("images", new ArrayList<Map<String, Object>>());
+                    basketItemsMap.put(basketItemId, basketItem);
+                }
+
+                List<Map<String, Object>> images = (List<Map<String, Object>>) basketItem.get("images");
+                Map<String, Object> image = new HashMap<>();
+                image.put("id", row[7]);
+                image.put("url", row[8]);
+                images.add(image);
             }
-            basketMap.put("basketItems", basketItems);
+
+            basketMap.put("basketItems", new ArrayList<>(basketItemsMap.values()));
         }
 
         return basketMap;
