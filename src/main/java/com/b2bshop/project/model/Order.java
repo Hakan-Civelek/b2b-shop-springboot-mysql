@@ -30,7 +30,9 @@ public class Order {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems;
     private Date orderDate;
-//    orderStatus ? sipariş verildi, onaylandı, tamamlandı
+    @Enumerated(EnumType.STRING)
+    @Column(name = "order_status")
+    private OrderStatus orderStatus;
     @ManyToOne
     @JoinColumn(name = "created_by_id")
     private User createdBy;
