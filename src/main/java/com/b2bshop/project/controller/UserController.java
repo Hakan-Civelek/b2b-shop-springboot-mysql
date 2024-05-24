@@ -24,8 +24,8 @@ public class UserController {
     }
 
     @GetMapping()
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<User> getAllUsers(HttpServletRequest request) {
+        return userService.getAllUsers(request);
     }
 
     @GetMapping("/me")

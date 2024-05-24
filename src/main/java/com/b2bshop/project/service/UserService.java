@@ -2,6 +2,7 @@ package com.b2bshop.project.service;
 
 import com.b2bshop.project.dto.CreateUserRequest;
 import com.b2bshop.project.exception.UserNotFoundException;
+import com.b2bshop.project.model.Role;
 import com.b2bshop.project.model.User;
 import com.b2bshop.project.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -12,7 +13,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -86,5 +91,29 @@ public class UserService implements UserDetailsService {
     public User findUserByName(String name) {
         return userRepository.findByUsername(name).orElseThrow(()
                 -> new UserNotFoundException("Customer could not find by name: " + name));
+    }
+
+    public List<User> getAllUsers(HttpServletRequest request) {
+        String token = request.getHeader("Authorization").split("Bearer ")[1];
+        String userName = jwtService.extractUser(token);
+        User user = userRepository.findByUsername(userName)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Set<Role> userRoles = user.getAuthorities();
+
+        if (userRoles.contains(Role.ROLE_CUSTOMER_USER)) {
+            return userRepository.findAllByCustomerTenantId(user.getCustomer().getTenantId());
+        } else if (userRoles.contains(Role.ROLE_SHOP_OWNER)) {
+            Long shopTenantId = user.getShop().getTenantId();
+            List<User> shopUsers = userRepository.findAllByShopTenantId(shopTenantId);
+            List<User> customerUsers = userRepository.findAllByCustomerShopTenantId(shopTenantId);
+            List<User> allUsers = new ArrayList<>();
+            allUsers.addAll(shopUsers);
+            allUsers.addAll(customerUsers);
+            return allUsers.stream().distinct().collect(Collectors.toList());
+        } else if (userRoles.contains(Role.ROLE_SYSTEM_OWNER)) {
+            return userRepository.findAll();
+        } else {
+            return List.of();
+        }
     }
 }
