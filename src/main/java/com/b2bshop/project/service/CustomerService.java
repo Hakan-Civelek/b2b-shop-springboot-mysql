@@ -3,18 +3,36 @@ package com.b2bshop.project.service;
 import com.b2bshop.project.dto.CreateCustomerRequest;
 import com.b2bshop.project.exception.CustomerNotFoundException;
 import com.b2bshop.project.model.Customer;
+import com.b2bshop.project.model.Shop;
+import com.b2bshop.project.model.User;
 import com.b2bshop.project.repository.CustomerRepository;
+import com.b2bshop.project.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.List;
 
 
 @Service
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
+    private final JwtService jwtService;
+    private final UserRepository userRepository;
 
-    public CustomerService(CustomerRepository customerRepository) {
+    public CustomerService(CustomerRepository customerRepository, JwtService jwtService, UserRepository userRepository) {
         this.customerRepository = customerRepository;
+        this.jwtService = jwtService;
+        this.userRepository = userRepository;
+    }
+
+    public List<Customer> getAllCustomers(HttpServletRequest request) {
+        String token = request.getHeader("Authorization").split("Bearer ")[1];
+        String userName = jwtService.extractUser(token);
+        User user = userRepository.findByUsername(userName).orElseThrow(() -> new RuntimeException("User not found"));
+        Shop shop = user.getShop();
+        return customerRepository.findAllByShop(shop);
     }
 
     @PostMapping

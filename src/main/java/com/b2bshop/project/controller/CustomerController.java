@@ -4,6 +4,7 @@ import com.b2bshop.project.dto.CreateCustomerRequest;
 import com.b2bshop.project.model.Customer;
 import com.b2bshop.project.repository.CustomerRepository;
 import com.b2bshop.project.service.CustomerService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -21,8 +22,8 @@ public class CustomerController {
     }
 
     @GetMapping()
-    public List<Customer> getAllCustomers() {
-        return customerRepository.findAll();
+    public List<Customer> getAllCustomers(HttpServletRequest request) {
+        return customerService.getAllCustomers(request);
     }
 
 //    @PostMapping()

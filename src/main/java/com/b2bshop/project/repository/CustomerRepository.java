@@ -1,8 +1,11 @@
 package com.b2bshop.project.repository;
 
 import com.b2bshop.project.model.Customer;
+import com.b2bshop.project.model.Shop;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CustomerRepository extends JpaRepository<Customer, Long> {
+import java.util.List;
 
+public interface CustomerRepository extends JpaRepository<Customer, Long> {
+    List<Customer> findAllByShop(Shop shop);
 }
