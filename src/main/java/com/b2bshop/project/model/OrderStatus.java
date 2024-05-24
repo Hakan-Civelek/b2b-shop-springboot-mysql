@@ -1,10 +1,10 @@
 package com.b2bshop.project.model;
 
 public enum OrderStatus {
-    OLUSTURULDU(0, "Oluşturuldu"),
-    ONAYLANDI(1, "Onaylandı"),
-    TAMAMLANDI(2, "Tamamlandı"),
-    IPTAL_EDILDI(3, "İptal Edildi");
+    OLUSTURULDU(0, "OLUSTURULDU"),
+    ONAYLANDI(1, "ONAYLANDI"),
+    TAMAMLANDI(2, "TAMAMLANDI"),
+    IPTAL_EDILDI(3, "IPTAL_EDILDI");
 
     private final int id;
     private final String status;

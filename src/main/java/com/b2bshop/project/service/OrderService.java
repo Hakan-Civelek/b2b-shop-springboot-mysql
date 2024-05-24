@@ -1,6 +1,7 @@
 package com.b2bshop.project.service;
 
 import com.b2bshop.project.exception.OrderNotFoundException;
+import com.b2bshop.project.exception.ProductNotFoundException;
 import com.b2bshop.project.model.*;
 import com.b2bshop.project.repository.*;
 import com.b2bshop.project.repository.UserRepository;
@@ -227,8 +228,24 @@ public class OrderService {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new OrderNotFoundException("Order could not find by id: " + id));
 
-        OrderStatus newStatus = OrderStatus.valueOf(json.get("orderStatus").get("status").asText());
-        order.setOrderStatus(newStatus);
+        int statusId = json.get("orderStatus").get("id").asInt();
+        String statusText = json.get("orderStatus").get("status").asText();
+
+        OrderStatus newStatusById = OrderStatus.getById(statusId);
+        if (!newStatusById.getStatus().toUpperCase(Locale.ROOT).equals(statusText)) {
+            throw new IllegalArgumentException("OrderStatus id and status do not match");
+        }
+
+        order.setOrderStatus(newStatusById);
+
+        if (newStatusById == OrderStatus.IPTAL_EDILDI) {
+            for (OrderItem item : order.getOrderItems()) {
+                Product product = productRepository.findById(item.getRefProductId())
+                        .orElseThrow(() -> new ProductNotFoundException("Product could not find by id: " + item.getRefProductId()));
+                product.setStock(product.getStock() + item.getQuantity());
+                productRepository.save(product);
+            }
+        }
 
         return orderRepository.save(order);
     }
