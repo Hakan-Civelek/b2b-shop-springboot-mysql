@@ -43,8 +43,10 @@ public class ProductService {
         String userName = jwtService.extractUser(token);
         User user = userRepository.findByUsername(userName).orElseThrow(() -> new RuntimeException("User not found"));
         Set<Role> userRoles = user.getAuthorities();
-        if (userRoles.contains(Role.ROLE_CUSTOMER_USER))
+        if (userRoles.contains(Role.ROLE_CUSTOMER_USER)) {
             whereCondition = " AND product.isActive = true ";
+            tenantId = user.getCustomer().getShop().getTenantId();
+        }
 
         Session session = entityManager.unwrap(Session.class);
         String hqlQuery = "SELECT product.id, product.name, product.description, product.salesPrice, product.grossPrice, " +
@@ -70,27 +72,28 @@ public class ProductService {
         for (Object[] row : rows) {
             Map<String, Object> resultMap = new HashMap<>();
             Long productId = (Long) row[0];
-                resultMap.put("id", row[0]);
-                resultMap.put("name", row[1]);
-                resultMap.put("description", row[2]);
-                resultMap.put("salesPrice", row[3]);
-                resultMap.put("grossPrice", row[4]);
-                resultMap.put("vatRate", row[5]);
-                resultMap.put("code", row[6]);
-                resultMap.put("shop", row[7]);
-                resultMap.put("gtin", row[8]);
-                resultMap.put("stock", row[9]);
-                resultMap.put("isActive", row[10]);
+            resultMap.put("id", row[0]);
+            resultMap.put("name", row[1]);
+            resultMap.put("description", row[2]);
+            resultMap.put("salesPrice", row[3]);
+            resultMap.put("grossPrice", row[4]);
+            resultMap.put("vatRate", row[5]);
+            resultMap.put("code", row[6]);
+            resultMap.put("shop", row[7]);
+            resultMap.put("gtin", row[8]);
+            resultMap.put("stock", row[9]);
+            resultMap.put("isActive", row[10]);
             List<Map<String, Object>> images = new ArrayList<>();
             Product product = productRepository.findById(productId).orElse(null);
             if (product != null) {
                 for (Image image : product.getImages()) {
-            Map<String, Object> imageMap = new HashMap<>();
-                    imageMap.put("imageUrl", image.getUrl());
-                    imageMap.put("imageId", image.getId());
+                    Map<String, Object> imageMap = new HashMap<>();
+                    imageMap.put("url", image.getUrl());
+                    imageMap.put("isThumbnail", image.getIsThumbnail());
+                    imageMap.put("id", image.getId());
                     images.add(imageMap);
                 }
-        }
+            }
             resultMap.put("images", images);
 
             resultList.add(resultMap);
