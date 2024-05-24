@@ -38,7 +38,7 @@ public class UserService implements UserDetailsService {
         return user.orElseThrow(EntityNotFoundException::new);
     }
 
-    public User getMe(HttpServletRequest request){
+    public User getMe(HttpServletRequest request) {
         String token = request.getHeader("Authorization").split("Bearer ")[1];
         String userName = jwtService.extractUser(token);
         Optional<User> user = userRepository.findByUsername(userName);
@@ -104,12 +104,7 @@ public class UserService implements UserDetailsService {
             return userRepository.findAllByCustomerTenantId(user.getCustomer().getTenantId());
         } else if (userRoles.contains(Role.ROLE_SHOP_OWNER)) {
             Long shopTenantId = user.getShop().getTenantId();
-            List<User> shopUsers = userRepository.findAllByShopTenantId(shopTenantId);
-            List<User> customerUsers = userRepository.findAllByCustomerShopTenantId(shopTenantId);
-            List<User> allUsers = new ArrayList<>();
-            allUsers.addAll(shopUsers);
-            allUsers.addAll(customerUsers);
-            return allUsers.stream().distinct().collect(Collectors.toList());
+            return userRepository.findAllByCustomerShopTenantId(shopTenantId);
         } else if (userRoles.contains(Role.ROLE_SYSTEM_OWNER)) {
             return userRepository.findAll();
         } else {
