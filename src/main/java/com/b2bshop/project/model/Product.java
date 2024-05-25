@@ -36,7 +36,6 @@ public class Product {
             inverseJoinColumns = @JoinColumn(name = "tenant_id"))
     private Shop shop;
 
-    //category
     //brand
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images;
@@ -45,5 +44,9 @@ public class Product {
     private String gtin;
     private int stock;
     private boolean isActive = false;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 }
 

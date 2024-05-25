@@ -106,7 +106,6 @@ public class ProductService {
         String token = request.getHeader("Authorization").split("Bearer ")[1];
         String userName = jwtService.extractUser(token);
         User user = userRepository.findByUsername(userName).orElseThrow(() -> new RuntimeException("User not found"));
-
         Shop shop = user.getShop();
 
         Product product = new Product();
