@@ -124,6 +124,7 @@ public class BasketService {
         boolean itemExists = false;
         long productId = json.get("productId").asLong();
         int quantity = json.get("quantity").asInt();
+        boolean updateQuantity = json.get("updateQuantity").asBoolean();
 
         if (basketItems == null) {
             basketItems = new ArrayList<>();
@@ -132,7 +133,11 @@ public class BasketService {
 
         for (BasketItem item : basket.getBasketItems()) {
             if (item.getProduct().getId() == productId) {
-                item.setQuantity(quantity);
+                if (updateQuantity) {
+                    item.setQuantity(quantity);
+                } else {
+                    item.setQuantity(item.getQuantity() + quantity);
+                }
                 itemExists = true;
                 break;
             }
