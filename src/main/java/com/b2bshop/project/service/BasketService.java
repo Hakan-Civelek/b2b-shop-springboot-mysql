@@ -52,7 +52,8 @@ public class BasketService {
                 " product.id AS productId, product.name AS productName, " +
                 " basketItem.quantity AS quantity, " +
                 " product.grossPrice AS grossPrice, product.salesPrice AS salesPrice, " +
-                " image.id AS imageId, image.url AS imageUrl " +
+                " image.id AS imageId, image.url AS imageUrl, image.isThumbnail AS imageIsThumbnail ," +
+                " product.stock AS productStock " +
                 " FROM Basket as basket " +
                 " JOIN basket.basketItems as basketItem " +
                 " JOIN basketItem.product as product " +
@@ -81,6 +82,7 @@ public class BasketService {
                 if (!basketItem.containsKey("basketItemId")) {
                     basketItem.put("basketItemId", basketItemId);
                     basketItem.put("productId", row[2]);
+                    basketItem.put("productStock", row[10]);
                     basketItem.put("productName", row[3]);
                     basketItem.put("quantity", row[4]);
                     basketItem.put("grossPrice", row[5]);
@@ -93,6 +95,7 @@ public class BasketService {
                 Map<String, Object> image = new HashMap<>();
                 image.put("id", row[7]);
                 image.put("url", row[8]);
+                image.put("isThumbnail", row[9]);
                 images.add(image);
             }
 
