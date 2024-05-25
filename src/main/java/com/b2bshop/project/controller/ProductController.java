@@ -46,13 +46,13 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}")
-    public Product getProductById(@PathVariable Long productId) {
-        return productService.findProductById(productId);
+    public Map<String, Object> getProductById(HttpServletRequest request,@PathVariable Long productId) {
+        return productService.getProductById(request,productId);
     }
 
     @PutMapping("/{productId}")
-    public Product updateProductById(@PathVariable Long productId, @RequestBody Product newProduct) {
-        return productService.updateProductById(productId, newProduct);
+    public Product updateProductById(HttpServletRequest request, @PathVariable Long productId, @RequestBody JsonNode json) {
+        return productService.updateProductById(request, productId, json);
     }
 
     @DeleteMapping("/{productId}")

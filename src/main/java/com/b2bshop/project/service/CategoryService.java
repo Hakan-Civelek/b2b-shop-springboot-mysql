@@ -109,7 +109,7 @@ public class CategoryService {
         Shop shop = user.getShop();
 
         Category parentCategory = null;
-        if (json.has("parentCategoryId")) {
+        if (json.has("parentCategoryId") && !json.get("parentCategoryId").isNull()) {
             Long parentCategoryId = json.get("parentCategoryId").asLong();
             parentCategory = categoryRepository.findById(parentCategoryId)
                     .orElseThrow(() -> new ResourceNotFoundException("Parent category not found with id: " + parentCategoryId));
