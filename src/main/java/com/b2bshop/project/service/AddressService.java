@@ -1,6 +1,6 @@
 package com.b2bshop.project.service;
 
-import com.b2bshop.project.exception.CustomerNotFoundException;
+import com.b2bshop.project.exception.ResourceNotFoundException;
 import com.b2bshop.project.model.Address;
 import com.b2bshop.project.model.Country;
 import com.b2bshop.project.model.Customer;
@@ -77,7 +77,8 @@ public class AddressService {
         address.setCustomer(customer);
 
         Country country;
-        country = countryRepository.findById(countryId).orElse(null);
+        country = countryRepository.findById(countryId).orElseThrow(
+                () -> new ResourceNotFoundException("Country could not find by id: " + countryId));
         address.setCountry(country);
 
         address.setTitle(json.get("title").asText());
@@ -87,8 +88,8 @@ public class AddressService {
         return addressRepository.save(address);
     }
 
-    protected Address findAddressById(Long id) {
+    public Address findAddressById(Long id) {
         return addressRepository.findById(id).orElseThrow(
-                () -> new CustomerNotFoundException("Address could not find by id: " + id));
+                () -> new ResourceNotFoundException("Address could not find by id: " + id));
     }
 }

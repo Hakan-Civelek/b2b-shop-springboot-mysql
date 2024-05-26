@@ -1,6 +1,6 @@
 package com.b2bshop.project.service;
 
-import com.b2bshop.project.exception.BasketNotFoundException;
+import com.b2bshop.project.exception.ResourceNotFoundException;
 import com.b2bshop.project.model.Basket;
 import com.b2bshop.project.model.BasketItem;
 import com.b2bshop.project.model.Product;
@@ -28,6 +28,7 @@ public class BasketService {
     private final UserService userService;
 
     private final BasketItemRepository basketItemRepository;
+
     public BasketService(BasketRepository basketRepository, JwtService jwtService,
                          UserRepository userRepository, EntityManager entityManager,
                          ProductService productService, UserService userService, BasketItemRepository basketItemRepository) {
@@ -158,7 +159,7 @@ public class BasketService {
 
     public Basket findBasketById(Long id) {
         return basketRepository.findById(id).orElseThrow(()
-                -> new BasketNotFoundException("Basket could not find by id: " + id));
+                -> new ResourceNotFoundException("Basket could not find by id: " + id));
     }
 
     public Basket removeItem(HttpServletRequest request, JsonNode json) {
@@ -171,7 +172,7 @@ public class BasketService {
         if (optionalBasket.isPresent()) {
             basket = optionalBasket.get();
         } else
-            throw new BasketNotFoundException("Basket could not find!: ");
+            throw new ResourceNotFoundException("Basket could not find!");
 
         List<BasketItem> basketItems = basket.getBasketItems();
 
@@ -209,7 +210,7 @@ public class BasketService {
 
             basketItems.clear();
         } else {
-            throw new BasketNotFoundException("Basket could not find!");
+            throw new ResourceNotFoundException("Basket could not find for this user! UserId:" + user.getId());
         }
 
         Map<String, String> response = new HashMap<>();

@@ -1,7 +1,7 @@
 package com.b2bshop.project.service;
 
 import com.b2bshop.project.dto.CreateUserRequest;
-import com.b2bshop.project.exception.UserNotFoundException;
+import com.b2bshop.project.exception.ResourceNotFoundException;
 import com.b2bshop.project.model.Role;
 import com.b2bshop.project.model.User;
 import com.b2bshop.project.repository.UserRepository;
@@ -85,12 +85,12 @@ public class UserService implements UserDetailsService {
 
     public User findUserById(Long id) {
         return userRepository.findById(id).orElseThrow(()
-                -> new UserNotFoundException("Customer could not find by id: " + id));
+                -> new ResourceNotFoundException("User could not find by id: " + id));
     }
 
     public User findUserByName(String name) {
         return userRepository.findByUsername(name).orElseThrow(()
-                -> new UserNotFoundException("Customer could not find by name: " + name));
+                -> new ResourceNotFoundException("User could not find by name: " + name));
     }
 
     public List<User> getAllUsers(HttpServletRequest request) {

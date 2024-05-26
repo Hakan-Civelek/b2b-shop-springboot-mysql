@@ -29,4 +29,8 @@ public class AddressController {
         return addressService.createAddress(request, json);
     }
 
+    @GetMapping("/{addressId}")
+    public Address getAddressById(@PathVariable Long addressId) {
+        return addressService.findAddressById(addressId);
+    }
 }

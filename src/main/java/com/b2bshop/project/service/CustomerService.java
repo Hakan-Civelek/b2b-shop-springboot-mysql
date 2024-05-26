@@ -1,7 +1,7 @@
 package com.b2bshop.project.service;
 
 import com.b2bshop.project.dto.CreateCustomerRequest;
-import com.b2bshop.project.exception.CustomerNotFoundException;
+import com.b2bshop.project.exception.ResourceNotFoundException;
 import com.b2bshop.project.model.Customer;
 import com.b2bshop.project.model.Shop;
 import com.b2bshop.project.model.User;
@@ -63,6 +63,6 @@ public class CustomerService {
 
     public Customer findCustomerById(Long id) {
         return customerRepository.findById(id).orElseThrow(()
-                -> new CustomerNotFoundException("Customer could not find by id: " + id));
+                -> new ResourceNotFoundException("Customer could not find by id: " + id));
     }
 }

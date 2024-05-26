@@ -1,7 +1,7 @@
 package com.b2bshop.project.service;
 
 import com.b2bshop.project.dto.CreateShopRequest;
-import com.b2bshop.project.exception.ShopNotFoundException;
+import com.b2bshop.project.exception.ResourceNotFoundException;
 import com.b2bshop.project.model.Shop;
 import com.b2bshop.project.repository.ShopRepository;
 import org.springframework.stereotype.Service;
@@ -42,6 +42,6 @@ public class ShopService {
 
     public Shop findShopById(Long id) {
         return shopRepository.findById(id).orElseThrow(()
-                -> new ShopNotFoundException("Shop could not find by id: " + id));
+                -> new ResourceNotFoundException("Shop could not find by id: " + id));
     }
 }

@@ -1,6 +1,6 @@
 package com.b2bshop.project.service;
 
-import com.b2bshop.project.exception.ProductNotFoundException;
+import com.b2bshop.project.exception.ResourceNotFoundException;
 import com.b2bshop.project.model.*;
 import com.b2bshop.project.repository.CustomerRepository;
 import com.b2bshop.project.repository.ImageRepository;
@@ -192,6 +192,6 @@ public class ProductService {
 
     public Product findProductById(Long id) {
         return productRepository.findById(id).orElseThrow(()
-                -> new ProductNotFoundException("Product could not find by id: " + id));
+                -> new ResourceNotFoundException("Product could not find by id: " + id));
     }
 }

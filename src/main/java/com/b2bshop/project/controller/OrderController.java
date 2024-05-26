@@ -38,8 +38,8 @@ public class OrderController {
         return orderService.updateOrder(id, json);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteOrder(@PathVariable Long id) {
-        orderService.deleteOrder(id);
-    }
+//    @DeleteMapping("/{id}")
+//    public void deleteOrder(@PathVariable Long id) {
+//        orderService.deleteOrder(id);
+//    }
 }

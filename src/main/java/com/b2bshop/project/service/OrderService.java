@@ -1,7 +1,6 @@
 package com.b2bshop.project.service;
 
-import com.b2bshop.project.exception.OrderNotFoundException;
-import com.b2bshop.project.exception.ProductNotFoundException;
+import com.b2bshop.project.exception.ResourceNotFoundException;
 import com.b2bshop.project.model.*;
 import com.b2bshop.project.repository.*;
 import com.b2bshop.project.repository.UserRepository;
@@ -155,12 +154,12 @@ public class OrderService {
         order.setOrderNote(orderNote);
         order.setOrderItems(new ArrayList<>());
         order.setOrderDate(new Date());
-        order.setCreatedBy(userRepository.findByUsername(userName).orElseThrow(() -> new RuntimeException("User not found")));
+        order.setCreatedBy(userRepository.findByUsername(userName).orElseThrow(() -> new ResourceNotFoundException("User not found by name: " + userName)));
         order.setInvoiceAddress(addressService.findAddressById(invoiceAddressId));
         order.setReceiverAddress(addressService.findAddressById(receiverAddressId));
         order.setOrderStatus(OrderStatus.OLUSTURULDU);
 
-        List<BasketItem> basketItems = basketRepository.findById(basketId).orElseThrow(() -> new RuntimeException("Basket not found")).getBasketItems();
+        List<BasketItem> basketItems = basketService.findBasketById(basketId).getBasketItems();
         Double totalPrice = 0.0;
         Double withoutTaxPrice = 0.0;
         Double totalTax = 0.0;
@@ -194,7 +193,7 @@ public class OrderService {
 
                 order.getOrderItems().add(orderItem);
             } else {
-                throw new RuntimeException("Stock is not enough for material: " + refProduct.getName());
+                throw new ResourceNotFoundException("Stock is not enough for material: " + refProduct.getName());
             }
         }
 
@@ -220,13 +219,13 @@ public class OrderService {
 
     public Order findOrderById(Long id) {
         return orderRepository.findById(id).orElseThrow(()
-                -> new OrderNotFoundException("Order could not find by id: " + id));
+                -> new ResourceNotFoundException("Order could not find by id: " + id));
     }
 
     @Transactional
     public Order updateOrder(Long id, JsonNode json) {
         Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new OrderNotFoundException("Order could not find by id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Order could not find by id: " + id));
 
         int statusId = json.get("orderStatus").get("id").asInt();
         String statusText = json.get("orderStatus").get("status").asText();
@@ -241,7 +240,7 @@ public class OrderService {
         if (newStatusById == OrderStatus.IPTAL_EDILDI) {
             for (OrderItem item : order.getOrderItems()) {
                 Product product = productRepository.findById(item.getRefProductId())
-                        .orElseThrow(() -> new ProductNotFoundException("Product could not find by id: " + item.getRefProductId()));
+                        .orElseThrow(() -> new ResourceNotFoundException("Product could not find by id: " + item.getRefProductId()));
                 product.setStock(product.getStock() + item.getQuantity());
                 productRepository.save(product);
             }
@@ -250,10 +249,8 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    @Transactional
-    public void deleteOrder(Long id) {
-        Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new OrderNotFoundException("Order could not find by id: " + id));
-        orderRepository.delete(order);
-    }
+//    public void deleteOrder(Long id) {
+//        Order order = findOrderById(id);
+//        orderRepository.delete(order);
+//    }
 }
