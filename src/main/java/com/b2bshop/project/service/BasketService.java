@@ -96,6 +96,7 @@ public class BasketService {
                     basketItem.put("salesPrice", row[6]);
                     basketItem.put("images", new ArrayList<Map<String, Object>>());
                     basketItemsMap.put(key, basketItem);
+                    basketItemCount += 1;
                 }
 
                 Map<String, Object> image = new HashMap<>();
@@ -110,7 +111,6 @@ public class BasketService {
 
                 subTotal += salesPrice * quantity;
                 totalCost += (double) row[5] * quantity;
-                basketItemCount += quantity;
             }
 
             totalTax = totalCost - subTotal;
