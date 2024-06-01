@@ -85,21 +85,16 @@ public class BrandService {
     }
 
     public Brand updateBrand(Long id, Brand brandDetails) {
-        Optional<Brand> optionalBrand = brandRepository.findById(id);
-        if (optionalBrand.isPresent()) {
-            Brand brand = optionalBrand.get();
-            brand.setName(brandDetails.getName());
-            return brandRepository.save(brand);
-        } else {
-            throw new ResourceNotFoundException("Brand could not find by id: " + id);
-        }
+        Brand brand = findById(id);
+        brand.setName(brandDetails.getName());
+        return brandRepository.save(brand);
     }
 
     public void deleteBrand(Long id) {
         brandRepository.deleteById(id);
     }
 
-    public Brand findById(Long id){
+    public Brand findById(Long id) {
         return brandRepository.findById(id).orElseThrow(()
                 -> new ResourceNotFoundException("Brand could not find by id: " + id));
     }
