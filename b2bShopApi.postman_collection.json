@@ -476,6 +476,34 @@
 					"response": []
 				},
 				{
+					"name": "get userById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/user/9898",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"user",
+								"9898"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "create singleUser",
 					"request": {
 						"auth": {
@@ -666,6 +694,91 @@
 					"response": []
 				},
 				{
+					"name": "get Brand's Products",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/product?brandId=2",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"product"
+							],
+							"query": [
+								{
+									"key": "brandId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get AllProducts Copy",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/product/elektronik",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"product",
+								"elektronik"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "get ProductById",
 					"request": {
 						"auth": {
@@ -681,13 +794,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseurl}}/product/38",
+							"raw": "{{baseurl}}/product/94",
 							"host": [
 								"{{baseurl}}"
 							],
 							"path": [
 								"product",
-								"38"
+								"94"
 							]
 						}
 					},
@@ -710,7 +823,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"isActive\": true,\r\n    \"code\": \"Hkn-mnst\",\r\n    \"name\": \"Hakan'in Monsteri\",\r\n    \"gtin\": \"1111111111\",\r\n    \"description\": \"KIYMETLIMIZ\",\r\n    \"images\": [\r\n        {\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/9ad184b0-d0ff-4bf9-906b-9bd1b5fbbf9e.jpg?alt=media\",\r\n            \"isThumbnail\": true\r\n        },\r\n        {\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/10747be1-e4e9-454d-81e2-c132dbe3b860.jpg?alt=media\",\r\n            \"isThumbnail\": false\r\n        }\r\n    ],\r\n    \"stock\": 1,\r\n    \"vatRate\": 0,\r\n    \"salesPrice\": 9999,\r\n    \"grossPrice\": 9999\r\n}",
+							"raw": "{\r\n    \"gtin\": \"1512323123123\",\r\n    \"images\": [\r\n        {\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/9ad184b0-d0ff-4bf9-906b-9bd1b5fbbf9e.jpg?alt=media\",\r\n            \"isThumbnail\": true\r\n        },\r\n        {\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/10747be1-e4e9-454d-81e2-c132dbe3b860.jpg?alt=media\",\r\n            \"isThumbnail\": false\r\n        }\r\n    ],\r\n    \"code\": \"te1st for brand\",\r\n    \"salesPrice\": 9999.0,\r\n    \"vatRate\": 0.0,\r\n    \"description\": \"KIYMETLIMIZ\",\r\n    \"grossPrice\": 9999.0,\r\n    \"active\": true,\r\n    \"name\": \"1test for brand\",\r\n    \"stock\": 22,\r\n    \"category\": {\r\n        \"name\": \"Oyun Bilgisayarları\",\r\n        \"id\": 6\r\n    },\r\n    \"brand\": {\r\n        \"id\": 2\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -782,7 +895,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"isActive\": true,\r\n    \"code\": \"Hkn-mnst\",\r\n    \"name\": \"Hakan'in Monsteri\",\r\n    \"gtin\": \"1111111111\",\r\n    \"description\": \"YENİ AÇIKLAMA\",\r\n    \"images\": [\r\n        {\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/9ad184b0-d0ff-4bf9-906b-9bd1b5fbbf9e.jpg?alt=media\",\r\n            \"isThumbnail\": true\r\n        },\r\n        {\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/10747be1-e4e9-454d-81e2-c132dbe3b860.jpg?alt=media\",\r\n            \"isThumbnail\": false\r\n        },\r\n        {\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/322a60e3-55f3-4937-9f36-8dd238874981.jpg?alt=media\", // Yeni resim\r\n            \"isThumbnail\": false\r\n        }\r\n    ],\r\n    \"stock\": 1,\r\n    \"vatRate\": 0,\r\n    \"salesPrice\": 9999,\r\n    \"grossPrice\": 9999\r\n}",
+							"raw": "{\r\n    \"id\": 99,\r\n    \"name\": \"test for brand\",\r\n    \"description\": \"KIYMETLIMIZ\",\r\n    \"salesPrice\": 9999.0,\r\n    \"grossPrice\": 9999.0,\r\n    \"vatRate\": 0.0,\r\n    \"code\": \"test for brand\",\r\n    \"shop\": {\r\n        \"tenantId\": 1,\r\n        \"name\": \"first shop\",\r\n        \"email\": \"firstshop@mail.com\",\r\n        \"phoneNumber\": \"05678478961\",\r\n        \"vatNumber\": \"1 vatNumber\",\r\n        \"aboutUs\": \"1 aboutUs\",\r\n        \"privacyPolicy\": \"1 privacyPolicy\"\r\n    },\r\n    \"images\": [\r\n        {\r\n            \"id\": 103,\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/9ad184b0-d0ff-4bf9-906b-9bd1b5fbbf9e.jpg?alt=media\",\r\n            \"createdBy\": {\r\n                \"id\": 28,\r\n                \"name\": \"Ali\",\r\n                \"username\": \"ali\",\r\n                \"password\": \"$2a$10$Ysi1kt7Q25vOTAqU4R9hMuB9cvbxIyirdwxWNfZ5l.TkP0DxYYvXC\",\r\n                \"email\": \"ali@email.com\",\r\n                \"phoneNumber\": \"05369874513\",\r\n                \"authorities\": [\r\n                    \"ROLE_SHOP_OWNER\"\r\n                ],\r\n                \"shop\": {\r\n                    \"tenantId\": 1,\r\n                    \"name\": \"first shop\",\r\n                    \"email\": \"firstshop@mail.com\",\r\n                    \"phoneNumber\": \"05678478961\",\r\n                    \"vatNumber\": \"1 vatNumber\",\r\n                    \"aboutUs\": \"1 aboutUs\",\r\n                    \"privacyPolicy\": \"1 privacyPolicy\"\r\n                },\r\n                \"customer\": null,\r\n                \"accountNonLocked\": true,\r\n                \"accountNonExpired\": true,\r\n                \"credentialsNonExpired\": true,\r\n                \"enabled\": true,\r\n                \"active\": true\r\n            },\r\n            \"isThumbnail\": true\r\n        },\r\n        {\r\n            \"id\": 104,\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/10747be1-e4e9-454d-81e2-c132dbe3b860.jpg?alt=media\",\r\n            \"createdBy\": {\r\n                \"id\": 28,\r\n                \"name\": \"Ali\",\r\n                \"username\": \"ali\",\r\n                \"password\": \"$2a$10$Ysi1kt7Q25vOTAqU4R9hMuB9cvbxIyirdwxWNfZ5l.TkP0DxYYvXC\",\r\n                \"email\": \"ali@email.com\",\r\n                \"phoneNumber\": \"05369874513\",\r\n                \"authorities\": [\r\n                    \"ROLE_SHOP_OWNER\"\r\n                ],\r\n                \"shop\": {\r\n                    \"tenantId\": 1,\r\n                    \"name\": \"first shop\",\r\n                    \"email\": \"firstshop@mail.com\",\r\n                    \"phoneNumber\": \"05678478961\",\r\n                    \"vatNumber\": \"1 vatNumber\",\r\n                    \"aboutUs\": \"1 aboutUs\",\r\n                    \"privacyPolicy\": \"1 privacyPolicy\"\r\n                },\r\n                \"customer\": null,\r\n                \"accountNonLocked\": true,\r\n                \"accountNonExpired\": true,\r\n                \"credentialsNonExpired\": true,\r\n                \"enabled\": true,\r\n                \"active\": true\r\n            },\r\n            \"isThumbnail\": false\r\n        }\r\n    ],\r\n    \"gtin\": \"151232123123\",\r\n    \"stock\": 22,\r\n    \"brand\": {\r\n        \"id\": 2\r\n    },\r\n    \"active\": false\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -790,13 +903,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseurl}}/product/38",
+							"raw": "{{baseurl}}/product/99",
 							"host": [
 								"{{baseurl}}"
 							],
 							"path": [
 								"product",
-								"38"
+								"99"
 							]
 						}
 					},
@@ -833,6 +946,224 @@
 							],
 							"path": [
 								"product",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Brand",
+			"item": [
+				{
+					"name": "get AllBrands",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/brand",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"brand"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get BrandById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/brand/1",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"brand",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create singleBrand",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"Apple\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/brand",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"brand"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create multipleBrands",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"name\": \"Apple\"\r\n    },\r\n    {\r\n        \"name\": \"Samsung\"\r\n    },\r\n    {\r\n        \"name\": \"Nike\"\r\n    },\r\n    {\r\n        \"name\": \"Adidas\"\r\n    },\r\n    {\r\n        \"name\": \"Monster\"\r\n    },\r\n    {\r\n        \"name\": \"Hp\"\r\n    },\r\n    {\r\n        \"name\": \"Msi\"\r\n    },\r\n    {\r\n        \"name\": \"Dell\"\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/brand",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"brand"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update BrandById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"gtin\": \"15132123\",\r\n    \"images\": [\r\n        {\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/9ad184b0-d0ff-4bf9-906b-9bd1b5fbbf9e.jpg?alt=media\",\r\n            \"isThumbnail\": false\r\n        },\r\n        {\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/10747be1-e4e9-454d-81e2-c132dbe3b860.jpg?alt=media\",\r\n            \"isThumbnail\": true\r\n        }\r\n    ],\r\n    \"code\": \"new test category update\",\r\n    \"salesPrice\": 9999.0,\r\n    \"vatRate\": 0.0,\r\n    \"description\": \"KIYMETLIMIZ update\",\r\n    \"grossPrice\": 9999.0,\r\n    \"isActive\": true,\r\n    \"name\": \"new test for category update\",\r\n    \"stock\": 23,\r\n    \"category\": {\r\n        \"id\": 5\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/brand/1",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"brand",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete Brand",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/brand/1",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"brand",
 								"1"
 							]
 						}
@@ -899,13 +1230,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseurl}}/category/1",
+							"raw": "{{baseurl}}/category/6",
 							"host": [
 								"{{baseurl}}"
 							],
 							"path": [
 								"category",
-								"1"
+								"6"
 							]
 						}
 					},
@@ -928,7 +1259,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"name of product10\",\r\n    \"description\": \"description of product10\",\r\n    \"salesPrice\": 59.0,\r\n    \"grossPrice\": 61.0,\r\n    \"vatRate\": 10,\r\n    \"code\": \"10 code\",\r\n    \"shop\": {\r\n        \"tenantId\": 5\r\n    },\r\n    \"gtin\": \"5445678901010\",\r\n    \"stock\": 10,\r\n    \"isActive\": true\r\n}",
+							"raw": "{\r\n    \"name\": \"Spor Takip Cihazları\",\r\n    \"isActive\": true,\r\n    \"parentCategoryId\": 7\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -936,12 +1267,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseurl}}/product",
+							"raw": "{{baseurl}}/category",
 							"host": [
 								"{{baseurl}}"
 							],
 							"path": [
-								"product"
+								"category"
 							]
 						}
 					},
@@ -1196,7 +1527,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"productId\": 1,\r\n    \"quantity\": 6\r\n}",
+							"raw": "{\r\n    \"productId\": 1,\r\n    \"quantity\": 6,\r\n    \"updateQuantity\": true\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1488,7 +1819,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 7,\r\n    \"user\": {\r\n        \"id\": 7        \r\n    },\r\n    \"product\": {\r\n        \"id\": 1        \r\n    },\r\n    \"quantity\": 13\r\n}",
+							"raw": "{\r\n    \"id\": 8,\r\n    \"customer\": {\r\n        \"tenantId\": 1,\r\n        \"name\": \"first customer\",\r\n        \"email\": \"firstcustomer@mail.com\",\r\n        \"shop\": {\r\n            \"tenantId\": 1,\r\n            \"name\": \"first shop\",\r\n            \"email\": \"firstshop@mail.com\",\r\n            \"phoneNumber\": \"05678478961\",\r\n            \"vatNumber\": \"1 vatNumber\",\r\n            \"aboutUs\": \"1 aboutUs\",\r\n            \"privacyPolicy\": \"1 privacyPolicy\"\r\n        },\r\n        \"vatNumber\": \"first vatNumber\",\r\n        \"phoneNumber\": \"05678478961\",\r\n        \"active\": true\r\n    },\r\n    \"orderNumber\": \"124052400\",\r\n    \"orderNote\": \"test for new create order\",\r\n    \"orderItems\": [\r\n        {\r\n            \"id\": 8,\r\n            \"refProductId\": 40,\r\n            \"name\": \"Hakan'in Monsteri\",\r\n            \"salesPrice\": 9999.0,\r\n            \"grossPrice\": 9999.0,\r\n            \"quantity\": 2,\r\n            \"images\": [\r\n                {\r\n                    \"id\": 72,\r\n                    \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/9ad184b0-d0ff-4bf9-906b-9bd1b5fbbf9e.jpg?alt=media\",\r\n                    \"createdBy\": null,\r\n                    \"isThumbnail\": null\r\n                },\r\n                {\r\n                    \"id\": 73,\r\n                    \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/10747be1-e4e9-454d-81e2-c132dbe3b860.jpg?alt=media\",\r\n                    \"createdBy\": null,\r\n                    \"isThumbnail\": null\r\n                }\r\n            ]\r\n        }\r\n    ],\r\n    \"orderDate\": \"2024-05-23T21:54:41.955+00:00\",\r\n    \"orderStatus\": {\r\n        \"id\": 3,\r\n        \"status\": \"IPTAL_EDILDI\"\r\n    },\r\n    \"createdBy\": {\r\n        \"id\": 7,\r\n        \"name\": \"Hatice\",\r\n        \"username\": \"hatice\",\r\n        \"password\": \"$2a$10$P9WVoByidM7Kik.1m7qkXuFgPPUXVSqsfs9QBh6VbLYqYHwmdA7KO\",\r\n        \"email\": \"hatice@email.com\",\r\n        \"phoneNumber\": \"05369874505\",\r\n        \"authorities\": [\r\n            \"ROLE_CUSTOMER_USER\"\r\n        ],\r\n        \"shop\": null,\r\n        \"customer\": {\r\n            \"tenantId\": 1,\r\n            \"name\": \"first customer\",\r\n            \"email\": \"firstcustomer@mail.com\",\r\n            \"shop\": {\r\n                \"tenantId\": 1,\r\n                \"name\": \"first shop\",\r\n                \"email\": \"firstshop@mail.com\",\r\n                \"phoneNumber\": \"05678478961\",\r\n                \"vatNumber\": \"1 vatNumber\",\r\n                \"aboutUs\": \"1 aboutUs\",\r\n                \"privacyPolicy\": \"1 privacyPolicy\"\r\n            },\r\n            \"vatNumber\": \"first vatNumber\",\r\n            \"phoneNumber\": \"05678478961\",\r\n            \"active\": true\r\n        },\r\n        \"accountNonLocked\": true,\r\n        \"accountNonExpired\": true,\r\n        \"credentialsNonExpired\": true,\r\n        \"enabled\": true,\r\n        \"active\": true\r\n    },\r\n    \"invoiceAddress\": {\r\n        \"id\": 1,\r\n        \"customer\": {\r\n            \"tenantId\": 1,\r\n            \"name\": \"first customer\",\r\n            \"email\": \"firstcustomer@mail.com\",\r\n            \"shop\": {\r\n                \"tenantId\": 1,\r\n                \"name\": \"first shop\",\r\n                \"email\": \"firstshop@mail.com\",\r\n                \"phoneNumber\": \"05678478961\",\r\n                \"vatNumber\": \"1 vatNumber\",\r\n                \"aboutUs\": \"1 aboutUs\",\r\n                \"privacyPolicy\": \"1 privacyPolicy\"\r\n            },\r\n            \"vatNumber\": \"first vatNumber\",\r\n            \"phoneNumber\": \"05678478961\",\r\n            \"active\": true\r\n        },\r\n        \"country\": null,\r\n        \"title\": \"Bizim ev\",\r\n        \"city\": \"İstanbul\",\r\n        \"addressLine\": \"Fatih Mahallesi İnönü Caddesi No:45 Daire: 3, Beyoğlu, İstanbul\"\r\n    },\r\n    \"receiverAddress\": {\r\n        \"id\": 1,\r\n        \"customer\": {\r\n            \"tenantId\": 1,\r\n            \"name\": \"first customer\",\r\n            \"email\": \"firstcustomer@mail.com\",\r\n            \"shop\": {\r\n                \"tenantId\": 1,\r\n                \"name\": \"first shop\",\r\n                \"email\": \"firstshop@mail.com\",\r\n                \"phoneNumber\": \"05678478961\",\r\n                \"vatNumber\": \"1 vatNumber\",\r\n                \"aboutUs\": \"1 aboutUs\",\r\n                \"privacyPolicy\": \"1 privacyPolicy\"\r\n            },\r\n            \"vatNumber\": \"first vatNumber\",\r\n            \"phoneNumber\": \"05678478961\",\r\n            \"active\": true\r\n        },\r\n        \"country\": null,\r\n        \"title\": \"Bizim ev\",\r\n        \"city\": \"İstanbul\",\r\n        \"addressLine\": \"Fatih Mahallesi İnönü Caddesi No:45 Daire: 3, Beyoğlu, İstanbul\"\r\n    },\r\n    \"totalPrice\": 19998.0,\r\n    \"withoutTaxPrice\": 19998.0,\r\n    \"totalTax\": 0.0\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1496,20 +1827,20 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseurl}}/order/7",
+							"raw": "{{baseurl}}/order/8",
 							"host": [
 								"{{baseurl}}"
 							],
 							"path": [
 								"order",
-								"7"
+								"8"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "delete Basket",
+					"name": "delete Order",
 					"request": {
 						"auth": {
 							"type": "bearer",
