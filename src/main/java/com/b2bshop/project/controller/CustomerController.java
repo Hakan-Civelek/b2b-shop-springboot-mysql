@@ -1,13 +1,12 @@
 package com.b2bshop.project.controller;
 
-import com.b2bshop.project.dto.CreateCustomerRequest;
 import com.b2bshop.project.model.Customer;
 import com.b2bshop.project.repository.CustomerRepository;
 import com.b2bshop.project.service.CustomerService;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -36,8 +35,8 @@ public class CustomerController {
 //    }
 
     @PostMapping()
-    public Customer addCustomer(@RequestBody CreateCustomerRequest request) {
-        return customerService.createCustomer(request);
+    public Customer addCustomer(HttpServletRequest request, @RequestBody JsonNode json) {
+        return customerService.createCustomer(request, json);
     }
 
     @GetMapping("/{customerId}")

@@ -7,11 +7,15 @@ import com.b2bshop.project.model.Shop;
 import com.b2bshop.project.model.User;
 import com.b2bshop.project.repository.CustomerRepository;
 import com.b2bshop.project.repository.UserRepository;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -35,16 +39,20 @@ public class CustomerService {
         return customerRepository.findAllByShop(shop);
     }
 
-    @PostMapping
-    public Customer createCustomer(CreateCustomerRequest request) {
-        Customer newCustomer = Customer.builder()
-                .name(request.name())
-                .email(request.email())
-                .shop(request.shop())
-                .vatNumber(request.vatNumber())
-                .phoneNumber(request.phoneNumber())
-                .isActive(request.isActive())
-                .build();
+    @Transactional
+    public Customer createCustomer(HttpServletRequest request, JsonNode json) {
+        String token = request.getHeader("Authorization").split("Bearer ")[1];
+        String userName = jwtService.extractUser(token);
+        User user = userRepository.findByUsername(userName).orElseThrow(() -> new RuntimeException("User not found"));
+        Shop shop = user.getShop();
+
+        Customer newCustomer = new Customer();
+        newCustomer.setName(json.get("name").asText());
+        newCustomer.setEmail(json.get("email").asText());
+        newCustomer.setShop(shop);
+        newCustomer.setVatNumber(json.get("vatNumber").asText());
+        newCustomer.setPhoneNumber(json.get("phoneNumber").asText());
+        newCustomer.setActive(true);
 
         return customerRepository.save(newCustomer);
     }
