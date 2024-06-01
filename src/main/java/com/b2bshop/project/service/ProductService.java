@@ -2,7 +2,6 @@ package com.b2bshop.project.service;
 
 import com.b2bshop.project.exception.ResourceNotFoundException;
 import com.b2bshop.project.model.*;
-import com.b2bshop.project.repository.CustomerRepository;
 import com.b2bshop.project.repository.ImageRepository;
 import com.b2bshop.project.repository.ProductRepository;
 import com.b2bshop.project.repository.UserRepository;
@@ -13,6 +12,7 @@ import jakarta.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.*;
 
@@ -25,18 +25,21 @@ public class ProductService {
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final ImageRepository imageRepository;
+    private final BrandService brandService;
 
-    public ProductService(ProductRepository productRepository, SecurityService securityService, JwtService jwtService, CustomerRepository customerRepository,
-                          UserRepository userRepository, EntityManager entityManager, ImageRepository imageRepository) {
+    public ProductService(ProductRepository productRepository, SecurityService securityService, JwtService jwtService,
+                          UserRepository userRepository, EntityManager entityManager, ImageRepository imageRepository,
+                          BrandService brandService) {
         this.productRepository = productRepository;
         this.securityService = securityService;
         this.jwtService = jwtService;
         this.userRepository = userRepository;
         this.entityManager = entityManager;
         this.imageRepository = imageRepository;
+        this.brandService = brandService;
     }
 
-    public List<Map<String, Object>> getAllProducts(HttpServletRequest request) {
+    public List<Map<String, Object>> getAllProducts(HttpServletRequest request, @RequestParam(name = "brandId", required = false) Long brandId) {
         String token = request.getHeader("Authorization").split("Bearer ")[1];
         Long tenantId = securityService.returnTenantIdByUsernameOrToken("token", token);
         String whereCondition = " ";
@@ -50,13 +53,18 @@ public class ProductService {
 
         Session session = entityManager.unwrap(Session.class);
         String hqlQuery = "SELECT product.id, product.name, product.description, product.salesPrice, product.grossPrice, " +
-                " product.vatRate, product.code, product.shop, product.gtin, product.stock, product.isActive " +
+                " product.vatRate, product.code, product.shop, product.gtin, product.stock, product.isActive," +
+                " brand.id as brandId, brand.name as brandName " +
                 " FROM Product as product " +
-                " JOIN product.shop s " +
+                " JOIN product.shop as shop " +
+                " LEFT JOIN product.brand as brand " +
                 " WHERE 1 = 1 ";
 
         if (tenantId != null) {
-            hqlQuery += " AND s.id = :tenantId";
+            hqlQuery += " AND shop.id = :tenantId";
+        }
+        if (brandId != null) {
+            hqlQuery += " AND brand.id = :brandId";
         }
         hqlQuery += whereCondition;
 
@@ -64,6 +72,9 @@ public class ProductService {
 
         if (tenantId != null) {
             query.setParameter("tenantId", tenantId);
+        }
+        if (brandId != null) {
+            query.setParameter("brandId", brandId);
         }
 
         List<Map<String, Object>> resultList = new ArrayList<>();
@@ -82,7 +93,8 @@ public class ProductService {
             resultMap.put("shop", row[7]);
             resultMap.put("gtin", row[8]);
             resultMap.put("stock", row[9]);
-            resultMap.put("isActive", row[10]);
+            resultMap.put("active", row[10]);
+
             List<Map<String, Object>> images = new ArrayList<>();
             Product product = productRepository.findById(productId).orElse(null);
             if (product != null) {
@@ -96,6 +108,13 @@ public class ProductService {
             }
             resultMap.put("images", images);
 
+            Map<String, Object> brandMap = new HashMap<>();
+            if (row[11] != null) {
+                brandMap.put("id", row[11]);
+                brandMap.put("name", row[12]);
+            } else brandMap = null;
+            resultMap.put("brand", brandMap);
+
             resultList.add(resultMap);
         }
         return resultList;
@@ -106,8 +125,14 @@ public class ProductService {
         String token = request.getHeader("Authorization").split("Bearer ")[1];
         String userName = jwtService.extractUser(token);
         User user = userRepository.findByUsername(userName).orElseThrow(() -> new RuntimeException("User not found"));
-
         Shop shop = user.getShop();
+
+        Brand brand = null;
+        JsonNode brandNode = json.get("brand");
+        if (brandNode.get("id") != null) {
+            Long brandId = brandNode.get("id").asLong();
+            brand = brandService.findById(brandId);
+        }
 
         Product product = new Product();
         product.setName(json.get("name").asText());
@@ -118,8 +143,9 @@ public class ProductService {
         product.setCode(json.get("code").asText());
         product.setGtin(json.get("gtin").asText());
         product.setStock(json.get("stock").asInt());
-        product.setActive(json.get("isActive").asBoolean());
+        product.setActive(json.get("active").asBoolean());
         product.setShop(shop);
+        product.setBrand(brand);
 
         List<Image> images = new ArrayList<>();
         if (json.has("images")) {
@@ -153,6 +179,7 @@ public class ProductService {
         product.setGtin(newProduct.getGtin());
         product.setStock(newProduct.getStock());
         product.setActive(newProduct.isActive());
+        product.setBrand(newProduct.getBrand());
 
         List<Image> newImages = newProduct.getImages();
 
@@ -181,10 +208,10 @@ public class ProductService {
         Query query = session.createQuery(hqlQuery);
         query.setParameter("productId", productId);
 
-        Integer stock = (Integer) query.uniqueResult(); // Assuming stock is of type Integer
+        Integer stock = (Integer) query.uniqueResult();
 
         if (stock == null) {
-            stock = 0; // Default value if the stock is null
+            stock = 0;
         }
 
         return stock >= quantity;

@@ -37,7 +37,6 @@ public class Product {
     private Shop shop;
 
     //category
-    //brand
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images;
 
@@ -45,5 +44,8 @@ public class Product {
     private String gtin;
     private int stock;
     private boolean isActive = false;
+
+    @ManyToOne
+    private Brand brand;
 }
 
