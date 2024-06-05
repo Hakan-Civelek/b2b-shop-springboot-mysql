@@ -9,7 +9,6 @@ import com.b2bshop.project.repository.BasketItemRepository;
 import com.b2bshop.project.repository.BasketRepository;
 import com.b2bshop.project.repository.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.gson.Gson;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
