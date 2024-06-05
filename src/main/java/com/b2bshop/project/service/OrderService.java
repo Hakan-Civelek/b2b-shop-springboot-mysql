@@ -72,13 +72,14 @@ public class OrderService {
                 " LEFT JOIN orderItem.images as image " +
                 " JOIN order.invoiceAddress as invoiceAddress " +
                 " JOIN order.receiverAddress as receiverAddress " +
-                " WHERE  1 = 1 ";
+                " WHERE  1 = 1 " +
+                " ORDER BY order.id DESC ";
 
         Query query = session.createQuery(orderQuery);
         query.setParameter("tenantId", tenantId);
 
         List<Map<String, Object>> orderResultList = new ArrayList<>();
-        Map<Long, Map<String, Object>> orderResultMap = new HashMap<>();
+        Map<Long, Map<String, Object>> orderResultMap = new LinkedHashMap<>();
         List<Object[]> orderRows = query.list();
 
         for (Object[] orderRow : orderRows) {
