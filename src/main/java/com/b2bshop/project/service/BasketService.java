@@ -9,6 +9,7 @@ import com.b2bshop.project.repository.BasketItemRepository;
 import com.b2bshop.project.repository.BasketRepository;
 import com.b2bshop.project.repository.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.gson.Gson;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
@@ -62,7 +63,6 @@ public class BasketService {
                 " WHERE basket.user.id = :userId";
 
         Query query = session.createQuery(hqlQuery);
-
         query.setParameter("userId", userId);
 
         Map<String, Object> basketMap = new HashMap<>();
@@ -73,10 +73,9 @@ public class BasketService {
             Long basketId = (Long) firstRow[0];
             basketMap.put("id", basketId);
 
-            double subTotal = 0.0;
-            double totalCost = 0.0;
-            double totalTax = 0.0;
             int basketItemCount = 0;
+            double totalCost = 0;
+            double subTotal = 0;
 
             Map<String, Map<String, Object>> basketItemsMap = new HashMap<>();
             for (Object[] row : rows) {
@@ -96,6 +95,8 @@ public class BasketService {
                     basketItem.put("salesPrice", row[6]);
                     basketItem.put("images", new ArrayList<Map<String, Object>>());
                     basketItemsMap.put(key, basketItem);
+                    totalCost += ((Number) row[5]).doubleValue() * ((Number) row[4]).doubleValue();
+                    subTotal += ((Number) row[6]).doubleValue() * ((Number) row[4]).doubleValue();
                     basketItemCount += 1;
                 }
 
@@ -105,21 +106,14 @@ public class BasketService {
                 image.put("isThumbnail", row[9]);
                 List<Map<String, Object>> images = (List<Map<String, Object>>) basketItem.get("images");
                 images.add(image);
-
-                double salesPrice = (double) row[6];
-                int quantity = (int) row[4];
-
-                subTotal += salesPrice * quantity;
-                totalCost += (double) row[5] * quantity;
             }
 
-            totalTax = totalCost - subTotal;
-
             basketMap.put("basketItems", new ArrayList<>(basketItemsMap.values()));
+
+            basketMap.put("basketItemCount", basketItemCount);
             basketMap.put("subTotal", subTotal);
             basketMap.put("totalCost", totalCost);
-            basketMap.put("totalTax", totalTax);
-            basketMap.put("basketItemCount", basketItemCount);
+            basketMap.put("totalTax", totalCost - subTotal);
         }
 
         return basketMap;
