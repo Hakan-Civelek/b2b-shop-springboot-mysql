@@ -63,7 +63,8 @@ public class OrderService {
                 " orderItem.salesPrice as orderItemSalesPrice, orderItem.grossPrice as orderItemGrossPrice," +
                 " orderItem.quantity as orderItemQuantity, orderItem.id as orderItemId," +
                 " invoiceAddress as invoiceAddressMap, receiverAddress as receiverAddressMap, " +
-                " image.id as imageId, image.url as imageUrl, order.orderStatus as orderStatusId" +
+                " image.id as imageId, image.url as imageUrl, image.isThumbnail as imageIsThumbnail, " +
+                " order.orderStatus as orderStatusId " +
                 " FROM Order as order " +
                 " JOIN order.customer as customer ON customer.tenantId = :tenantId" +
                 " JOIN order.createdBy as createdBy " +
@@ -96,7 +97,7 @@ public class OrderService {
             orderMap.put("withoutTaxPrice", orderRow[3]);
             orderMap.put("totalTax", orderRow[4]);
 
-            OrderStatus orderStatus = (OrderStatus) orderRow[19];
+            OrderStatus orderStatus = (OrderStatus) orderRow[20];
             Map<String, Object> orderStatusMap = new HashMap<>();
             orderStatusMap.put("id", orderStatus.getId());
             orderStatusMap.put("status", orderStatus.getStatus());
@@ -124,6 +125,7 @@ public class OrderService {
             Map<String, Object> image = new HashMap<>();
             image.put("id", imageId);
             image.put("url", orderRow[18]);
+            image.put("isThumbnail", orderRow[19]);
             images.add(image);
 
             orderMap.put("orderItems", orderItems);
@@ -173,6 +175,7 @@ public class OrderService {
                 for (Image image : refProduct.getImages()) {
                     Image imageCopy = new Image();
                     imageCopy.setUrl(image.getUrl());
+                    imageCopy.setIsThumbnail(image.getIsThumbnail());
                     imagesCopy.add(imageCopy);
                 }
 
@@ -212,7 +215,7 @@ public class OrderService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMddHHmmss");
         String timestamp = now.format(formatter);
 
-        String orderNumber = tenantId.toString() + timestamp.substring(0, 8);
+        String orderNumber = tenantId.toString() + timestamp.substring(4, 11);
 
         return orderNumber;
     }
