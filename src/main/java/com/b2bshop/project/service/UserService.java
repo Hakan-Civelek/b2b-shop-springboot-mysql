@@ -1,10 +1,11 @@
 package com.b2bshop.project.service;
 
-import com.b2bshop.project.dto.CreateUserRequest;
 import com.b2bshop.project.exception.ResourceNotFoundException;
 import com.b2bshop.project.model.Role;
+import com.b2bshop.project.model.Shop;
 import com.b2bshop.project.model.User;
 import com.b2bshop.project.repository.UserRepository;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,11 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -25,11 +22,13 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final CustomerService customerService;
 
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, JwtService jwtService) {
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, JwtService jwtService, CustomerService customerService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.customerService = customerService;
     }
 
     @Override
@@ -47,22 +46,34 @@ public class UserService implements UserDetailsService {
         return findUserById(userId);
     }
 
-    public User createUser(CreateUserRequest request) {
+    public User createUser(HttpServletRequest request, JsonNode json) {
+        String token = request.getHeader("Authorization").split("Bearer ")[1];
+        String userName = jwtService.extractUser(token);
+        User user = userRepository.findByUsername(userName).orElseThrow(()
+                -> new ResourceNotFoundException("User not found by name: " + userName));
+        Shop shop = user.getShop();
+        Set<Role> authorities = new HashSet<>();
+        authorities.add(Role.valueOf(json.get("authorities").asText()));
+
         User newUser = User.builder()
-                .name(request.name())
-                .username(request.username())
-                .password(passwordEncoder.encode(request.password()))
-                .email(request.email())
-                .phoneNumber(request.phoneNumber())
-                .authorities(request.authorities())
-                .shop(request.shop())
-                .customer(request.customer())
+                .name(json.get("name").asText())
+                .username(json.get("username").asText())
+                .password(passwordEncoder.encode(json.get("password").asText()))
+                .email(json.get("email").asText())
+                .phoneNumber(json.get("phoneNumber").asText())
+                .authorities(authorities)
                 .isEnabled(true)
                 .accountNonLocked(true)
                 .accountNonExpired(true)
                 .credentialsNonExpired(true)
                 .isActive(true)
                 .build();
+
+        if (json.get("authorities").asText().equals("ROLE_CUSTOMER_USER")) {
+            newUser.setCustomer(customerService.findCustomerById(json.get("customerTenantId").asLong()));
+        } else {
+            newUser.setShop(shop);
+        }
 
         return userRepository.save(newUser);
     }

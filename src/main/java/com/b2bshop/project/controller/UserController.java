@@ -1,13 +1,12 @@
 package com.b2bshop.project.controller;
 
-import com.b2bshop.project.dto.CreateUserRequest;
 import com.b2bshop.project.model.User;
 import com.b2bshop.project.repository.UserRepository;
 import com.b2bshop.project.service.UserService;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -43,18 +42,18 @@ public class UserController {
 //    }
 
     @PostMapping()
-    public User addUser(@RequestBody CreateUserRequest request) {
-        return userService.createUser(request);
+    public User addUser(HttpServletRequest request, @RequestBody JsonNode json) {
+        return userService.createUser(request, json);
     }
 
-    @PostMapping("/createSystemOwners")
-    public List<User> createOwners(@RequestBody List<CreateUserRequest> requests) {
-        List<User> createdUsers = new ArrayList<>();
-        for (CreateUserRequest request : requests) {
-            createdUsers.add(userService.createUser(request));
-        }
-        return createdUsers;
-    }
+//    @PostMapping("/createSystemOwners")
+//    public List<User> createOwners(@RequestBody List<CreateUserRequest> requests) {
+//        List<User> createdUsers = new ArrayList<>();
+//        for (CreateUserRequest request : requests) {
+//            createdUsers.add(userService.createUser(requests));
+//        }
+//        return createdUsers;
+//    }
 
     @GetMapping("/{userId}")
     public User getUserById(@PathVariable Long userId) {
