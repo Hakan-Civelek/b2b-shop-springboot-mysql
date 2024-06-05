@@ -1,6 +1,7 @@
 package com.b2bshop.project.controller;
 
 import com.b2bshop.project.dto.AuthRequest;
+import com.b2bshop.project.exception.ResourceNotFoundException;
 import com.b2bshop.project.model.Customer;
 import com.b2bshop.project.model.Role;
 import com.b2bshop.project.model.User;
@@ -26,7 +27,6 @@ public class LoginController {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final SecurityService securityService;
-
     private final CustomerService customerService;
 
     public LoginController(JwtService jwtService, AuthenticationManager authenticationManager, SecurityService securityService,
@@ -42,17 +42,19 @@ public class LoginController {
     public Map generateToken(@RequestBody AuthRequest request) {
         Long tenantId = securityService.returnTenantIdByUsernameOrToken("userName", request.username());
         User user = (userRepository.findByUsername(request.username()).orElseThrow(()
-                -> new RuntimeException("User not found")));
-        Set userRoles = user.getAuthorities();
-        if (!(request.username().equals("hakan") || request.username().equals("esat"))) {
-            Customer customer = customerService.findCustomerById(tenantId);
-            if (userRoles.contains(Role.ROLE_CUSTOMER_USER) && !customer.isActive()) {
-                throw new RuntimeException("Customer not active!");
-            }
-        } if (!user.isActive())
-            throw new RuntimeException("User not active!");
+                -> new ResourceNotFoundException("User not found")));
 
-        //TODO check the above one! Maybe you'll fix the problem with the controllers
+        Set userRoles = user.getAuthorities();
+        if (!(request.username().equals("hakan") || request.username().equals("esat")) && userRoles.contains(Role.ROLE_CUSTOMER_USER)) {
+            Customer customer = customerService.findCustomerById(tenantId);
+            if (!customer.isActive()) {
+                throw new ResourceNotFoundException("Customer not active! ");
+            }
+        }
+
+        if (!user.isActive())
+            throw new ResourceNotFoundException("User not active!");
+
         if (tenantId == request.tenantId() || request.username().equals("hakan") || request.username().equals("esat")) {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.username(), request.password()));
             if (authentication.isAuthenticated()) {

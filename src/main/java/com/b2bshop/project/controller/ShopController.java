@@ -4,6 +4,7 @@ import com.b2bshop.project.dto.CreateShopRequest;
 import com.b2bshop.project.model.Shop;
 import com.b2bshop.project.repository.ShopRepository;
 import com.b2bshop.project.service.ShopService;
+import jakarta.transaction.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class ShopController {
 //        return createdShops;
 //    }
 
+    @Transactional
     @PostMapping()
     public Shop addShop(@RequestBody CreateShopRequest request) {
         return shopService.createShop(request);

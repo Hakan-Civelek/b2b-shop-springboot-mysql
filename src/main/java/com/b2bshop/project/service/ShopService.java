@@ -2,21 +2,32 @@ package com.b2bshop.project.service;
 
 import com.b2bshop.project.dto.CreateShopRequest;
 import com.b2bshop.project.exception.ResourceNotFoundException;
+import com.b2bshop.project.model.Role;
 import com.b2bshop.project.model.Shop;
+import com.b2bshop.project.model.User;
 import com.b2bshop.project.repository.ShopRepository;
+import com.b2bshop.project.repository.UserRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
 
 @Service
 public class ShopService {
 
     private final ShopRepository shopRepository;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public ShopService(ShopRepository shopRepository) {
+    public ShopService(ShopRepository shopRepository,
+                       UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.shopRepository = shopRepository;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public Shop createShop(CreateShopRequest request) {
-        Shop newShop = Shop.builder()
+        Shop shop = Shop.builder()
                 .name(request.name())
                 .email(request.email())
                 .phoneNumber(request.phoneNumber())
@@ -25,7 +36,23 @@ public class ShopService {
                 .privacyPolicy(request.privacyPolicy())
                 .build();
 
-        return shopRepository.save(newShop);
+        //Create default user!
+        String username = request.name().replaceAll("\\s", "");
+        User user = new User();
+        user.setUsername(username);
+        user.setEmail(request.email());
+        user.setPhoneNumber(request.phoneNumber());
+        user.setPassword(passwordEncoder.encode("password"));
+        user.setShop(shop);
+        user.setAuthorities(Set.of(Role.ROLE_SHOP_OWNER));
+        user.setActive(true);
+        user.setEnabled(true);
+        user.setAccountNonExpired(true);
+        user.setAccountNonLocked(true);
+        user.setCredentialsNonExpired(true);
+        userRepository.save(user);
+
+        return shopRepository.save(shop);
     }
 
     public Shop updateShopById(Long shopId, Shop newShop) {
