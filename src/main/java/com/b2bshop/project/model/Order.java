@@ -24,6 +24,9 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
+    @ManyToOne
+    @JoinColumn(name = "shop_id", nullable = false)
+    private Shop shop;
     @Column(unique = true)
     String orderNumber;
     private String orderNote;

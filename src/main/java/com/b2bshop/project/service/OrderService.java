@@ -152,12 +152,16 @@ public class OrderService {
         String orderNumber = generateOrderNumber(tenantId);
         String orderNote = json.get("orderNote").asText();
         String userName = jwtService.extractUser(token);
+        User user = userRepository.findByUsername(userName).orElseThrow(() -> new ResourceNotFoundException("User not found by name: " + userName));
+        Shop shop = user.getCustomer().getShop();
+
         order.setCustomer(customerService.findCustomerById(tenantId));
+        order.setShop(shop);
         order.setOrderNumber(orderNumber);
         order.setOrderNote(orderNote);
         order.setOrderItems(new ArrayList<>());
         order.setOrderDate(new Date());
-        order.setCreatedBy(userRepository.findByUsername(userName).orElseThrow(() -> new ResourceNotFoundException("User not found by name: " + userName)));
+        order.setCreatedBy(user);
         order.setInvoiceAddress(addressService.findAddressById(invoiceAddressId));
         order.setReceiverAddress(addressService.findAddressById(receiverAddressId));
         order.setOrderStatus(OrderStatus.OLUSTURULDU);
