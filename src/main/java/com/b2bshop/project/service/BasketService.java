@@ -138,32 +138,37 @@ public class BasketService {
         long productId = json.get("productId").asLong();
         int quantity = json.get("quantity").asInt();
         boolean updateQuantity = json.get("updateQuantity").asBoolean();
+        boolean isStockAvailable = productService.checkStockById(productId, quantity);
 
-        if (basketItems == null) {
-            basketItems = new ArrayList<>();
-            basket.setBasketItems(basketItems);
-        }
-
-        for (BasketItem item : basket.getBasketItems()) {
-            if (item.getProduct().getId() == productId) {
-                if (updateQuantity) {
-                    item.setQuantity(quantity);
-                } else {
-                    item.setQuantity(item.getQuantity() + quantity);
-                }
-                itemExists = true;
-                break;
+        if (isStockAvailable) {
+            if (basketItems == null) {
+                basketItems = new ArrayList<>();
+                basket.setBasketItems(basketItems);
             }
-        }
 
-        if (!itemExists) {
-            Product product = productService.findProductById(productId);
+            for (BasketItem item : basket.getBasketItems()) {
+                if (item.getProduct().getId() == productId) {
+                    if (updateQuantity) {
+                        item.setQuantity(quantity);
+                    } else {
+                        item.setQuantity(item.getQuantity() + quantity);
+                    }
+                    itemExists = true;
+                    break;
+                }
+            }
 
-            BasketItem newItem = BasketItem.builder()
-                    .product(product)
-                    .quantity(quantity)
-                    .build();
-            basket.getBasketItems().add(newItem);
+            if (!itemExists) {
+                Product product = productService.findProductById(productId);
+
+                BasketItem newItem = BasketItem.builder()
+                        .product(product)
+                        .quantity(quantity)
+                        .build();
+                basket.getBasketItems().add(newItem);
+            }
+        } else {
+            throw new ResourceNotFoundException("Stock is not enough for material: " + productId);
         }
 
         return basketRepository.save(basket);

@@ -1,13 +1,15 @@
 package com.b2bshop.project.service;
 
 import com.b2bshop.project.exception.ResourceNotFoundException;
-import com.b2bshop.project.model.Role;
-import com.b2bshop.project.model.Shop;
-import com.b2bshop.project.model.User;
+import com.b2bshop.project.model.*;
 import com.b2bshop.project.repository.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.NoResultException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,12 +25,14 @@ public class UserService implements UserDetailsService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final CustomerService customerService;
+    private final EntityManager entityManager;
 
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, JwtService jwtService, CustomerService customerService) {
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, JwtService jwtService, CustomerService customerService, EntityManager entityManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.customerService = customerService;
+        this.entityManager = entityManager;
     }
 
     @Override
@@ -120,6 +124,22 @@ public class UserService implements UserDetailsService {
             return userRepository.findAll();
         } else {
             return List.of();
+        }
+    }
+
+    public User findUserByUserName(String userName){
+        Session session = entityManager.unwrap(Session.class);
+        String hqlQuery = "SELECT user " +
+                " FROM User as user " +
+                " WHERE user.username = :userName ";
+
+        Query<User> query = session.createQuery(hqlQuery, User.class);
+        query.setParameter("userName", userName);
+
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            throw new EntityNotFoundException("User not found by name: " + userName);
         }
     }
 }

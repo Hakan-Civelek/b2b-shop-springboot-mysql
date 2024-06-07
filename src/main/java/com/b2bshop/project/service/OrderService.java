@@ -52,7 +52,125 @@ public class OrderService {
     public List<Map<String, Object>> getAllOrders(HttpServletRequest request) {
         String token = request.getHeader("Authorization").split("Bearer ")[1];
         Long tenantId = securityService.returnTenantIdByUsernameOrToken("token", token);
+        String userName = jwtService.extractUser(token);
+        User user = userRepository.findByUsername(userName).orElseThrow(() -> new RuntimeException("User not found"));
+        Set<Role> userRoles = user.getAuthorities();
 
+        if (userRoles.contains(Role.ROLE_CUSTOMER_USER)) {
+            return getOrderForCustomer(tenantId);
+        } else return getOrderForShop(tenantId);
+    }
+
+    public List<Map<String, Object>> getOrderForShop(Long tenantId) {
+        Session session = entityManager.unwrap(Session.class);
+        String orderQuery = "SELECT order.id as orderId, order.orderNote as orderNote," +
+                " order.totalPrice as totalPrice, order.withoutTaxPrice as withoutTaxPrice," +
+                " order.totalTax as totalTax, " +
+                " createdBy.id as createdById, createdBy.name as createdByName, " +
+                " order.orderNumber as orderNumber,  order.orderDate as orderDate," +
+                " orderItem.refProductId as orderItemRefProductId, orderItem.name as orderItemName, " +
+                " orderItem.salesPrice as orderItemSalesPrice, orderItem.grossPrice as orderItemGrossPrice," +
+                " orderItem.quantity as orderItemQuantity, orderItem.id as orderItemId," +
+                " invoiceAddress.id as invoiceAddressId, invoiceAddress.addressLine as invoiceAddressLine, " +
+                " invoiceAddress.city as invoiceAddressCity, " +
+                " receiverAddress.id as receiverAddressId, receiverAddress.addressLine as receiverAddressLine, " +
+                " receiverAddress.city as receiverAddressCity, " +
+                " image.id as imageId, image.url as imageUrl, image.isThumbnail as imageIsThumbnail, " +
+                " order.orderStatus as orderStatus, customer.id as customerId, customer.name as customerName " +
+                " FROM Order as order " +
+                " JOIN order.shop as shop ON shop.tenantId = :tenantId " +
+                " JOIN order.customer as customer ON customer.id = order.customer.id " +
+                " JOIN order.createdBy as createdBy " +
+                " JOIN order.orderItems as orderItem " +
+                " LEFT JOIN orderItem.images as image " +
+                " JOIN order.invoiceAddress as invoiceAddress " +
+                " JOIN order.receiverAddress as receiverAddress " +
+                " WHERE  1 = 1 " +
+                " ORDER BY order.id DESC ";
+
+        Query query = session.createQuery(orderQuery);
+        query.setParameter("tenantId", tenantId);
+
+        List<Map<String, Object>> orderResultList = new ArrayList<>();
+        Map<Long, Map<String, Object>> orderResultMap = new LinkedHashMap<>();
+        List<Object[]> orderRows = query.list();
+
+        for (Object[] orderRow : orderRows) {
+            Long orderId = (Long) orderRow[0];
+            Long orderItemId = (Long) orderRow[14];
+            Long imageId = (Long) orderRow[21];
+            Long invoiceAddressId = (Long) orderRow[15];
+            Long receiverAddressId = (Long) orderRow[18];
+
+            Map<String, Object> orderMap = orderResultMap.getOrDefault(orderId, new HashMap<>());
+            orderMap.put("orderId", orderId);
+            orderMap.put("orderNumber", orderRow[7]);
+            orderMap.put("orderNote", orderRow[1]);
+            orderMap.put("orderDate", orderRow[8]);
+            orderMap.put("createdById", orderRow[5]);
+            orderMap.put("createdByName", orderRow[6]);
+            orderMap.put("totalPrice", orderRow[2]);
+            orderMap.put("withoutTaxPrice", orderRow[3]);
+            orderMap.put("totalTax", orderRow[4]);
+
+            OrderStatus orderStatus = (OrderStatus) orderRow[24];
+            Map<String, Object> orderStatusMap = new HashMap<>();
+            orderStatusMap.put("id", orderStatus.getId());
+            orderStatusMap.put("status", orderStatus.getStatus());
+            orderMap.put("orderStatus", orderStatusMap);
+
+            List<Map<String, Object>> orderItems = (List<Map<String, Object>>) orderMap.getOrDefault("orderItems", new ArrayList<>());
+
+            Map<String, Object> orderItem = orderItems.stream()
+                    .filter(item -> item.get("id").equals(orderItemId))
+                    .findFirst()
+                    .orElse(new HashMap<>());
+
+            if (!orderItem.containsKey("id")) {
+                orderItem.put("name", orderRow[10]);
+                orderItem.put("grossPrice", orderRow[12]);
+                orderItem.put("salesPrice", orderRow[11]);
+                orderItem.put("quantity", orderRow[13]);
+                orderItem.put("refProductId", orderRow[9]);
+                orderItem.put("id", orderItemId);
+                orderItem.put("images", new ArrayList<Map<String, Object>>());
+                orderItems.add(orderItem);
+            }
+
+            List<Map<String, Object>> images = (List<Map<String, Object>>) orderItem.get("images");
+            Map<String, Object> image = new HashMap<>();
+            image.put("id", imageId);
+            image.put("url", orderRow[22]);
+            image.put("isThumbnail", orderRow[23]);
+            images.add(image);
+
+            orderMap.put("orderItems", orderItems);
+
+            Map<String, Object> invoiceAddressMap = new HashMap<>();
+            invoiceAddressMap.put("id", invoiceAddressId);
+            invoiceAddressMap.put("address", orderRow[16]);
+            invoiceAddressMap.put("city", orderRow[17]);
+            orderMap.put("invoiceAddress", invoiceAddressMap);
+
+            Map<String, Object> receiverAddressMap = new HashMap<>();
+            receiverAddressMap.put("id", receiverAddressId);
+            receiverAddressMap.put("address", orderRow[19]);
+            receiverAddressMap.put("city", orderRow[20]);
+            orderMap.put("receiverAddress", receiverAddressMap);
+
+            Map<String, Object> customerMap = new HashMap<>();
+            customerMap.put("id", orderRow[25]);
+            customerMap.put("name", orderRow[26]);
+            orderMap.put("customer", customerMap);
+
+            orderResultMap.put(orderId, orderMap);
+        }
+
+        orderResultList.addAll(orderResultMap.values());
+        return orderResultList;
+    }
+
+    private List<Map<String, Object>> getOrderForCustomer(Long tenantId) {
         Session session = entityManager.unwrap(Session.class);
         String orderQuery = "SELECT order.id as orderId, order.orderNote as orderNote," +
                 " order.totalPrice as totalPrice, order.withoutTaxPrice as withoutTaxPrice," +
@@ -64,7 +182,11 @@ public class OrderService {
                 " orderItem.quantity as orderItemQuantity, orderItem.id as orderItemId," +
                 " invoiceAddress as invoiceAddressMap, receiverAddress as receiverAddressMap, " +
                 " image.id as imageId, image.url as imageUrl, image.isThumbnail as imageIsThumbnail, " +
-                " order.orderStatus as orderStatusId " +
+                " order.orderStatus as orderStatusId, " +
+                " invoiceAddress.id as invoiceAddressId, invoiceAddress.addressLine as invoiceAddressLine, " +
+                " invoiceAddress.city as invoiceAddressCity, " +
+                " receiverAddress.id as receiverAddressId, receiverAddress.addressLine as receiverAddressLine, " +
+                " receiverAddress.city as receiverAddressCity " +
                 " FROM Order as order " +
                 " JOIN order.customer as customer ON customer.tenantId = :tenantId" +
                 " JOIN order.createdBy as createdBy " +
@@ -130,8 +252,18 @@ public class OrderService {
             images.add(image);
 
             orderMap.put("orderItems", orderItems);
-            orderMap.put("invoiceAddress", orderRow[15]);
-            orderMap.put("receiverAddress", orderRow[16]);
+
+            Map<String, Object> invoiceAddressMap = new HashMap<>();
+            invoiceAddressMap.put("id", orderRow[21]);
+            invoiceAddressMap.put("address", orderRow[22]);
+            invoiceAddressMap.put("city", orderRow[23]);
+            orderMap.put("invoiceAddress", invoiceAddressMap);
+
+            Map<String, Object> receiverAddressMap = new HashMap<>();
+            receiverAddressMap.put("id", orderRow[24]);
+            receiverAddressMap.put("address", orderRow[25]);
+            receiverAddressMap.put("city", orderRow[26]);
+            orderMap.put("receiverAddress", receiverAddressMap);
 
             orderResultMap.put(orderId, orderMap);
         }
