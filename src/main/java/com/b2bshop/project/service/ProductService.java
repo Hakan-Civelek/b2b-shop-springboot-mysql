@@ -53,11 +53,12 @@ public class ProductService {
 
         Session session = entityManager.unwrap(Session.class);
         String hqlQuery = "SELECT product.id, product.name, product.description, product.salesPrice, product.grossPrice, " +
-                " product.vatRate, product.code, product.shop, product.gtin, product.stock, product.isActive," +
-                " brand.id as brandId, brand.name as brandName " +
+                " product.vatRate, product.code, product.gtin, product.stock, product.isActive, " +
+                " brand.id as brandId, brand.name as brandName, image.id as imageId, image.url as imageUrl, image.isThumbnail as imageIsThumbnail " +
                 " FROM Product as product " +
                 " JOIN product.shop as shop " +
                 " LEFT JOIN product.brand as brand " +
+                " LEFT JOIN product.images as image " +
                 " WHERE 1 = 1 ";
 
         if (tenantId != null) {
@@ -77,47 +78,49 @@ public class ProductService {
             query.setParameter("brandId", brandId);
         }
 
-        List<Map<String, Object>> resultList = new ArrayList<>();
         List<Object[]> rows = query.list();
+        Map<Long, Map<String, Object>> productsMap = new HashMap<>();
 
         for (Object[] row : rows) {
-            Map<String, Object> resultMap = new HashMap<>();
             Long productId = (Long) row[0];
-            resultMap.put("id", row[0]);
-            resultMap.put("name", row[1]);
-            resultMap.put("description", row[2]);
-            resultMap.put("salesPrice", row[3]);
-            resultMap.put("grossPrice", row[4]);
-            resultMap.put("vatRate", row[5]);
-            resultMap.put("code", row[6]);
-            resultMap.put("shop", row[7]);
-            resultMap.put("gtin", row[8]);
-            resultMap.put("stock", row[9]);
-            resultMap.put("active", row[10]);
+            Map<String, Object> productMap = productsMap.get(productId);
 
-            List<Map<String, Object>> images = new ArrayList<>();
-            Product product = productRepository.findById(productId).orElse(null);
-            if (product != null) {
-                for (Image image : product.getImages()) {
-                    Map<String, Object> imageMap = new HashMap<>();
-                    imageMap.put("url", image.getUrl());
-                    imageMap.put("isThumbnail", image.getIsThumbnail());
-                    imageMap.put("id", image.getId());
-                    images.add(imageMap);
+            if (productMap == null) {
+                productMap = new HashMap<>();
+                productMap.put("id", row[0]);
+                productMap.put("name", row[1]);
+                productMap.put("description", row[2]);
+                productMap.put("salesPrice", row[3]);
+                productMap.put("grossPrice", row[4]);
+                productMap.put("vatRate", row[5]);
+                productMap.put("code", row[6]);
+                productMap.put("gtin", row[7]);
+                productMap.put("stock", row[8]);
+                productMap.put("active", row[9]);
+
+                Map<String, Object> brandMap = new HashMap<>();
+                if (row[10] != null) {
+                    brandMap.put("id", row[10]);
+                    brandMap.put("name", row[11]);
+                } else {
+                    brandMap = null;
                 }
+                productMap.put("brand", brandMap);
+                productMap.put("images", new ArrayList<Map<String, Object>>());
+
+                productsMap.put(productId, productMap);
             }
-            resultMap.put("images", images);
 
-            Map<String, Object> brandMap = new HashMap<>();
-            if (row[11] != null) {
-                brandMap.put("id", row[11]);
-                brandMap.put("name", row[12]);
-            } else brandMap = null;
-            resultMap.put("brand", brandMap);
-
-            resultList.add(resultMap);
+            if (row[12] != null) {
+                Map<String, Object> imageMap = new HashMap<>();
+                imageMap.put("id", row[12]);
+                imageMap.put("url", row[13]);
+                imageMap.put("isThumbnail", row[14]);
+                ((List<Map<String, Object>>) productMap.get("images")).add(imageMap);
+            }
         }
-        return resultList;
+
+        return new ArrayList<>(productsMap.values());
     }
 
     @Transactional
