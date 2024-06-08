@@ -46,14 +46,10 @@ public class UserController {
         return userService.createUser(request, json);
     }
 
-//    @PostMapping("/createSystemOwners")
-//    public List<User> createOwners(@RequestBody List<CreateUserRequest> requests) {
-//        List<User> createdUsers = new ArrayList<>();
-//        for (CreateUserRequest request : requests) {
-//            createdUsers.add(userService.createUser(requests));
-//        }
-//        return createdUsers;
-//    }
+    @PostMapping("/createSystemOwners")
+    public Map<String, String>  createOwners(HttpServletRequest request, @RequestBody JsonNode json) {
+        return userService.createSystemOwners(request, json);
+    }
 
     @GetMapping("/{userId}")
     public User getUserById(@PathVariable Long userId) {
