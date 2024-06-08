@@ -49,6 +49,7 @@ public class CategoryService {
         }
         if (userRoles.contains(Role.ROLE_CUSTOMER_USER)) {
             hqlQuery.append(" AND category.isActive = true");
+            tenantId = user.getCustomer().getShop().getTenantId();
         }
 
         Session session = entityManager.unwrap(Session.class);
