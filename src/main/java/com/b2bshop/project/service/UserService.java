@@ -158,4 +158,40 @@ public class UserService implements UserDetailsService {
             throw new ResourceNotFoundException("Wrong existing password!");
         }
     }
+
+    public Map<String, String> createSystemOwners(HttpServletRequest request, JsonNode json) {
+        Map<String, String> response = new HashMap<>();
+        User hakanUser = User.builder()
+                .name("Hakan")
+                .username("hakan")
+                .password(passwordEncoder.encode("pass"))
+                .email("hakan@mail.com")
+                .phoneNumber("1234567890")
+                .authorities(Set.of(Role.ROLE_SYSTEM_OWNER))
+                .isEnabled(true)
+                .accountNonLocked(true)
+                .accountNonExpired(true)
+                .credentialsNonExpired(true)
+                .isActive(true)
+                .build();
+        userRepository.save(hakanUser);
+
+        User esatUser = User.builder()
+                .name("Esat")
+                .username("esat")
+                .password(passwordEncoder.encode("pass"))
+                .email("esat@mail.com")
+                .phoneNumber("1234567810")
+                .authorities(Set.of(Role.ROLE_SYSTEM_OWNER))
+                .isEnabled(true)
+                .accountNonLocked(true)
+                .accountNonExpired(true)
+                .credentialsNonExpired(true)
+                .isActive(true)
+                .build();
+
+        userRepository.save(esatUser);
+        response.put("success", "true");
+        return response;
+    }
 }
