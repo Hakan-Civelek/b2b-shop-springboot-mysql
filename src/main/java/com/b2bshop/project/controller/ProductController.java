@@ -53,8 +53,8 @@ public class ProductController {
     }
 
     @PutMapping("/{productId}")
-    public Product updateProductById(@PathVariable Long productId, @RequestBody Product newProduct) {
-        return productService.updateProductById(productId, newProduct);
+    public Product updateProductById(@PathVariable Long productId, @RequestBody JsonNode json) {
+        return productService.updateProductById(productId, json);
     }
 
     @DeleteMapping("/{productId}")

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -164,13 +165,15 @@ public class ProductService {
         Shop shop = user.getShop();
 
         Brand brand = null;
-        if (json.get("brandId") != null) {
-            brand = brandService.findById(json.get("brandId").asLong());
+        if (json.has("brand")) {
+            Long brandId = json.get("brand").get("id").asLong();
+            brand = brandService.findById(brandId);
         }
 
         Category category = null;
-        if (json.get("categoryId") != null) {
-            category = categoryService.findById(json.get("categoryId").asLong());
+        if (json.has("category")) {
+            Long categoryId = json.get("category").get("id").asLong();
+            category = categoryService.findById(categoryId);
         }
 
         Product product = new Product();
@@ -206,38 +209,60 @@ public class ProductService {
     }
 
     @Transactional
-    public Product updateProductById(Long productId, Product newProduct) {
-        Product product = findProductById(productId);
+    public Product updateProductById(Long productId, JsonNode json) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product could not be found by id: " + productId));
 
-        product.setName(newProduct.getName());
-        product.setDescription(newProduct.getDescription());
-        product.setSalesPrice(newProduct.getSalesPrice());
-        product.setGrossPrice(newProduct.getGrossPrice());
-        product.setVatRate(newProduct.getVatRate());
-        product.setCode(newProduct.getCode());
-        product.setShop(newProduct.getShop());
-        product.setGtin(newProduct.getGtin());
-        product.setStock(newProduct.getStock());
-        product.setActive(newProduct.isActive());
-        product.setBrand(newProduct.getBrand());
-        product.setCategory(newProduct.getCategory());
+//        if (json.has("brand")) {
+//            Long brandId = json.get("brand").get("id").asLong();
+//            Brand brand = brandService.findById(brandId);
+//            product.setBrand(brand);
+//        }
 
-        List<Image> newImages = newProduct.getImages();
-
-        if (newImages != null) {
-            product.getImages().clear();
-
-            for (Image newImage : newImages) {
-                if (newImage.getId() == null) {
-                    newImage = imageRepository.save(newImage);
-                }
-                product.getImages().add(newImage);
-            }
+        if (json.has("category")) {
+            Long categoryId = json.get("category").get("id").asLong();
+            Category category = categoryService.findById(categoryId);
+            product.setCategory(category);
         }
 
-        productRepository.saveAndFlush(product);
+        product.setName(json.get("name").asText());
+        product.setDescription(json.get("description").asText());
+        product.setSalesPrice(json.get("salesPrice").asDouble());
+        product.setGrossPrice(json.get("grossPrice").asDouble());
+        product.setVatRate(json.get("vatRate").asDouble());
+        product.setCode(json.get("code").asText());
+        product.setGtin(json.get("gtin").asText());
+        product.setStock(json.get("stock").asInt());
+        product.setActive(json.get("active").asBoolean());
 
-        return product;
+        if (json.has("images")) {
+            List<Image> currentImages = product.getImages();
+            Map<Long, Image> currentImageMap = currentImages.stream()
+                    .collect(Collectors.toMap(Image::getId, image -> image));
+
+            List<Image> updatedImages = new ArrayList<>();
+
+            for (JsonNode imageNode : json.get("images")) {
+                Long imageId = imageNode.has("id") ? imageNode.get("id").asLong() : null;
+                Image image;
+
+                if (imageId != null && currentImageMap.containsKey(imageId)) {
+                    image = currentImageMap.get(imageId);
+                    image.setIsThumbnail(imageNode.get("isThumbnail").asBoolean());
+                } else {
+                    image = new Image();
+                    image.setUrl(imageNode.get("url").asText());
+                    image.setIsThumbnail(imageNode.get("isThumbnail").asBoolean());
+                    image = imageRepository.save(image);
+                }
+                updatedImages.add(image);
+            }
+
+            currentImages.clear();
+            currentImages.addAll(updatedImages);
+        }
+
+        return productRepository.save(product);
     }
 
     public boolean checkStockById(long productId, int quantity) {
@@ -259,8 +284,19 @@ public class ProductService {
     }
 
     public Product findProductById(Long id) {
-        Product product = productRepository.findById(id).orElseThrow(()
-                -> new ResourceNotFoundException("Category not found by id: " + id));
+        Session session = entityManager.unwrap(Session.class);
+        String hqlQuery = "SELECT product " +
+                " FROM Product as product " +
+                " WHERE product.id = :productId";
+
+        Query query = session.createQuery(hqlQuery);
+        query.setParameter("productId", id);
+
+        Product product = (Product) query.uniqueResult();
+        if (product == null) {
+            throw new ResourceNotFoundException("Product not found by id: " + id);
+        }
+
         return product;
     }
 }

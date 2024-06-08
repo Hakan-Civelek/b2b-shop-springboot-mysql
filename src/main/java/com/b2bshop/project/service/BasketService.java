@@ -123,7 +123,8 @@ public class BasketService {
     }
 
     @Transactional
-    public Basket addItemOnBasket(HttpServletRequest request, JsonNode json) {
+    public Map<String, String> addItemOnBasket(HttpServletRequest request, JsonNode json) {
+        Map<String, String> response = new HashMap<>();
         String token = request.getHeader("Authorization").split("Bearer ")[1];
         String userName = jwtService.extractUser(token);
         User user = userService.findUserByName(userName);
@@ -142,41 +143,38 @@ public class BasketService {
         long productId = json.get("productId").asLong();
         int quantity = json.get("quantity").asInt();
         boolean updateQuantity = json.get("updateQuantity").asBoolean();
-        boolean isStockAvailable = productService.checkStockById(productId, quantity);
 
-        if (isStockAvailable) {
-            if (basketItems == null) {
-                basketItems = new ArrayList<>();
-                basket.setBasketItems(basketItems);
-            }
-
-            for (BasketItem item : basket.getBasketItems()) {
-                if (item.getProduct().getId() == productId) {
-                    if (updateQuantity) {
-                        item.setQuantity(quantity);
-                    } else {
-                        item.setQuantity(item.getQuantity() + quantity);
-                    }
-                    itemExists = true;
-                    break;
-                }
-            }
-
-            if (!itemExists) {
-                Product product = productRepository.findById(productId).orElseThrow(
-                        () -> new ResourceNotFoundException("Product could not find by id: " + productId));
-
-                BasketItem newItem = BasketItem.builder()
-                        .product(product)
-                        .quantity(quantity)
-                        .build();
-                basket.getBasketItems().add(newItem);
-            }
-        } else {
-            throw new ResourceNotFoundException("Stock is not enough for material: " + productId);
+        if (basketItems == null) {
+            basketItems = new ArrayList<>();
+            basket.setBasketItems(basketItems);
         }
 
-        return basketRepository.save(basket);
+        for (BasketItem item : basket.getBasketItems()) {
+            if (item.getProduct().getId() == productId) {
+                if (updateQuantity) {
+                    item.setQuantity(quantity);
+                } else {
+                    item.setQuantity(item.getQuantity() + quantity);
+                }
+                itemExists = true;
+                break;
+            }
+        }
+
+        if (!itemExists) {
+            Product product = productRepository.findById(productId).orElseThrow(
+                    () -> new ResourceNotFoundException("Product could not find by id: " + productId));
+
+            BasketItem newItem = BasketItem.builder()
+                    .product(product)
+                    .quantity(quantity)
+                    .build();
+            basket.getBasketItems().add(newItem);
+        }
+
+        basketRepository.save(basket);
+        response.put("success", "true");
+        return response;
     }
 
     public Basket findBasketById(Long id) {

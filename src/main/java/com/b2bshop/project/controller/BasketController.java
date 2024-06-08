@@ -26,7 +26,7 @@ public class BasketController {
     }
 
     @PostMapping("/addItem")
-    public Basket addItemOnBasket(HttpServletRequest request, @RequestBody JsonNode json) {
+    public Map<String, String> addItemOnBasket(HttpServletRequest request, @RequestBody JsonNode json) {
         return basketService.addItemOnBasket(request, json);
     }
 
