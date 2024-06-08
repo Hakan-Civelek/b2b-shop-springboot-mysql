@@ -29,14 +29,16 @@ public class Product {
     @Column(unique = true)
     private String code;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinTable(name = "product_shop",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "tenant_id"))
     private Shop shop;
 
-    //category
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Category category;
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images;
 
@@ -45,7 +47,6 @@ public class Product {
     private int stock;
     private boolean isActive = false;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Brand brand;
 }
-

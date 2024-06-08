@@ -26,10 +26,11 @@ public class ProductService {
     private final UserRepository userRepository;
     private final ImageRepository imageRepository;
     private final BrandService brandService;
+    private final CategoryService categoryService;
 
     public ProductService(ProductRepository productRepository, SecurityService securityService, JwtService jwtService,
                           UserRepository userRepository, EntityManager entityManager, ImageRepository imageRepository,
-                          BrandService brandService) {
+                          BrandService brandService, CategoryService categoryService) {
         this.productRepository = productRepository;
         this.securityService = securityService;
         this.jwtService = jwtService;
@@ -37,6 +38,7 @@ public class ProductService {
         this.entityManager = entityManager;
         this.imageRepository = imageRepository;
         this.brandService = brandService;
+        this.categoryService = categoryService;
     }
 
     public List<Map<String, Object>> getAllProducts(HttpServletRequest request, @RequestParam(name = "brandId", required = false) Long brandId) {
@@ -54,11 +56,15 @@ public class ProductService {
         Session session = entityManager.unwrap(Session.class);
         String hqlQuery = "SELECT product.id, product.name, product.description, product.salesPrice, product.grossPrice, " +
                 " product.vatRate, product.code, product.gtin, product.stock, product.isActive, " +
-                " brand.id as brandId, brand.name as brandName, image.id as imageId, image.url as imageUrl, image.isThumbnail as imageIsThumbnail " +
+                " brand.id as brandId, brand.name as brandName, image.id as imageId, image.url as imageUrl, image.isThumbnail as imageIsThumbnail, " +
+                " category.id as categoryId, category.name as categoryName, " +
+                " parentCategory.id as parentCategoryId, parentCategory.name as parentCategoryName " +
                 " FROM Product as product " +
                 " JOIN product.shop as shop " +
                 " LEFT JOIN product.brand as brand " +
                 " LEFT JOIN product.images as image " +
+                " LEFT JOIN product.category as category " +
+                " LEFT JOIN category.parentCategory as parentCategory " +
                 " WHERE 1 = 1 ";
 
         if (tenantId != null) {
@@ -108,6 +114,24 @@ public class ProductService {
                 productMap.put("brand", brandMap);
                 productMap.put("images", new ArrayList<Map<String, Object>>());
 
+                Map<String, Object> categoryMap = new HashMap<>();
+                if (row[15] != null) {
+                    categoryMap.put("id", row[15]);
+                    categoryMap.put("name", row[16]);
+
+                    Map<String, Object> parentCategoryMap = new HashMap<>();
+                    if (row[17] != null) {
+                        parentCategoryMap.put("id", row[17]);
+                        parentCategoryMap.put("name", row[18]);
+                    } else {
+                        parentCategoryMap = null;
+                    }
+                    categoryMap.put("parentCategory", parentCategoryMap);
+                } else {
+                    categoryMap = null;
+                }
+                productMap.put("category", categoryMap);
+
                 productsMap.put(productId, productMap);
             }
 
@@ -131,10 +155,13 @@ public class ProductService {
         Shop shop = user.getShop();
 
         Brand brand = null;
-        JsonNode brandNode = json.get("brand");
-        if (brandNode.get("id") != null) {
-            Long brandId = brandNode.get("id").asLong();
-            brand = brandService.findById(brandId);
+        if (json.get("brandId") != null) {
+            brand = brandService.findById(json.get("brandId").asLong());
+        }
+
+        Category category = null;
+        if (json.get("categoryId") != null) {
+            category = categoryService.findById(json.get("categoryId").asLong());
         }
 
         Product product = new Product();
@@ -149,6 +176,7 @@ public class ProductService {
         product.setActive(json.get("active").asBoolean());
         product.setShop(shop);
         product.setBrand(brand);
+        product.setCategory(category);
 
         List<Image> images = new ArrayList<>();
         if (json.has("images")) {
@@ -220,8 +248,86 @@ public class ProductService {
         return stock >= quantity;
     }
 
-    public Product findProductById(Long id) {
-        return productRepository.findById(id).orElseThrow(()
-                -> new ResourceNotFoundException("Product could not find by id: " + id));
+    public Map<String, Object> findProductById(Long id) {
+        Session session = entityManager.unwrap(Session.class);
+        String hqlQuery = "SELECT product.id, product.name, product.description, product.salesPrice, product.grossPrice, " +
+                " product.vatRate, product.code, product.gtin, product.stock, product.isActive, " +
+                " brand.id as brandId, brand.name as brandName, image.id as imageId, image.url as imageUrl, image.isThumbnail as imageIsThumbnail, " +
+                " category.id as categoryId, category.name as categoryName, " +
+                " parentCategory.id as parentCategoryId, parentCategory.name as parentCategoryName " +
+                " FROM Product as product " +
+                " LEFT JOIN product.brand as brand " +
+                " LEFT JOIN product.images as image " +
+                " LEFT JOIN product.category as category " +
+                " LEFT JOIN category.parentCategory as parentCategory " +
+                " WHERE product.id = :productId";
+
+        Query query = session.createQuery(hqlQuery);
+        query.setParameter("productId", id);
+
+        List<Object[]> rows = query.list();
+        if (rows.isEmpty()) {
+            throw new ResourceNotFoundException("Product could not be found by id: " + id);
+        }
+
+        Map<Long, Map<String, Object>> productsMap = new HashMap<>();
+        for (Object[] row : rows) {
+            Long productId = (Long) row[0];
+            Map<String, Object> productMap = productsMap.get(productId);
+
+            if (productMap == null) {
+                productMap = new HashMap<>();
+                productMap.put("id", row[0]);
+                productMap.put("name", row[1]);
+                productMap.put("description", row[2]);
+                productMap.put("salesPrice", row[3]);
+                productMap.put("grossPrice", row[4]);
+                productMap.put("vatRate", row[5]);
+                productMap.put("code", row[6]);
+                productMap.put("gtin", row[7]);
+                productMap.put("stock", row[8]);
+                productMap.put("active", row[9]);
+
+                Map<String, Object> brandMap = new HashMap<>();
+                if (row[10] != null) {
+                    brandMap.put("id", row[10]);
+                    brandMap.put("name", row[11]);
+                } else {
+                    brandMap = null;
+                }
+                productMap.put("brand", brandMap);
+                productMap.put("images", new ArrayList<Map<String, Object>>());
+
+                Map<String, Object> categoryMap = new HashMap<>();
+                if (row[15] != null) {
+                    categoryMap.put("id", row[15]);
+                    categoryMap.put("name", row[16]);
+
+                    Map<String, Object> parentCategoryMap = new HashMap<>();
+                    if (row[17] != null) {
+                        parentCategoryMap.put("id", row[17]);
+                        parentCategoryMap.put("name", row[18]);
+                    } else {
+                        parentCategoryMap = null;
+                    }
+                    categoryMap.put("parentCategory", parentCategoryMap);
+                } else {
+                    categoryMap = null;
+                }
+                productMap.put("category", categoryMap);
+
+                productsMap.put(productId, productMap);
+            }
+
+            if (row[12] != null) {
+                Map<String, Object> imageMap = new HashMap<>();
+                imageMap.put("id", row[12]);
+                imageMap.put("url", row[13]);
+                imageMap.put("isThumbnail", row[14]);
+                ((List<Map<String, Object>>) productMap.get("images")).add(imageMap);
+            }
+        }
+
+        return productsMap.values().iterator().next();
     }
 }

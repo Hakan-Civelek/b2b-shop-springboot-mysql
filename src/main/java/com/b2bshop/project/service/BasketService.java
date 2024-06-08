@@ -7,6 +7,7 @@ import com.b2bshop.project.model.Product;
 import com.b2bshop.project.model.User;
 import com.b2bshop.project.repository.BasketItemRepository;
 import com.b2bshop.project.repository.BasketRepository;
+import com.b2bshop.project.repository.ProductRepository;
 import com.b2bshop.project.repository.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.EntityManager;
@@ -28,10 +29,12 @@ public class BasketService {
     private final UserService userService;
 
     private final BasketItemRepository basketItemRepository;
+    private final ProductRepository productRepository;
 
     public BasketService(BasketRepository basketRepository, JwtService jwtService,
                          UserRepository userRepository, EntityManager entityManager,
-                         ProductService productService, UserService userService, BasketItemRepository basketItemRepository) {
+                         ProductService productService, UserService userService, BasketItemRepository basketItemRepository,
+                         ProductRepository productRepository) {
         this.basketRepository = basketRepository;
         this.jwtService = jwtService;
         this.userRepository = userRepository;
@@ -39,6 +42,7 @@ public class BasketService {
         this.entityManager = entityManager;
         this.userService = userService;
         this.basketItemRepository = basketItemRepository;
+        this.productRepository = productRepository;
     }
 
     public Map<String, Object> getBasket(HttpServletRequest request) {
@@ -159,7 +163,8 @@ public class BasketService {
             }
 
             if (!itemExists) {
-                Product product = productService.findProductById(productId);
+                Product product = productRepository.findById(productId).orElseThrow(
+                        () -> new ResourceNotFoundException("Product could not find by id: " + productId));
 
                 BasketItem newItem = BasketItem.builder()
                         .product(product)
