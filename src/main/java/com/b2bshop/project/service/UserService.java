@@ -87,7 +87,6 @@ public class UserService implements UserDetailsService {
                 -> new RuntimeException("User not found")));
         oldUser.setName(newUser.getName());
         oldUser.setUsername(newUser.getUsername());
-        oldUser.setPassword(passwordEncoder.encode(newUser.getPassword())); //TODO need an update for password changed!
         oldUser.setEmail(newUser.getEmail());
         oldUser.setPhoneNumber(newUser.getPhoneNumber());
         oldUser.setAuthorities(newUser.getAuthorities());
@@ -127,7 +126,7 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public User findUserByUserName(String userName){
+    public User findUserByUserName(String userName) {
         Session session = entityManager.unwrap(Session.class);
         String hqlQuery = "SELECT user " +
                 " FROM User as user " +
@@ -140,6 +139,23 @@ public class UserService implements UserDetailsService {
             return query.getSingleResult();
         } catch (NoResultException e) {
             throw new EntityNotFoundException("User not found by name: " + userName);
+        }
+    }
+
+    public Map<String, String> updatePassword(Long userId, JsonNode json) {
+        Map<String, String> response = new HashMap<>();
+        User user = findUserById(userId);
+
+        String existingPassword = json.get("existPassword").asText();
+        String newPassword = json.get("newPassword").asText();
+
+        if (passwordEncoder.matches(existingPassword, user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+            response.put("success", "true");
+            return response;
+        } else {
+            throw new ResourceNotFoundException("Wrong existing password!");
         }
     }
 }

@@ -613,6 +613,44 @@
 					"response": []
 				},
 				{
+					"name": "update user Password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"existPassword\": \"pass\",\r\n    \"newPassword\": \"password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/user/updatePassword/37",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"user",
+								"updatePassword",
+								"37"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "delete User",
 					"request": {
 						"auth": {

@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/user")
@@ -62,6 +63,11 @@ public class UserController {
     @PutMapping("/{userId}")
     public User updateUserById(@PathVariable Long userId, @RequestBody User newUser) {
         return userService.updateUserById(userId, newUser);
+    }
+
+    @PutMapping("/updatePassword/{userId}")
+    public Map<String, String> updatePassword(@PathVariable Long userId, @RequestBody JsonNode json) {
+        return userService.updatePassword(userId, json);
     }
 
     @DeleteMapping("/{userId}")
