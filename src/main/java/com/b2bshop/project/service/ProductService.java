@@ -41,7 +41,9 @@ public class ProductService {
         this.categoryService = categoryService;
     }
 
-    public List<Map<String, Object>> getAllProducts(HttpServletRequest request, @RequestParam(name = "brandId", required = false) Long brandId) {
+    public List<Map<String, Object>> getAllProducts(HttpServletRequest request,
+                                                    @RequestParam(name = "brandId", required = false) Long brandId,
+                                                    @RequestParam(name = "categoryId", required = false) Long categoryId) {
         String token = request.getHeader("Authorization").split("Bearer ")[1];
         Long tenantId = securityService.returnTenantIdByUsernameOrToken("token", token);
         String whereCondition = " ";
@@ -73,6 +75,10 @@ public class ProductService {
         if (brandId != null) {
             hqlQuery += " AND brand.id = :brandId";
         }
+        if (categoryId != null) {
+            hqlQuery += " AND category.id = :categoryId";
+        }
+
         hqlQuery += whereCondition;
 
         Query query = session.createQuery(hqlQuery);
@@ -82,6 +88,9 @@ public class ProductService {
         }
         if (brandId != null) {
             query.setParameter("brandId", brandId);
+        }
+        if (categoryId != null) {
+            query.setParameter("categoryId", categoryId);
         }
 
         List<Object[]> rows = query.list();
