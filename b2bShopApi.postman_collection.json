@@ -286,7 +286,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"fifth customer\",\r\n    \"email\": \"fifthcustomer@mail.com\",\r\n    \"shop\": {\r\n        \"tenantId\": 5\r\n    },\r\n    \"vatNumber\": \"fifth vatNumber\",\r\n    \"phoneNumber\": \"05678478965\",\r\n    \"isActive\": true\r\n}",
+							"raw": "{\r\n    \"name\": \"first customer\",\r\n    \"email\": \"firstcustomer@mail.com\",\r\n    \"vatNumber\": \"first vatNumber\",\r\n    \"phoneNumber\": \"05678478965\",\r\n    \"isActive\": true\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -739,6 +739,50 @@
 					"response": []
 				},
 				{
+					"name": "get Brand's  And Categories Products",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoYWthbnNob3BAbWFpbC5jb20iLCJpYXQiOjE3MTc4NDQ0MzksImV4cCI6MTcxNzg0ODAzOX0.9W1jFxwt300t10PY95V5CwsngaLhD1YGmg_YgLirBdQ"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/api/product?brandId=2&categoryId=3",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"product"
+							],
+							"query": [
+								{
+									"key": "brandId",
+									"value": "2"
+								},
+								{
+									"key": "categoryId",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "get AllProducts Copy",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
@@ -794,13 +838,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseurl}}/product/94",
+							"raw": "{{baseurl}}/product/12",
 							"host": [
 								"{{baseurl}}"
 							],
 							"path": [
 								"product",
-								"94"
+								"12"
 							]
 						}
 					},
@@ -823,7 +867,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"gtin\": \"1512323123123\",\r\n    \"images\": [\r\n        {\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/9ad184b0-d0ff-4bf9-906b-9bd1b5fbbf9e.jpg?alt=media\",\r\n            \"isThumbnail\": true\r\n        },\r\n        {\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/10747be1-e4e9-454d-81e2-c132dbe3b860.jpg?alt=media\",\r\n            \"isThumbnail\": false\r\n        }\r\n    ],\r\n    \"code\": \"te1st for brand\",\r\n    \"salesPrice\": 9999.0,\r\n    \"vatRate\": 0.0,\r\n    \"description\": \"KIYMETLIMIZ\",\r\n    \"grossPrice\": 9999.0,\r\n    \"active\": true,\r\n    \"name\": \"1test for brand\",\r\n    \"stock\": 22,\r\n    \"category\": {\r\n        \"name\": \"Oyun Bilgisayarları\",\r\n        \"id\": 6\r\n    },\r\n    \"brand\": {\r\n        \"id\": 2\r\n    }\r\n}",
+							"raw": "{\r\n    \"gtin\": \"5123123123\",\r\n    \"images\": [\r\n        {\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/9ad184b0-d0ff-4bf9-906b-9bd1b5fbbf9e.jpg?alt=media\",\r\n            \"isThumbnail\": true\r\n        },\r\n        {\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/10747be1-e4e9-454d-81e2-c132dbe3b860.jpg?alt=media\",\r\n            \"isThumbnail\": false\r\n        }\r\n    ],\r\n    \"code\": \"test for update image!\",\r\n    \"salesPrice\": 17500.0,\r\n    \"vatRate\": 0.0,\r\n    \"description\": \"test for update image!\",\r\n    \"grossPrice\": 20000.0,\r\n    \"active\": true,\r\n    \"name\": \"test for update image!\",\r\n    \"stock\": 10,\r\n    \"categoryId\": 2,\r\n    \"brandId\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -895,7 +939,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 99,\r\n    \"name\": \"test for brand\",\r\n    \"description\": \"KIYMETLIMIZ\",\r\n    \"salesPrice\": 9999.0,\r\n    \"grossPrice\": 9999.0,\r\n    \"vatRate\": 0.0,\r\n    \"code\": \"test for brand\",\r\n    \"shop\": {\r\n        \"tenantId\": 1,\r\n        \"name\": \"first shop\",\r\n        \"email\": \"firstshop@mail.com\",\r\n        \"phoneNumber\": \"05678478961\",\r\n        \"vatNumber\": \"1 vatNumber\",\r\n        \"aboutUs\": \"1 aboutUs\",\r\n        \"privacyPolicy\": \"1 privacyPolicy\"\r\n    },\r\n    \"images\": [\r\n        {\r\n            \"id\": 103,\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/9ad184b0-d0ff-4bf9-906b-9bd1b5fbbf9e.jpg?alt=media\",\r\n            \"createdBy\": {\r\n                \"id\": 28,\r\n                \"name\": \"Ali\",\r\n                \"username\": \"ali\",\r\n                \"password\": \"$2a$10$Ysi1kt7Q25vOTAqU4R9hMuB9cvbxIyirdwxWNfZ5l.TkP0DxYYvXC\",\r\n                \"email\": \"ali@email.com\",\r\n                \"phoneNumber\": \"05369874513\",\r\n                \"authorities\": [\r\n                    \"ROLE_SHOP_OWNER\"\r\n                ],\r\n                \"shop\": {\r\n                    \"tenantId\": 1,\r\n                    \"name\": \"first shop\",\r\n                    \"email\": \"firstshop@mail.com\",\r\n                    \"phoneNumber\": \"05678478961\",\r\n                    \"vatNumber\": \"1 vatNumber\",\r\n                    \"aboutUs\": \"1 aboutUs\",\r\n                    \"privacyPolicy\": \"1 privacyPolicy\"\r\n                },\r\n                \"customer\": null,\r\n                \"accountNonLocked\": true,\r\n                \"accountNonExpired\": true,\r\n                \"credentialsNonExpired\": true,\r\n                \"enabled\": true,\r\n                \"active\": true\r\n            },\r\n            \"isThumbnail\": true\r\n        },\r\n        {\r\n            \"id\": 104,\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/10747be1-e4e9-454d-81e2-c132dbe3b860.jpg?alt=media\",\r\n            \"createdBy\": {\r\n                \"id\": 28,\r\n                \"name\": \"Ali\",\r\n                \"username\": \"ali\",\r\n                \"password\": \"$2a$10$Ysi1kt7Q25vOTAqU4R9hMuB9cvbxIyirdwxWNfZ5l.TkP0DxYYvXC\",\r\n                \"email\": \"ali@email.com\",\r\n                \"phoneNumber\": \"05369874513\",\r\n                \"authorities\": [\r\n                    \"ROLE_SHOP_OWNER\"\r\n                ],\r\n                \"shop\": {\r\n                    \"tenantId\": 1,\r\n                    \"name\": \"first shop\",\r\n                    \"email\": \"firstshop@mail.com\",\r\n                    \"phoneNumber\": \"05678478961\",\r\n                    \"vatNumber\": \"1 vatNumber\",\r\n                    \"aboutUs\": \"1 aboutUs\",\r\n                    \"privacyPolicy\": \"1 privacyPolicy\"\r\n                },\r\n                \"customer\": null,\r\n                \"accountNonLocked\": true,\r\n                \"accountNonExpired\": true,\r\n                \"credentialsNonExpired\": true,\r\n                \"enabled\": true,\r\n                \"active\": true\r\n            },\r\n            \"isThumbnail\": false\r\n        }\r\n    ],\r\n    \"gtin\": \"151232123123\",\r\n    \"stock\": 22,\r\n    \"brand\": {\r\n        \"id\": 2\r\n    },\r\n    \"active\": false\r\n}",
+							"raw": "{\r\n    \"gtin\": \"5123123123\",\r\n    \"images\": [\r\n        {\r\n            \"isThumbnail\": true,\r\n            \"id\": 41,\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/9ad184b0-d0ff-4bf9-906b-9bd1b5fbbf9e.jpg?alt=media\"\r\n        },\r\n        {\r\n            \"isThumbnail\": false,\r\n            \"id\": 42,\r\n            \"url\": \"https://firebasestorage.googl   eapis.com/v0/b/b2bshop-d0961.appspot.com/o/10747be1-e4e9-454d-81e2-c132dbe3b860.jpg?alt=media\"\r\n        }\r\n    ],\r\n    \"code\": \"test for update image!\",\r\n    \"salesPrice\": 17500.0,\r\n    \"vatRate\": 0.0,\r\n    \"description\": \"test for update image!\",\r\n    \"active\": true,\r\n    \"grossPrice\": 20000.0,\r\n    \"name\": \"test for update image!\",\r\n    \"id\": 12,\r\n    \"stock\": 10,\r\n    \"categoryId\": 2,\r\n    \"brandId\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -903,13 +947,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseurl}}/product/99",
+							"raw": "{{baseurl}}/product/12",
 							"host": [
 								"{{baseurl}}"
 							],
 							"path": [
 								"product",
-								"99"
+								"12"
 							]
 						}
 					},
@@ -2164,7 +2208,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"tenantId\": 1,\r\n    \"username\": \"ali\",\r\n    \"password\": \"pass\"\r\n}",
+							"raw": "{\r\n    \"tenantId\": 4,\r\n    \"username\": \"firstshop\",\r\n    \"password\": \"password\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
