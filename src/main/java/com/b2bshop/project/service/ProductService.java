@@ -54,15 +54,17 @@ public class ProductService {
         }
 
         List<Long> brandIds = new ArrayList<>();
-        if (json.has("brandIds") && json.get("brandIds").isArray()) {
-            for (JsonNode brandIdNode : json.get("brandIds")) {
-                brandIds.add(brandIdNode.asLong());
-            }
-        }
-
         Long categoryId = null;
-        if (json.has("categoryId") && json.get("categoryId").isArray() && json.get("categoryId").size() > 0) {
-            categoryId = json.get("categoryId").get(0).asLong();
+        if (json != null) {
+            if (json.has("brandIds") && json.get("brandIds").isArray()) {
+                for (JsonNode brandIdNode : json.get("brandIds")) {
+                    brandIds.add(brandIdNode.asLong());
+                }
+            }
+
+            if (json.has("categoryId") && json.get("categoryId").isArray() && json.get("categoryId").size() > 0) {
+                categoryId = json.get("categoryId").get(0).asLong();
+            }
         }
 
         Session session = entityManager.unwrap(Session.class);

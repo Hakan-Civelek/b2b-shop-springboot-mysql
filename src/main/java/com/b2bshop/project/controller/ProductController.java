@@ -25,7 +25,7 @@ public class ProductController {
     }
 
     @GetMapping()
-    public List<Map<String, Object>> getAllProducts(HttpServletRequest request, @RequestBody JsonNode json) {
+    public List<Map<String, Object>> getAllProducts(HttpServletRequest request, @RequestBody(required = false) JsonNode json) {
         return productService.getAllProducts(request, json);
     }
 
