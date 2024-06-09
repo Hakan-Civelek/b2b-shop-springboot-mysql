@@ -164,15 +164,17 @@ public class ProductService {
         User user = userRepository.findByUsername(userName).orElseThrow(() -> new RuntimeException("User not found"));
         Shop shop = user.getShop();
 
-        Brand brand = null;
-        if (json.has("brand")) {
-            Long brandId = json.get("brand").get("id").asLong();
+        Brand brand= null;
+        JsonNode brandNode = json.get("brand");
+        if (brandNode != null && !brandNode.isNull()) {
+            Long brandId = brandNode.get("id").asLong();
             brand = brandService.findById(brandId);
         }
 
         Category category = null;
-        if (json.has("category")) {
-            Long categoryId = json.get("category").get("id").asLong();
+        JsonNode categoryNode = json.get("category");
+        if (categoryNode != null && !categoryNode.isNull()) {
+            Long categoryId = categoryNode.get("id").asLong();
             category = categoryService.findById(categoryId);
         }
 
@@ -285,20 +287,69 @@ public class ProductService {
         return stock >= quantity;
     }
 
-    public Product findProductById(Long id) {
-        Session session = entityManager.unwrap(Session.class);
-        String hqlQuery = "SELECT product " +
-                " FROM Product as product " +
-                " WHERE product.id = :productId";
+//    public Product findProductById(Long id) {
+//        Product product = productRepository.findById(id).orElseThrow(()
+//                -> new RuntimeException("Product not found by id: " + id));
+//
+//        return product;
+//    }
 
-        Query query = session.createQuery(hqlQuery);
-        query.setParameter("productId", id);
+    public Map<String, Object> findProductById(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
 
-        Product product = (Product) query.uniqueResult();
-        if (product == null) {
-            throw new ResourceNotFoundException("Product not found by id: " + id);
+        Map<String, Object> productMap = new HashMap<>();
+        productMap.put("id", product.getId());
+        productMap.put("name", product.getName());
+        productMap.put("description", product.getDescription());
+        productMap.put("salesPrice", product.getSalesPrice());
+        productMap.put("grossPrice", product.getGrossPrice());
+        productMap.put("vatRate", product.getVatRate());
+        productMap.put("code", product.getCode());
+        productMap.put("gtin", product.getGtin());
+        productMap.put("stock", product.getStock());
+        productMap.put("active", product.isActive());
+
+        Map<String, Object> brandMap = new HashMap<>();
+        Brand brand = product.getBrand();
+        if (brand != null) {
+            brandMap.put("id", brand.getId());
+            brandMap.put("name", brand.getName());
+        } else {
+            brandMap = null;
         }
+        productMap.put("brand", brandMap);
 
-        return product;
+        List<Map<String, Object>> imagesList = new ArrayList<>();
+        for (Image image : product.getImages()) {
+            Map<String, Object> imageMap = new HashMap<>();
+            imageMap.put("id", image.getId());
+            imageMap.put("url", image.getUrl());
+            imageMap.put("isThumbnail", image.getIsThumbnail());
+            imagesList.add(imageMap);
+        }
+        productMap.put("images", imagesList);
+
+        Map<String, Object> categoryMap = new HashMap<>();
+        Category category = product.getCategory();
+        if (category != null) {
+            categoryMap.put("id", category.getId());
+            categoryMap.put("name", category.getName());
+
+            Map<String, Object> parentCategoryMap = new HashMap<>();
+            Category parentCategory = category.getParentCategory();
+            if (parentCategory != null) {
+                parentCategoryMap.put("id", parentCategory.getId());
+                parentCategoryMap.put("name", parentCategory.getName());
+            } else {
+                parentCategoryMap = null;
+            }
+            categoryMap.put("parentCategory", parentCategoryMap);
+        } else {
+            categoryMap = null;
+        }
+        productMap.put("category", categoryMap);
+
+        return productMap;
     }
 }

@@ -172,6 +172,18 @@ public class BasketService {
             basket.getBasketItems().add(newItem);
         }
 
+        for (BasketItem basketItem : basketItems) {
+            if (basketItem.getProduct().getId().equals(productId)) {
+                int newQuantity = basketItem.getQuantity();
+                boolean stockCheck = productService.checkStockById(productId, newQuantity);
+                if (!stockCheck) {
+                    Product product = productRepository.findById(productId).orElseThrow(
+                            () -> new ResourceNotFoundException("Product could not find by id: " + productId));
+                    throw new ResourceNotFoundException("Stock is not enough for material: " + product.getName());
+                }
+            }
+        }
+
         basketRepository.save(basket);
         response.put("success", "true");
         return response;

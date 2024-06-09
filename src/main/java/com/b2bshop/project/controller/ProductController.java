@@ -1,6 +1,5 @@
 package com.b2bshop.project.controller;
 
-import com.b2bshop.project.dto.CreateProductRequest;
 import com.b2bshop.project.model.Product;
 import com.b2bshop.project.repository.ProductRepository;
 import com.b2bshop.project.service.ProductService;
@@ -9,7 +8,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +46,7 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}")
-    public Product getProductById(@PathVariable Long productId) {
+    public Map<String, Object> findProductById(@PathVariable Long productId) {
         return productService.findProductById(productId);
     }
 
