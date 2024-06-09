@@ -41,7 +41,7 @@ public class ProductService {
         this.categoryService = categoryService;
     }
 
-    public List<Map<String, Object>> getAllProducts(HttpServletRequest request, JsonNode json) {
+    public List<Map<String, Object>> getAllProducts(HttpServletRequest request, Long categoryId, List<Long> brandIds) {
         String token = request.getHeader("Authorization").split("Bearer ")[1];
         Long tenantId = securityService.returnTenantIdByUsernameOrToken("token", token);
         String whereCondition = " ";
@@ -53,24 +53,11 @@ public class ProductService {
             tenantId = user.getCustomer().getShop().getTenantId();
         }
 
-        List<Long> brandIds = new ArrayList<>();
-        Long categoryId = null;
-        if (json != null) {
-            if (json.has("brandIds") && json.get("brandIds").isArray()) {
-                for (JsonNode brandIdNode : json.get("brandIds")) {
-                    brandIds.add(brandIdNode.asLong());
-                }
-            }
-
-            if (json.has("categoryId") && json.get("categoryId").isArray() && json.get("categoryId").size() > 0) {
-                categoryId = json.get("categoryId").get(0).asLong();
-            }
-        }
-
         Session session = entityManager.unwrap(Session.class);
         String hqlQuery = "SELECT product.id, product.name, product.description, product.salesPrice, product.grossPrice, " +
                 " product.vatRate, product.code, product.gtin, product.stock, product.isActive, " +
-                " brand.id as brandId, brand.name as brandName, image.id as imageId, image.url as imageUrl, image.isThumbnail as imageIsThumbnail, " +
+                " brand.id as brandId, brand.name as brandName, image.id as imageId, image.url as imageUrl, " +
+                " image.isThumbnail as imageIsThumbnail, " +
                 " category.id as categoryId, category.name as categoryName, " +
                 " parentCategory.id as parentCategoryId, parentCategory.name as parentCategoryName " +
                 " FROM Product as product " +
@@ -84,9 +71,11 @@ public class ProductService {
         if (tenantId != null) {
             hqlQuery += " AND shop.id = :tenantId";
         }
-        if (!brandIds.isEmpty()) {
+
+        if (brandIds != null && !brandIds.isEmpty()) {
             hqlQuery += " AND brand.id IN :brandIds";
         }
+
         Set<Long> categoryIds = null;
         if (categoryId != null) {
             Category category = categoryService.findById(categoryId);
@@ -100,11 +89,10 @@ public class ProductService {
         hqlQuery += whereCondition;
 
         Query query = session.createQuery(hqlQuery);
-
         if (tenantId != null) {
             query.setParameter("tenantId", tenantId);
         }
-        if (!brandIds.isEmpty()) {
+        if (brandIds != null && !brandIds.isEmpty()) {
             query.setParameter("brandIds", brandIds);
         }
         if (categoryId != null && categoryIds != null) {

@@ -25,8 +25,10 @@ public class ProductController {
     }
 
     @GetMapping()
-    public List<Map<String, Object>> getAllProducts(HttpServletRequest request, @RequestBody(required = false) JsonNode json) {
-        return productService.getAllProducts(request, json);
+    public List<Map<String, Object>> getAllProducts(HttpServletRequest request,
+                                                    @RequestParam(required = false) Long categoryId,
+                                                    @RequestParam(required = false) List<Long> brandIds) {
+        return productService.getAllProducts(request, categoryId, brandIds);
     }
 
 //    @PostMapping()

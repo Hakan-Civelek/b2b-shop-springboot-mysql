@@ -43,7 +43,8 @@ public class DashboardService {
             Query orderCountQueryObj = session.createQuery(orderCountQuery);
             orderCountQueryObj.setParameter("tenantId", tenantId);
             orderCountQueryObj.setParameter("cancelledStatus", OrderStatus.IPTAL_EDILDI);
-            int orderCount = ((Number) orderCountQueryObj.uniqueResult()).intValue();
+            Number orderCountResult = (Number) orderCountQueryObj.uniqueResult();
+            int orderCount = (orderCountResult != null) ? orderCountResult.intValue() : 0;
 
             String thisMonthOrderCountQuery = "SELECT COUNT(o) " +
                     " FROM Order o " +
@@ -53,55 +54,61 @@ public class DashboardService {
             Query thisMonthOrderCountQueryObj = session.createQuery(thisMonthOrderCountQuery);
             thisMonthOrderCountQueryObj.setParameter("tenantId", tenantId);
             thisMonthOrderCountQueryObj.setParameter("cancelledStatus", OrderStatus.IPTAL_EDILDI);
-            int thisMonthOrderCount = ((Number) thisMonthOrderCountQueryObj.uniqueResult()).intValue();
+            Number thisMonthOrderCountResult = (Number) thisMonthOrderCountQueryObj.uniqueResult();
+            int thisMonthOrderCount = (thisMonthOrderCountResult != null) ? thisMonthOrderCountResult.intValue() : 0;
 
             dashboardData.put("orderCount", orderCount);
             dashboardData.put("thisMonthOrderCount", thisMonthOrderCount);
 
-            String cancelledOrderCountQuery = "SELECT COUNT(o) " +
-                    " FROM Order o " +
-                    " WHERE o.shop.id = :tenantId " +
-                    " AND o.orderStatus = :cancelledStatus " +
-                    " AND MONTH(o.orderDate) = MONTH(CURRENT_DATE())";
-            Query cancelledOrderCountQueryObj = session.createQuery(cancelledOrderCountQuery);
-            cancelledOrderCountQueryObj.setParameter("tenantId", tenantId);
-            cancelledOrderCountQueryObj.setParameter("cancelledStatus", OrderStatus.IPTAL_EDILDI);
-            int thisMonthCancelledOrderCount = ((Number) cancelledOrderCountQueryObj.uniqueResult()).intValue();
-
-            dashboardData.put("thisMonthCancelledOrderCount", thisMonthCancelledOrderCount);
-
-            String totalCancelledOrderCountQuery = "SELECT COUNT(o) " +
-                    " FROM Order o " +
-                    " WHERE o.shop.id = :tenantId " +
-                    " AND o.orderStatus = :cancelledStatus";
-            Query totalCancelledOrderCountQueryObj = session.createQuery(totalCancelledOrderCountQuery);
-            totalCancelledOrderCountQueryObj.setParameter("tenantId", tenantId);
-            totalCancelledOrderCountQueryObj.setParameter("cancelledStatus", OrderStatus.IPTAL_EDILDI);
-            int cancelledOrderCount = ((Number) totalCancelledOrderCountQueryObj.uniqueResult()).intValue();
-
-            dashboardData.put("cancelledOrderCount", cancelledOrderCount);
-
             String totalRevenueQuery = "SELECT SUM(o.totalPrice) " +
-                    " FROM Order o " +
-                    " WHERE o.shop.id = :tenantId";
+                    "FROM Order o " +
+                    "WHERE o.shop.id = :tenantId " +
+                    "AND o.orderStatus != :cancelledStatus";
             Query totalRevenueQueryObj = session.createQuery(totalRevenueQuery);
             totalRevenueQueryObj.setParameter("tenantId", tenantId);
-            double totalRevenue = ((Number) totalRevenueQueryObj.getSingleResult()).doubleValue();
+            totalRevenueQueryObj.setParameter("cancelledStatus", OrderStatus.IPTAL_EDILDI);
+            Number totalRevenueResult = (Number) totalRevenueQueryObj.uniqueResult();
+            double totalRevenue = (totalRevenueResult != null) ? totalRevenueResult.doubleValue() : 0.0;
 
             String thisMonthTotalRevenueQuery = "SELECT SUM(o.totalPrice) " +
-                    " FROM Order o " +
-                    " WHERE o.shop.id = :tenantId " +
-                    " AND MONTH(o.orderDate) = MONTH(CURRENT_DATE())";
+                    "FROM Order o " +
+                    "WHERE o.shop.id = :tenantId " +
+                    "AND MONTH(o.orderDate) = MONTH(CURRENT_DATE()) " +
+                    "AND o.orderStatus != :cancelledStatus";
             Query thisMonthTotalRevenueQueryObj = session.createQuery(thisMonthTotalRevenueQuery);
             thisMonthTotalRevenueQueryObj.setParameter("tenantId", tenantId);
-            double thisMonthTotalRevenue = ((Number) thisMonthTotalRevenueQueryObj.getSingleResult()).doubleValue();
+            thisMonthTotalRevenueQueryObj.setParameter("cancelledStatus", OrderStatus.IPTAL_EDILDI);
+            Number thisMonthTotalRevenueResult = (Number) thisMonthTotalRevenueQueryObj.uniqueResult();
+            double thisMonthTotalRevenue = (thisMonthTotalRevenueResult != null) ? thisMonthTotalRevenueResult.doubleValue() : 0.0;
+
+            String cancelledRevenueQuery = "SELECT SUM(o.totalPrice) " +
+                    "FROM Order o " +
+                    "WHERE o.shop.id = :tenantId " +
+                    "AND o.orderStatus = :cancelledStatus";
+            Query cancelledRevenueQueryObj = session.createQuery(cancelledRevenueQuery);
+            cancelledRevenueQueryObj.setParameter("tenantId", tenantId);
+            cancelledRevenueQueryObj.setParameter("cancelledStatus", OrderStatus.IPTAL_EDILDI);
+            Number cancelledRevenueResult = (Number) cancelledRevenueQueryObj.uniqueResult();
+            double cancelledRevenue = (cancelledRevenueResult != null) ? cancelledRevenueResult.doubleValue() : 0.0;
+
+            String thisMonthCancelledRevenueQuery = "SELECT SUM(o.totalPrice) " +
+                    "FROM Order o " +
+                    "WHERE o.shop.id = :tenantId " +
+                    "AND MONTH(o.orderDate) = MONTH(CURRENT_DATE()) " +
+                    "AND o.orderStatus = :cancelledStatus";
+            Query thisMonthCancelledRevenueQueryObj = session.createQuery(thisMonthCancelledRevenueQuery);
+            thisMonthCancelledRevenueQueryObj.setParameter("tenantId", tenantId);
+            thisMonthCancelledRevenueQueryObj.setParameter("cancelledStatus", OrderStatus.IPTAL_EDILDI);
+            Number thisMonthCancelledRevenueResult = (Number) thisMonthCancelledRevenueQueryObj.uniqueResult();
+            double thisMonthCancelledRevenue = (thisMonthCancelledRevenueResult != null) ? thisMonthCancelledRevenueResult.doubleValue() : 0.0;
 
             String customerCountQuery = "SELECT COUNT(c) " +
                     " FROM Customer c " +
                     " WHERE c.shop.tenantId = :tenantId";
             Query customerCountQueryObj = session.createQuery(customerCountQuery);
             customerCountQueryObj.setParameter("tenantId", tenantId);
-            int customerCount = ((Number) customerCountQueryObj.getSingleResult()).intValue();
+            Number customerCountResult = (Number) customerCountQueryObj.uniqueResult();
+            int customerCount = (customerCountResult != null) ? customerCountResult.intValue() : 0;
 
             String thisMonthCustomerCountQuery = "SELECT COUNT(c) " +
                     " FROM Customer c " +
@@ -109,14 +116,16 @@ public class DashboardService {
                     " AND MONTH(c.dateCreated) = MONTH(CURRENT_DATE())";
             Query thisMonthCustomerCountQueryObj = session.createQuery(thisMonthCustomerCountQuery);
             thisMonthCustomerCountQueryObj.setParameter("tenantId", tenantId);
-            int thisMonthCustomerCount = ((Number) thisMonthCustomerCountQueryObj.getSingleResult()).intValue();
+            Number thisMonthCustomerCountResult = (Number) thisMonthCustomerCountQueryObj.uniqueResult();
+            int thisMonthCustomerCount = (thisMonthCustomerCountResult != null) ? thisMonthCustomerCountResult.intValue() : 0;
 
             String productCountQuery = "SELECT COUNT(p) " +
                     " FROM Product p " +
                     " WHERE p.shop.id = :tenantId";
             Query productCountQueryObj = session.createQuery(productCountQuery);
             productCountQueryObj.setParameter("tenantId", tenantId);
-            int productCount = ((Number) productCountQueryObj.getSingleResult()).intValue();
+            Number productCountResult = (Number) productCountQueryObj.uniqueResult();
+            int productCount = (productCountResult != null) ? productCountResult.intValue() : 0;
 
             String thisMonthProductCountQuery = "SELECT COUNT(p) " +
                     " FROM Product p " +
@@ -124,12 +133,15 @@ public class DashboardService {
                     " AND MONTH(p.dateCreated) = MONTH(CURRENT_DATE())";
             Query thisMonthProductCountQueryObj = session.createQuery(thisMonthProductCountQuery);
             thisMonthProductCountQueryObj.setParameter("tenantId", tenantId);
-            int thisMonthProductCount = ((Number) thisMonthProductCountQueryObj.getSingleResult()).intValue();
+            Number thisMonthProductCountResult = (Number) thisMonthProductCountQueryObj.uniqueResult();
+            int thisMonthProductCount = (thisMonthProductCountResult != null) ? thisMonthProductCountResult.intValue() : 0;
 
             dashboardData.put("orderCount", orderCount);
             dashboardData.put("thisMonthOrderCount", thisMonthOrderCount);
             dashboardData.put("totalRevenue", totalRevenue);
             dashboardData.put("thisMonthTotalRevenue", thisMonthTotalRevenue);
+            dashboardData.put("cancelledRevenue", cancelledRevenue);
+            dashboardData.put("thisMonthCancelledRevenue", thisMonthCancelledRevenue);
             dashboardData.put("customerCount", customerCount);
             dashboardData.put("thisMonthCustomerCount", thisMonthCustomerCount);
             dashboardData.put("productCount", productCount);
