@@ -97,9 +97,60 @@ public class CategoryService {
         return categoryRepository.findByShop(shop);
     }
 
-    public Category getCategoryById(Long id) {
-        return categoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
+    public Map<String, Object> getCategoryById(HttpServletRequest request, Long id) {
+        String token = request.getHeader("Authorization").split("Bearer ")[1];
+        Long tenantId = securityService.returnTenantIdByUsernameOrToken("token", token);
+        String userName = jwtService.extractUser(token);
+        User user = userRepository.findByUsername(userName).orElseThrow(() -> new RuntimeException("User not found"));
+        Set<Role> userRoles = user.getAuthorities();
+
+        StringBuilder hqlQuery = new StringBuilder("SELECT category FROM Category category WHERE category.id = :id");
+        if (tenantId != null) {
+            hqlQuery.append(" AND category.shop.id = :tenantId");
+        }
+        if (userRoles.contains(Role.ROLE_CUSTOMER_USER)) {
+            hqlQuery.append(" AND category.isActive = true");
+            tenantId = user.getCustomer().getShop().getTenantId();
+        }
+
+        Session session = entityManager.unwrap(Session.class);
+        Query query = session.createQuery(hqlQuery.toString());
+        query.setParameter("id", id);
+
+        if (tenantId != null) {
+            query.setParameter("tenantId", tenantId);
+        }
+
+        Category category = (Category) query.uniqueResult();
+        if (category == null) {
+            throw new ResourceNotFoundException("Category not found with id: " + id);
+        }
+
+        List<Category> allCategories = categoryRepository.findAll();
+
+        List<Map<String, Object>> categoryHierarchy = buildCategoryHierarchy(allCategories);
+
+        Map<String, Object> categoryData = findCategoryInHierarchy(categoryHierarchy, id);
+
+        if (categoryData == null) {
+            throw new ResourceNotFoundException("Category not found in hierarchy with id: " + id);
+        }
+
+        return categoryData;
+    }
+
+    private Map<String, Object> findCategoryInHierarchy(List<Map<String, Object>> hierarchy, Long id) {
+        for (Map<String, Object> category : hierarchy) {
+            if (category.get("id").equals(id)) {
+                return category;
+            }
+            List<Map<String, Object>> subCategories = (List<Map<String, Object>>) category.get("subCategories");
+            Map<String, Object> result = findCategoryInHierarchy(subCategories, id);
+            if (result != null) {
+                return result;
+            }
+        }
+        return null;
     }
 
     @Transactional

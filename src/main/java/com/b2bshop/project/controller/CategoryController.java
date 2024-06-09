@@ -33,9 +33,8 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
-        Category category = categoryService.getCategoryById(id);
-        return ResponseEntity.ok(category);
+    public Map<String, Object> getCategoryById(HttpServletRequest request, @PathVariable Long id) {
+        return categoryService.getCategoryById(request, id);
     }
 
     @PostMapping
