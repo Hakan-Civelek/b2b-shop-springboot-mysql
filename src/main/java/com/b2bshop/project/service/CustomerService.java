@@ -58,6 +58,7 @@ public class CustomerService {
 
         //Create default user!
         User customerUser = new User();
+        customerUser.setName(json.get("name").asText());
         customerUser.setUsername(json.get("email").asText());
         customerUser.setEmail(json.get("email").asText());
         customerUser.setPhoneNumber(json.get("phoneNumber").asText());

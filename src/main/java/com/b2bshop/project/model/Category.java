@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -26,8 +27,8 @@ public class Category {
     @JoinColumn(name = "parent_category_id")
     private Category parentCategory;
 
-//    @OneToMany(mappedBy = "parentCategory", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    private Set<Category> childCategories;
+    @ElementCollection
+    private Set<Long> childCategoryIds = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_id")

@@ -11,6 +11,7 @@ import com.b2bshop.project.repository.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Service;
@@ -101,27 +102,43 @@ public class CategoryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
     }
 
+    @Transactional
     public Category createCategory(HttpServletRequest request, JsonNode json) {
         String token = request.getHeader("Authorization").split("Bearer ")[1];
         String userName = jwtService.extractUser(token);
-        User user = userRepository.findByUsername(userName).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByUsername(userName)
+                .orElseThrow(() -> new RuntimeException("User not found"));
         Shop shop = user.getShop();
 
         Category parentCategory = null;
-        if (json.has("parentCategoryId") && !json.get("parentCategoryId").isNull()) {
-            Long parentCategoryId = json.get("parentCategoryId").asLong();
+
+        if (json.has("parentCategory") && !json.get("parentCategory").isNull()) {
+            JsonNode parentCategoryJson = json.get("parentCategory");
+            Long parentCategoryId = parentCategoryJson.get("id").asLong();
+
             parentCategory = categoryRepository.findById(parentCategoryId)
                     .orElseThrow(() -> new ResourceNotFoundException("Parent category not found with id: " + parentCategoryId));
         }
 
         Category newCategory = Category.builder()
                 .name(json.get("name").asText())
-                .isActive(json.get("isActive").asBoolean())
+                .isActive(json.get("active").asBoolean())
                 .parentCategory(parentCategory)
                 .shop(shop)
                 .build();
 
-        return categoryRepository.save(newCategory);
+        newCategory = categoryRepository.save(newCategory);
+
+        if (parentCategory != null && !parentCategory.getChildCategoryIds().contains(newCategory)) {
+            parentCategory.getChildCategoryIds().add(newCategory.getId());
+            if (parentCategory.getParentCategory() != null) {
+                parentCategory.getParentCategory().getChildCategoryIds().add(newCategory.getId());
+            }
+
+            categoryRepository.save(parentCategory);
+        }
+
+        return newCategory;
     }
 
     public Category updateCategoryById(Long id, Category updatedCategory) {
@@ -142,7 +159,7 @@ public class CategoryService {
         categoryRepository.delete(category);
     }
 
-    public Category findById(Long id){
+    public Category findById(Long id) {
         return categoryRepository.findById(id).orElseThrow(()
                 -> new RuntimeException("category not found by id: " + id));
     }

@@ -39,6 +39,7 @@ public class ShopService {
         //Create default user!
         User user = new User();
         user.setUsername(request.email());
+        user.setName(request.name());
         user.setEmail(request.email());
         user.setPhoneNumber(request.phoneNumber());
         user.setPassword(passwordEncoder.encode("password"));

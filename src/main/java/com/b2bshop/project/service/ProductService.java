@@ -76,8 +76,14 @@ public class ProductService {
         if (brandId != null) {
             hqlQuery += " AND brand.id = :brandId";
         }
+        Set<Long> categoryIds = null;
         if (categoryId != null) {
-            hqlQuery += " AND category.id = :categoryId";
+            Category category = categoryService.findById(categoryId);
+            if (category != null) {
+                categoryIds = new HashSet<>(category.getChildCategoryIds());
+                categoryIds.add(categoryId);
+            }
+            hqlQuery += " AND category.id IN :categoryIds";
         }
 
         hqlQuery += whereCondition;
@@ -91,7 +97,7 @@ public class ProductService {
             query.setParameter("brandId", brandId);
         }
         if (categoryId != null) {
-            query.setParameter("categoryId", categoryId);
+            query.setParameter("categoryIds", categoryIds);
         }
 
         List<Object[]> rows = query.list();
