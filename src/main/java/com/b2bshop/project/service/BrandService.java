@@ -38,7 +38,6 @@ public class BrandService {
         User user = userRepository.findByUsername(userName).orElseThrow(() -> new RuntimeException("User not found"));
         Set<Role> userRoles = user.getAuthorities();
         if (userRoles.contains(Role.ROLE_CUSTOMER_USER)) {
-            whereCondition = " AND product.isActive = true ";
             tenantId = user.getCustomer().getShop().getTenantId();
         }
 
