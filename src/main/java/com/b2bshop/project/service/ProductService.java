@@ -209,6 +209,7 @@ public class ProductService {
         product.setShop(shop);
         product.setBrand(brand);
         product.setCategory(category);
+        product.setDateCreated(new Date());
 
         List<Image> images = new ArrayList<>();
         if (json.has("images")) {

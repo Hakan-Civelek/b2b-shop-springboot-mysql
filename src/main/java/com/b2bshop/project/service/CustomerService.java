@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -55,6 +56,7 @@ public class CustomerService {
         customer.setVatNumber(json.get("vatNumber").asText());
         customer.setPhoneNumber(json.get("phoneNumber").asText());
         customer.setActive(true);
+        customer.setDateCreated(new Date());
 
         //Create default user!
         User customerUser = new User();

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -49,4 +50,5 @@ public class Product {
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Brand brand;
+    private Date dateCreated;
 }

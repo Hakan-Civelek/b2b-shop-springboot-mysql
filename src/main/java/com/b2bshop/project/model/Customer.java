@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @Entity
 @Table(name = "customer")
@@ -30,4 +32,5 @@ public class Customer {
     @Column(unique = true)
     private String phoneNumber;
     private boolean isActive = false;
+    private Date dateCreated;
 }
