@@ -35,13 +35,9 @@ public class BrandController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Brand> updateBrand(@PathVariable Long id, @RequestBody Brand brandDetails) {
-        try {
-            Brand updatedBrand = brandService.updateBrand(id, brandDetails);
-            return ResponseEntity.ok(updatedBrand);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Brand> updateBrand(@PathVariable Long id, @RequestBody JsonNode json) {
+        Brand updatedBrand = brandService.updateBrand(id, json);
+        return ResponseEntity.ok(updatedBrand);
     }
 
     @DeleteMapping("/{id}")

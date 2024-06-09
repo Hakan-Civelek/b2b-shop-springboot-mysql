@@ -74,7 +74,7 @@ public class BrandService {
     public Brand createBrand(HttpServletRequest request, JsonNode json) {
         String token = request.getHeader("Authorization").split("Bearer ")[1];
         String userName = jwtService.extractUser(token);
-        User user = userRepository.findByUsername(userName).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByUsername(userName).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Shop shop = user.getShop();
 
         Brand brand = new Brand();
@@ -84,9 +84,9 @@ public class BrandService {
         return brandRepository.save(brand);
     }
 
-    public Brand updateBrand(Long id, Brand brandDetails) {
+    public Brand updateBrand(Long id, JsonNode json) {
         Brand brand = findById(id);
-        brand.setName(brandDetails.getName());
+        brand.setName((json.get("name").asText()));
         return brandRepository.save(brand);
     }
 
