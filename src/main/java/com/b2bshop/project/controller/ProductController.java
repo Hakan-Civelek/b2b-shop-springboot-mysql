@@ -25,10 +25,8 @@ public class ProductController {
     }
 
     @GetMapping()
-    public List<Map<String, Object>> getAllProducts(HttpServletRequest request,
-                                                    @RequestParam(name = "brandId", required = false) Long brandId,
-                                                    @RequestParam(name = "categoryId", required = false) Long categoryId) {
-        return productService.getAllProducts(request, brandId, categoryId);
+    public List<Map<String, Object>> getAllProducts(HttpServletRequest request, @RequestBody JsonNode json) {
+        return productService.getAllProducts(request, json);
     }
 
 //    @PostMapping()
@@ -46,7 +44,7 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}")
-    public Map<String, Object> findProductById(@PathVariable Long productId) {
+    public Map<String, Object> findProductMapById(@PathVariable Long productId) {
         return productService.findProductById(productId);
     }
 

@@ -12,7 +12,6 @@ import jakarta.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -42,9 +41,7 @@ public class ProductService {
         this.categoryService = categoryService;
     }
 
-    public List<Map<String, Object>> getAllProducts(HttpServletRequest request,
-                                                    @RequestParam(name = "brandId", required = false) Long brandId,
-                                                    @RequestParam(name = "categoryId", required = false) Long categoryId) {
+    public List<Map<String, Object>> getAllProducts(HttpServletRequest request, JsonNode json) {
         String token = request.getHeader("Authorization").split("Bearer ")[1];
         Long tenantId = securityService.returnTenantIdByUsernameOrToken("token", token);
         String whereCondition = " ";
@@ -54,6 +51,18 @@ public class ProductService {
         if (userRoles.contains(Role.ROLE_CUSTOMER_USER)) {
             whereCondition = " AND product.isActive = true ";
             tenantId = user.getCustomer().getShop().getTenantId();
+        }
+
+        List<Long> brandIds = new ArrayList<>();
+        if (json.has("brandIds") && json.get("brandIds").isArray()) {
+            for (JsonNode brandIdNode : json.get("brandIds")) {
+                brandIds.add(brandIdNode.asLong());
+            }
+        }
+
+        Long categoryId = null;
+        if (json.has("categoryId") && json.get("categoryId").isArray() && json.get("categoryId").size() > 0) {
+            categoryId = json.get("categoryId").get(0).asLong();
         }
 
         Session session = entityManager.unwrap(Session.class);
@@ -73,8 +82,8 @@ public class ProductService {
         if (tenantId != null) {
             hqlQuery += " AND shop.id = :tenantId";
         }
-        if (brandId != null) {
-            hqlQuery += " AND brand.id = :brandId";
+        if (!brandIds.isEmpty()) {
+            hqlQuery += " AND brand.id IN :brandIds";
         }
         Set<Long> categoryIds = null;
         if (categoryId != null) {
@@ -93,10 +102,10 @@ public class ProductService {
         if (tenantId != null) {
             query.setParameter("tenantId", tenantId);
         }
-        if (brandId != null) {
-            query.setParameter("brandId", brandId);
+        if (!brandIds.isEmpty()) {
+            query.setParameter("brandIds", brandIds);
         }
-        if (categoryId != null) {
+        if (categoryId != null && categoryIds != null) {
             query.setParameter("categoryIds", categoryIds);
         }
 
@@ -163,6 +172,7 @@ public class ProductService {
         return new ArrayList<>(productsMap.values());
     }
 
+
     @Transactional
     public Product createProduct(HttpServletRequest request, JsonNode json) {
         String token = request.getHeader("Authorization").split("Bearer ")[1];
@@ -170,7 +180,7 @@ public class ProductService {
         User user = userRepository.findByUsername(userName).orElseThrow(() -> new RuntimeException("User not found"));
         Shop shop = user.getShop();
 
-        Brand brand= null;
+        Brand brand = null;
         JsonNode brandNode = json.get("brand");
         if (brandNode != null && !brandNode.isNull()) {
             Long brandId = brandNode.get("id").asLong();
