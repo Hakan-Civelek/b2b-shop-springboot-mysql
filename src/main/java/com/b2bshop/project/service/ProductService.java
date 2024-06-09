@@ -213,14 +213,16 @@ public class ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product could not be found by id: " + productId));
 
-//        if (json.has("brand")) {
-//            Long brandId = json.get("brand").get("id").asLong();
-//            Brand brand = brandService.findById(brandId);
-//            product.setBrand(brand);
-//        }
+        JsonNode brandNode = json.get("brand");
+        if (brandNode != null && !brandNode.isNull()) {
+            Long brandId = brandNode.get("id").asLong();
+            Brand brand = brandService.findById(brandId);
+            product.setBrand(brand);
+        }
 
-        if (json.has("category")) {
-            Long categoryId = json.get("category").get("id").asLong();
+        JsonNode categoryNode = json.get("category");
+        if (categoryNode != null && !categoryNode.isNull()) {
+            Long categoryId = categoryNode.get("id").asLong();
             Category category = categoryService.findById(categoryId);
             product.setCategory(category);
         }
