@@ -159,7 +159,7 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public Map<String, String> createSystemOwners(HttpServletRequest request, JsonNode json) {
+    public Map<String, String> createSystemOwners() {
         Map<String, String> response = new HashMap<>();
         User hakanUser = User.builder()
                 .name("Hakan")

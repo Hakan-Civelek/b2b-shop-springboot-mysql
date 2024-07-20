@@ -42,7 +42,7 @@ public class DashboardService {
                     "AND o.orderStatus != :cancelledStatus";
             Query orderCountQueryObj = session.createQuery(orderCountQuery);
             orderCountQueryObj.setParameter("tenantId", tenantId);
-            orderCountQueryObj.setParameter("cancelledStatus", OrderStatus.IPTAL_EDILDI);
+            orderCountQueryObj.setParameter("cancelledStatus", OrderStatus.CANCELED);
             Number orderCountResult = (Number) orderCountQueryObj.uniqueResult();
             int orderCount = (orderCountResult != null) ? orderCountResult.intValue() : 0;
 
@@ -53,7 +53,7 @@ public class DashboardService {
                     " AND MONTH(o.orderDate) = MONTH(CURRENT_DATE())";
             Query thisMonthOrderCountQueryObj = session.createQuery(thisMonthOrderCountQuery);
             thisMonthOrderCountQueryObj.setParameter("tenantId", tenantId);
-            thisMonthOrderCountQueryObj.setParameter("cancelledStatus", OrderStatus.IPTAL_EDILDI);
+            thisMonthOrderCountQueryObj.setParameter("cancelledStatus", OrderStatus.CANCELED);
             Number thisMonthOrderCountResult = (Number) thisMonthOrderCountQueryObj.uniqueResult();
             int thisMonthOrderCount = (thisMonthOrderCountResult != null) ? thisMonthOrderCountResult.intValue() : 0;
 
@@ -66,7 +66,7 @@ public class DashboardService {
                     "AND o.orderStatus != :cancelledStatus";
             Query totalRevenueQueryObj = session.createQuery(totalRevenueQuery);
             totalRevenueQueryObj.setParameter("tenantId", tenantId);
-            totalRevenueQueryObj.setParameter("cancelledStatus", OrderStatus.IPTAL_EDILDI);
+            totalRevenueQueryObj.setParameter("cancelledStatus", OrderStatus.CANCELED);
             Number totalRevenueResult = (Number) totalRevenueQueryObj.uniqueResult();
             double totalRevenue = (totalRevenueResult != null) ? totalRevenueResult.doubleValue() : 0.0;
 
@@ -77,7 +77,7 @@ public class DashboardService {
                     "AND o.orderStatus != :cancelledStatus";
             Query thisMonthTotalRevenueQueryObj = session.createQuery(thisMonthTotalRevenueQuery);
             thisMonthTotalRevenueQueryObj.setParameter("tenantId", tenantId);
-            thisMonthTotalRevenueQueryObj.setParameter("cancelledStatus", OrderStatus.IPTAL_EDILDI);
+            thisMonthTotalRevenueQueryObj.setParameter("cancelledStatus", OrderStatus.CANCELED);
             Number thisMonthTotalRevenueResult = (Number) thisMonthTotalRevenueQueryObj.uniqueResult();
             double thisMonthTotalRevenue = (thisMonthTotalRevenueResult != null) ? thisMonthTotalRevenueResult.doubleValue() : 0.0;
 
@@ -87,7 +87,7 @@ public class DashboardService {
                     "AND o.orderStatus = :cancelledStatus";
             Query cancelledRevenueQueryObj = session.createQuery(cancelledRevenueQuery);
             cancelledRevenueQueryObj.setParameter("tenantId", tenantId);
-            cancelledRevenueQueryObj.setParameter("cancelledStatus", OrderStatus.IPTAL_EDILDI);
+            cancelledRevenueQueryObj.setParameter("cancelledStatus", OrderStatus.CANCELED);
             Number cancelledRevenueResult = (Number) cancelledRevenueQueryObj.uniqueResult();
             double cancelledRevenue = (cancelledRevenueResult != null) ? cancelledRevenueResult.doubleValue() : 0.0;
 
@@ -98,7 +98,7 @@ public class DashboardService {
                     "AND o.orderStatus = :cancelledStatus";
             Query thisMonthCancelledRevenueQueryObj = session.createQuery(thisMonthCancelledRevenueQuery);
             thisMonthCancelledRevenueQueryObj.setParameter("tenantId", tenantId);
-            thisMonthCancelledRevenueQueryObj.setParameter("cancelledStatus", OrderStatus.IPTAL_EDILDI);
+            thisMonthCancelledRevenueQueryObj.setParameter("cancelledStatus", OrderStatus.CANCELED);
             Number thisMonthCancelledRevenueResult = (Number) thisMonthCancelledRevenueQueryObj.uniqueResult();
             double thisMonthCancelledRevenue = (thisMonthCancelledRevenueResult != null) ? thisMonthCancelledRevenueResult.doubleValue() : 0.0;
 

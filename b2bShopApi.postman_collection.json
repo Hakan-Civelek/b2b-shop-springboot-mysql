@@ -81,7 +81,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"fifth shop\",\r\n    \"email\": \"fifthshop@mail.com\",\r\n    \"phoneNumber\": \"05678478965\",\r\n    \"vatNumber\": \"5 vatNumber\",\r\n    \"aboutUs\": \"5 aboutUs\",\r\n    \"privacyPolicy\": \"5 privacyPolicy\"\r\n}",
+							"raw": "{\r\n    \"name\": \"first shop\",\r\n    \"email\": \"firstshop@mail.com\",\r\n    \"phoneNumber\": \"05678478961\",\r\n    \"vatNumber\": \"first vatNumber\",\r\n    \"aboutUs\": \"first aboutUs\",\r\n    \"privacyPolicy\": \"first privacyPolicy\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -751,7 +751,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "",
+							"raw": "{\r\n    \"brandIds\": [2],\r\n    \"categoryId\": [\r\n        1\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -759,7 +759,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseurl}}/product?brandId=2",
+							"raw": "{{baseurl}}/product",
 							"host": [
 								"{{baseurl}}"
 							],
@@ -768,8 +768,47 @@
 							],
 							"query": [
 								{
-									"key": "brandId",
-									"value": "2"
+									"key": "",
+									"value": "2",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get Categorie's Products",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoYWthbnNob3BAbWFpbC5jb20iLCJpYXQiOjE3MTc4NDQ0MzksImV4cCI6MTcxNzg0ODAzOX0.9W1jFxwt300t10PY95V5CwsngaLhD1YGmg_YgLirBdQ"
+							}
+						],
+						"url": {
+							"raw": "{{baseurl}}/product?categoryId=3",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"product"
+							],
+							"query": [
+								{
+									"key": "categoryId",
+									"value": "3"
 								}
 							]
 						}
@@ -876,13 +915,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseurl}}/product/12",
+							"raw": "{{baseurl}}/product/3",
 							"host": [
 								"{{baseurl}}"
 							],
 							"path": [
 								"product",
-								"12"
+								"3"
 							]
 						}
 					},
@@ -905,7 +944,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"gtin\": \"5123123123\",\r\n    \"images\": [\r\n        {\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/9ad184b0-d0ff-4bf9-906b-9bd1b5fbbf9e.jpg?alt=media\",\r\n            \"isThumbnail\": true\r\n        },\r\n        {\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/10747be1-e4e9-454d-81e2-c132dbe3b860.jpg?alt=media\",\r\n            \"isThumbnail\": false\r\n        }\r\n    ],\r\n    \"code\": \"test for update image!\",\r\n    \"salesPrice\": 17500.0,\r\n    \"vatRate\": 0.0,\r\n    \"description\": \"test for update image!\",\r\n    \"grossPrice\": 20000.0,\r\n    \"active\": true,\r\n    \"name\": \"test for update image!\",\r\n    \"stock\": 10,\r\n    \"categoryId\": 2,\r\n    \"brandId\": 1\r\n}",
+							"raw": "{\r\n    \"gtin\": \"51231234\",\r\n    \"images\": [\r\n        {\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/9ad184b0-d0ff-4bf9-906b-9bd1b5fbbf9e.jpg?alt=media\",\r\n            \"isThumbnail\": true\r\n        },\r\n        {\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/10747be1-e4e9-454d-81e2-c132dbe3b860.jpg?alt=media\",\r\n            \"isThumbnail\": false\r\n        }\r\n    ],\r\n    \"code\": \"1231513\",\r\n    \"salesPrice\": 35000.0,\r\n    \"vatRate\": 0.0,\r\n    \"description\": \"12. Nesil Intel® Core™ i7-12700H 45 Watt 12. Nesil Intel® Core™ i7-12700H 45 Watt 12. Nesil Intel® Core™ i7-12700H 4.70 Ghz’e kadar saat hızıyla 6 adet performans ve 8 adet verimlilik çekirdeğiyle hem performansta yeni bir standartı belirliyor hem de gündelik kullanımda enerji tüketimini düşürüyor.\",\r\n    \"grossPrice\": 40000.0,\r\n    \"active\": true,\r\n    \"name\": \"Monster Abra A5 Laptop\",\r\n    \"stock\": 10,\r\n    \"category\": {\r\n        \"name\": \"Oyun Bilgisayarı\",\r\n        \"parentCategory\": 1,\r\n        \"id\": 4,\r\n        \"isActive\": true\r\n    },\r\n    \"brand\": {\r\n        \"name\": \"Monster\",\r\n        \"id\": 1\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -977,7 +1016,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"gtin\": \"5123123123\",\r\n    \"images\": [\r\n        {\r\n            \"isThumbnail\": true,\r\n            \"id\": 41,\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/9ad184b0-d0ff-4bf9-906b-9bd1b5fbbf9e.jpg?alt=media\"\r\n        },\r\n        {\r\n            \"isThumbnail\": false,\r\n            \"id\": 42,\r\n            \"url\": \"https://firebasestorage.googl   eapis.com/v0/b/b2bshop-d0961.appspot.com/o/10747be1-e4e9-454d-81e2-c132dbe3b860.jpg?alt=media\"\r\n        }\r\n    ],\r\n    \"code\": \"test for update image!\",\r\n    \"salesPrice\": 17500.0,\r\n    \"vatRate\": 0.0,\r\n    \"description\": \"test for update image!\",\r\n    \"active\": true,\r\n    \"grossPrice\": 20000.0,\r\n    \"name\": \"test for update image!\",\r\n    \"id\": 12,\r\n    \"stock\": 10,\r\n    \"categoryId\": 2,\r\n    \"brandId\": 1\r\n}",
+							"raw": "{\r\n    \"gtin\": \"5123123123\",\r\n    \"images\": [\r\n        {\r\n            \"isThumbnail\": true,\r\n            \"id\": 3,\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/9ad184b0-d0ff-4bf9-906b-9bd1b5fbbf9e.jpg?alt=media\"\r\n        },\r\n        {\r\n            \"isThumbnail\": false,\r\n            \"id\": 4,\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/10747be1-e4e9-454d-81e2-c132dbe3b860.jpg?alt=media\"\r\n        },\r\n        {\r\n            \"isThumbnail\": false,\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/10747be1-e4e9-454d-81e2-c132dbe3b860.jpg?alt=media\"\r\n        }\r\n    ],\r\n    \"code\": \"codemuz code!\",\r\n    \"salesPrice\": 17500.0,\r\n    \"vatRate\": 0.0,\r\n    \"description\": \"codemuz code!\",\r\n    \"active\": true,\r\n    \"grossPrice\": 20000.0,\r\n    \"name\": \"codemuz code!\",\r\n    \"id\": 2,\r\n    \"stock\": 55,\r\n    \"category\": {\r\n        \"name\": \"Bilgisayar\",\r\n        \"parentCategory\": 1,\r\n        \"id\": 2,\r\n        \"isActive\": true,\r\n        \"subCategories\": [\r\n            {\r\n                \"name\": \"Oyun Bilgisayarı\",\r\n                \"parentCategory\": 2,\r\n                \"id\": 4,\r\n                \"isActive\": true,\r\n                \"subCategories\": []\r\n            },\r\n            {\r\n                \"name\": \"İş Bilgisayarı\",\r\n                \"parentCategory\": 2,\r\n                \"id\": 5,\r\n                \"isActive\": true,\r\n                \"subCategories\": []\r\n            }\r\n        ]\r\n    },\r\n    \"brand\": {\r\n        \"name\": \"Samsung\",\r\n        \"id\": 2\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -985,13 +1024,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseurl}}/product/12",
+							"raw": "{{baseurl}}/product/2",
 							"host": [
 								"{{baseurl}}"
 							],
 							"path": [
 								"product",
-								"12"
+								"2"
 							]
 						}
 					},
@@ -1123,7 +1162,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\":\"Apple\"\r\n}",
+							"raw": "{\r\n    \"name\":\"Monster\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1195,7 +1234,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"gtin\": \"15132123\",\r\n    \"images\": [\r\n        {\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/9ad184b0-d0ff-4bf9-906b-9bd1b5fbbf9e.jpg?alt=media\",\r\n            \"isThumbnail\": false\r\n        },\r\n        {\r\n            \"url\": \"https://firebasestorage.googleapis.com/v0/b/b2bshop-d0961.appspot.com/o/10747be1-e4e9-454d-81e2-c132dbe3b860.jpg?alt=media\",\r\n            \"isThumbnail\": true\r\n        }\r\n    ],\r\n    \"code\": \"new test category update\",\r\n    \"salesPrice\": 9999.0,\r\n    \"vatRate\": 0.0,\r\n    \"description\": \"KIYMETLIMIZ update\",\r\n    \"grossPrice\": 9999.0,\r\n    \"isActive\": true,\r\n    \"name\": \"new test for category update\",\r\n    \"stock\": 23,\r\n    \"category\": {\r\n        \"id\": 5\r\n    }\r\n}",
+							"raw": "{\r\n        \"name\": \"Monster\",\r\n        \"id\": 2\r\n    }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1203,13 +1242,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseurl}}/brand/1",
+							"raw": "{{baseurl}}/brand/2",
 							"host": [
 								"{{baseurl}}"
 							],
 							"path": [
 								"brand",
-								"1"
+								"2"
 							]
 						}
 					},
@@ -1341,7 +1380,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Spor Takip Cihazları\",\r\n    \"isActive\": true,\r\n    \"parentCategoryId\": 7\r\n}",
+							"raw": "{\r\n    \"name\": \"Elektronik\",\r\n    \"active\": true,\r\n    \"parentCategoryId\": null\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1829,7 +1868,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"orderNote\": \"test for new create order\",\r\n    \"basketId\": 7,\r\n    \"invoiceAddressId\": 1,\r\n    \"receiverAddressId\": 1\r\n}",
+							"raw": "{\r\n    \"orderNote\": \"Good job!\",\r\n    \"basketId\": 1,\r\n    \"invoiceAddressId\": 1,\r\n    \"receiverAddressId\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2047,7 +2086,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"countryId\": 216,\r\n    \"title\": \"Bizim ev\",\r\n    \"city\": \"İstanbul\",\r\n    \"addressLine\": \"Fatih Mahallesi İnönü Caddesi No:45 Daire: 3, Beyoğlu, İstanbul\"\r\n}",
+							"raw": "{\r\n    \"countryId\": 1,\r\n    \"title\": \"Bizim ev\",\r\n    \"city\": \"İstanbul\",\r\n    \"addressLine\": \"Fatih Mahallesi İnönü Caddesi No:45 Daire: 3, Beyoğlu, İstanbul\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2246,7 +2285,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"tenantId\": 4,\r\n    \"username\": \"firstshop\",\r\n    \"password\": \"password\"\r\n}",
+							"raw": "{\r\n    \"tenantId\": 1,\r\n    \"username\": \"firstshop@mail.com\",\r\n    \"password\": \"password\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2288,7 +2327,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"tenantId\": 1,\r\n    \"username\": \"hatice\",\r\n    \"password\": \"pass\"\r\n}",
+							"raw": "{\r\n    \"tenantId\": 1,\r\n    \"username\": \"firstcustomer@mail.com\",\r\n    \"password\": \"password\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2354,6 +2393,50 @@
 			]
 		},
 		{
+			"name": "Dashboard",
+			"item": [
+				{
+					"name": "get Dashboard",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/dashboard",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"dashboard"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "create systemOwners!!",
 			"request": {
 				"auth": {
@@ -2363,7 +2446,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "[\r\n    {\r\n        \"name\": \"Hakan\",\r\n        \"username\": \"hakan\",\r\n        \"password\": \"pass\",\r\n        \"email\": \"hakan@email.com\",\r\n        \"authorities\": [\r\n            \"ROLE_SYSTEM_OWNER\"\r\n        ]\r\n    },\r\n    {\r\n        \"name\": \"Esat\",\r\n        \"username\": \"esat\",\r\n        \"password\": \"pass\",\r\n        \"email\": \"esat@email.com\",\r\n        \"authorities\": [\r\n            \"ROLE_SYSTEM_OWNER\"\r\n        ]\r\n    }\r\n]",
+					"raw": "",
 					"options": {
 						"raw": {
 							"language": "json"

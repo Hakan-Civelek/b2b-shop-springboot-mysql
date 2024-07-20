@@ -296,7 +296,7 @@ public class OrderService {
         order.setCreatedBy(user);
         order.setInvoiceAddress(addressService.findAddressById(invoiceAddressId));
         order.setReceiverAddress(addressService.findAddressById(receiverAddressId));
-        order.setOrderStatus(OrderStatus.OLUSTURULDU);
+        order.setOrderStatus(OrderStatus.CREATED);
 
         List<BasketItem> basketItems = basketService.findBasketById(basketId).getBasketItems();
         Double totalPrice = 0.0;
@@ -377,7 +377,7 @@ public class OrderService {
 
         order.setOrderStatus(newStatusById);
 
-        if (newStatusById == OrderStatus.IPTAL_EDILDI) {
+        if (newStatusById == OrderStatus.CANCELED) {
             for (OrderItem item : order.getOrderItems()) {
                 Product product = productRepository.findById(item.getRefProductId())
                         .orElseThrow(() -> new ResourceNotFoundException("Product could not find by id: " + item.getRefProductId()));
