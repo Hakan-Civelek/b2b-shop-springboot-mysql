@@ -47,8 +47,8 @@ public class UserController {
     }
 
     @PostMapping("/createSystemOwners")
-    public Map<String, String>  createOwners(HttpServletRequest request, @RequestBody JsonNode json) {
-        return userService.createSystemOwners(request, json);
+    public Map<String, String>  createOwners() {
+        return userService.createSystemOwners();
     }
 
     @GetMapping("/{userId}")
