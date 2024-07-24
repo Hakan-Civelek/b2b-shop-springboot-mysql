@@ -1,5 +1,7 @@
 # B2B Shop API
 
+## FE Link: https://github.com/esatakpunar/b2b-shop
+
 ## Tech Stack
 
 **Framework**
